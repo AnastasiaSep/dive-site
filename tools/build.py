@@ -12,7 +12,7 @@ IMGS = {"HERO": "hero", "GEAR": "gear", "ME": "me"}
 # 1) public/
 title = re.search(r"<title>.*?</title>", page).group(0)
 body = page.replace(title, "").replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
-for k, v in IMGS.items(): body = body.replace(f"%%{k}%%", f"/img/{v}.webp")
+for k, v in IMGS.items(): body = body.replace(f"%%{k}%%", f"img/{v}.webp")
 split = body.index('<header class="bar">')
 html = f'''<!doctype html>
 <html lang="en">
@@ -20,17 +20,18 @@ html = f'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061217">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 {title}
 <link rel="icon" href="data:,">
 <meta property="og:title" content="Dive Nha Trang with Nastya">
-<meta property="og:image" content="/img/hero.webp">
+<meta property="og:image" content="img/hero.webp">
 <style>:root{{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}}body{{margin:0}}img{{max-width:100%}}[hidden]{{display:none!important}}</style>
 {body[:split].strip()}
 </head>
 <body>
 {body[split:].strip()}
-<script src="/config.js"></script>
-<script src="/app.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
 '''

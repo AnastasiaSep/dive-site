@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
 
   // 2) create the account by e-mail link: proves the address is real; the password is set from the link
   const { data: u, error: uErr } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: (Deno.env.get("SITE_URL") ?? "") + "/join/",
+    redirectTo: (Deno.env.get("SITE_URL") ?? "").replace(/\/$/, "") + "/join/",
   });
   if (uErr || !u?.user) {
     await admin.rpc("release_invite", { p_invite: inviteId });

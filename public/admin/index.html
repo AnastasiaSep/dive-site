@@ -2,11 +2,12 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Админка · Nastya dives</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="/admin/admin.css">
+<link rel="stylesheet" href="admin.css">
 </head>
 <body>
 <header class="top">
@@ -129,8 +130,8 @@
     </div>
   </section>
 </main>
-<script src="/config.js"></script>
-<script src="/vendor/supabase-2.45.4.js"></script>
-<script src="/admin/admin.js"></script>
+<script src="../config.js"></script>
+<script src="../vendor/supabase-2.45.4.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 const C = window.SITE_CONFIG || {};
 const $ = id => document.getElementById(id);
 const show = id => ["step1", "sent", "step2", "done", "bad"].forEach(x => $(x).hidden = x !== id);
+if (!C.SUPABASE_URL) { document.querySelector("main").innerHTML = '<p class="card narrow">Регистрация заработает после подключения бесплатной базы Supabase (README, шаги 2–6). Сам сайт работает и без неё.</p>'; throw new Error("not configured"); }
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, { auth: { storage: window.sessionStorage, detectSessionInUrl: true } });
 
 const hash = new URLSearchParams(location.hash.slice(1));

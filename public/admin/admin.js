@@ -4,6 +4,7 @@
 "use strict";
 const C = window.SITE_CONFIG || {};
 const $ = id => document.getElementById(id);
+if (!C.SUPABASE_URL) { document.querySelector("main").innerHTML = '<p class="card narrow">Админка заработает после подключения бесплатной базы Supabase (README, шаги 2–6). Сам сайт работает и без неё.</p>'; throw new Error("not configured"); }
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, {
   auth: { persistSession: true, storage: window.sessionStorage, autoRefreshToken: true, detectSessionInUrl: false },
 });
@@ -190,7 +191,7 @@ $("inv-new").addEventListener("submit", async e => {
   e.preventDefault();
   const { data: token, error } = await sb.rpc("create_invite", { p_role: $("inv-role").value, p_note: $("inv-note").value.trim() || null });
   if (error) return fail(error);
-  $("inv-link").textContent = `${location.origin}/join/#t=${token}`; $("inv-out").hidden = false; $("inv-copied").textContent = ""; $("inv-note").value = "";
+  $("inv-link").textContent = new URL("../join/#t=" + token, location.href).href; $("inv-out").hidden = false; $("inv-copied").textContent = ""; $("inv-note").value = "";
   loadInvites().catch(fail);
 });
 $("inv-copy").addEventListener("click", () => navigator.clipboard.writeText($("inv-link").textContent).then(() => $("inv-copied").textContent = "Скопировано").catch(() => $("inv-copied").textContent = "Выдели и скопируй вручную"));
