@@ -76,7 +76,7 @@ a{color:inherit}
 .readout b{display:block;font:500 clamp(1.3rem,2.4vw,1.9rem)/1.1 var(--f-data);letter-spacing:-.02em;margin-top:8px}
 .readout b small{font-size:.55em;color:var(--muted);margin-left:3px}
 
-section.block{padding-block:clamp(72px,10vw,128px)}
+section.block{scroll-margin-top:60px;padding-block:clamp(72px,10vw,128px)}
 section.alt{background:var(--bg2)}
 .head{display:grid;gap:16px;margin-bottom:clamp(36px,5vw,56px);max-width:760px}
 .head p.sub{color:var(--muted);font-size:1.06rem;max-width:56ch}
@@ -132,14 +132,6 @@ section.alt{background:var(--bg2)}
 .step{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--line)}
 .step .t{font:500 1.15rem var(--f-data);color:var(--accent)}
 .step p{color:var(--muted);margin-top:4px}
-.where{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:56px}
-.where figure{margin:0;min-width:0}
-.map{background:var(--sea);border-radius:18px;overflow:hidden}
-.map svg{display:block;width:100%;height:auto}
-.map .t{font:400 11px var(--f-data);fill:var(--dim)}
-.map .n{font:600 13px var(--f-body);fill:var(--fg)}
-.where figcaption{font:400 .8rem var(--f-data);color:var(--dim);margin-top:10px}
-.gearpic img{display:block;width:100%;height:100%;max-height:440px;object-fit:cover;border-radius:18px}
 
 /* about */
 .about{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,6vw,80px);align-items:center}
@@ -204,6 +196,26 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
 #tip p{color:var(--fg)}
 #tip button{position:absolute;right:10px;top:8px;border:0;background:none;font-size:1.6rem;color:var(--muted);cursor:pointer;padding:4px 10px}
 
+/* dive sites */
+.sites{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.site{display:grid;gap:18px;align-content:start;min-width:0}
+.zoom{all:unset;cursor:zoom-in;display:block;border-radius:16px;overflow:hidden;border:1px solid var(--line);transition:border-color .15s}
+.zoom:hover{border-color:var(--accent)}
+.zoom:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.zoom{aspect-ratio:8/5;max-width:100%;background:#061a22}
+.zoom img{display:block;width:100%;height:100%;object-fit:contain}
+.site h3{font-size:1.4rem}
+.site p{margin-top:6px}
+.site dl{display:grid;margin:14px 0 0;border-top:1px solid var(--line)}
+.site dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.site dt{font:500 .74rem var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);align-self:center}
+.site dd{margin:0;font-family:var(--f-data);font-size:.95rem}
+#lb{position:fixed;inset:0;z-index:50;background:#030a0d;display:grid}
+#lb .lb-scroll{overflow:auto;display:grid;place-items:center;padding:56px max(12px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+#lb img{display:block;width:min(100%,1800px);height:auto;border-radius:10px}
+#lb-x{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:51;background:var(--raise);border:1px solid var(--line2);color:var(--fg);border-radius:999px;width:44px;height:44px;font-size:1.6rem;cursor:pointer}
+@media (max-width:900px){.sites{grid-template-columns:1fr}#lb img{width:1100px;max-width:none}#lb .lb-scroll{place-items:start}}
+
 .mbar{display:none}
 @media (max-width:900px){
   .nav{display:none}
@@ -250,6 +262,7 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
       <a href="#start"><span class="ru">С чего начать</span><span class="en">Start here</span></a>
       <a href="#prices"><span class="ru">Цены</span><span class="en">Prices</span></a>
       <a href="#day"><span class="ru">День</span><span class="en">The day</span></a>
+      <a href="#sites"><span class="ru">Дайв-сайты</span><span class="en">Dive sites</span></a>
       <a href="#about"><span class="ru">Обо мне</span><span class="en">About</span></a>
       <a href="#faq"><span class="ru">Вопросы</span><span class="en">FAQ</span></a>
     </nav>
@@ -343,44 +356,42 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
         <div class="step"><span class="t">~11:00</span><div><h3><span class="ru">Погружение 2</span><span class="en">Dive 2</span></h3><p><span class="ru">Другой сайт, потом фрукты и обед.</span><span class="en">A second site, then fruit and lunch.</span></p></div></div>
         <div class="step"><span class="t">14:00</span><div><h3><span class="ru">Назад</span><span class="en">Back</span></h3><p><span class="ru">Возвращаемся в город.</span><span class="en">Back in town.</span></p></div></div>
       </div>
-      <div class="where">
-        <figure>
-          <div class="map">
-            <svg viewBox="0 0 440 400" role="img" aria-labelledby="map-title">
-              <title id="map-title">Schematic map of Nha Trang Bay dive sites</title>
-              <path d="M0 0 H120 C110 60 128 110 112 160 C100 200 118 240 96 290 C84 320 92 360 70 400 H0 Z" fill="var(--land)" stroke="var(--land-line)"/>
-              <path d="M190 40 C240 20 320 30 350 70 C372 100 340 130 300 150 C270 166 250 190 220 186 C196 182 186 160 200 140 C210 120 176 100 172 78 C168 60 176 46 190 40 Z" fill="var(--land)" stroke="var(--land-line)"/>
-              <path d="M168 238 C176 228 192 230 194 242 C196 254 182 260 172 254 C164 250 162 244 168 238 Z" fill="var(--land)" stroke="var(--land-line)"/>
-              <path d="M128 280 C140 270 160 274 160 288 C160 300 142 304 132 298 C124 294 122 286 128 280 Z" fill="var(--land)" stroke="var(--land-line)"/>
-              <path d="M230 270 C250 252 286 258 298 280 C310 302 296 330 272 336 C250 342 226 330 222 310 C218 294 220 280 230 270 Z" fill="var(--land)" stroke="var(--land-line)"/>
-              <circle cx="282" cy="214" r="6" fill="var(--land)" stroke="var(--land-line)"/>
-              <path d="M118 200 C160 205 200 220 250 262" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 5" opacity=".7"/>
-              <circle cx="118" cy="200" r="4" fill="var(--fg)"/>
-              <g fill="var(--accent)"><circle cx="282" cy="214" r="4"/><circle cx="298" cy="300" r="4"/><circle cx="268" cy="338" r="4"/><circle cx="232" cy="290" r="4"/><circle cx="196" cy="246" r="4"/><circle cx="160" cy="284" r="4"/></g>
-              <text class="n" x="20" y="120">Nha Trang</text>
-              <text class="t" x="24" y="216"><tspan class="ru">причал</tspan><tspan class="en">harbour</tspan></text>
-              <text class="n" x="236" y="92">Hon Tre</text>
-              <text class="n" x="292" y="210">Madonna Rock</text>
-              <text class="n" x="246" y="362">Hon Mun</text>
-              <text class="t" x="232" y="378"><tspan class="ru">морской заповедник</tspan><tspan class="en">marine park</tspan></text>
-              <text class="n" x="200" y="232">Hon Mot</text>
-              <text class="n" x="110" y="322">Hon Tam</text>
-              <text class="t" x="320" y="300">Electric Nose →</text>
-              <text class="t" x="320" y="314"><tspan class="ru">45 мин, до 42 м</tspan><tspan class="en">45 min, to 42 m</tspan></text>
-            </svg>
+    </div>
+  </section>
+
+  <section class="block alt" id="sites">
+    <div class="wrap">
+      <div class="head">
+        <p class="label"><b>04</b> / <span class="ru">Где ныряем</span><span class="en">Dive sites</span></p>
+        <h2><span class="ru">Дайв-сайты</span><span class="en">Dive sites</span></h2>
+        <p class="sub"><span class="ru">Нажми на карту, чтобы открыть её целиком: маршруты, глубины, опасности.</span><span class="en">Tap a map to open it full size: routes, depths, hazards.</span></p>
+      </div>
+      <div class="sites">
+        <article class="site">
+          <button type="button" class="zoom" data-full="img/site-cemetery.webp" aria-label="Open Cemetery Bay map"><img src="img/site-cemetery-sm.webp" alt="Cemetery Bay dive site map with three routes" loading="lazy"></button>
+          <div class="site-info">
+            <h3>Cemetery Bay</h3>
+            <p class="muted"><span class="ru">Закрытая бухта: кораллы, камни, песок. Три маршрута.</span><span class="en">Sheltered bay: coral, rocks, sand. Three routes.</span></p>
+            <dl><div><dt><span class="ru">Глубина</span><span class="en">Depth</span></dt><dd>2–18 m</dd></div><div><dt><span class="ru">Уровень</span><span class="en">Level</span></dt><dd>DSD · OW · AOW</dd></div><div><dt><span class="ru">Где</span><span class="en">Where</span></dt><dd>Hon Mun</dd></div></dl>
           </div>
-          <figcaption><span class="ru">Где ныряем. Схема, не в масштабе.</span><span class="en">Where we dive. Schematic, not to scale.</span></figcaption>
-        </figure>
-        <figure class="gearpic"><img src="img/gear.webp" alt="Scuba gear set up on the dive boat"></figure>
+        </article>
+        <article class="site">
+          <button type="button" class="zoom" data-full="img/site-madonna.webp" aria-label="Open Madonna Rock map"><img src="img/site-madonna-sm.webp" alt="Madonna Rock dive site map with three routes" loading="lazy"></button>
+          <div class="site-info">
+            <h3>Madonna Rock</h3>
+            <p class="muted"><span class="ru">Скальный риф, проход-туннель и обрыв до 30 м.</span><span class="en">Rock reef with a swim-through and a drop-off to 30 m.</span></p>
+            <dl><div><dt><span class="ru">Глубина</span><span class="en">Depth</span></dt><dd>10–18 m · max 30–35 m</dd></div><div><dt><span class="ru">Уровень</span><span class="en">Level</span></dt><dd>OW · AOW</dd></div><div><dt><span class="ru">Где</span><span class="en">Where</span></dt><dd>Hon Mun</dd></div></dl>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="block alt" id="about">
+  <section class="block" id="about">
     <div class="wrap about">
       <img src="img/me.webp" alt="Nastya, PADI Divemaster">
       <div>
-        <p class="label"><b>04</b> / <span class="ru">Обо мне</span><span class="en">About me</span></p>
+        <p class="label"><b>05</b> / <span class="ru">Обо мне</span><span class="en">About me</span></p>
         <h2 style="margin-top:16px"><span class="ru">Привет, я Настя</span><span class="en">Hi, I'm Nastya</span></h2>
         <p class="muted" style="margin-top:18px;max-width:52ch"><span class="ru">Дайвмастер PADI в Нячанге. Работаю с новичками и дайверами, говорю по-русски и по-английски.</span><span class="en">PADI Divemaster in Nha Trang. I work with beginners and certified divers, in Russian and English.</span></p>
         <div class="facts">
@@ -392,10 +403,10 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
     </div>
   </section>
 
-  <section class="block" id="when">
+  <section class="block alt" id="when">
     <div class="wrap">
       <div class="head">
-        <p class="label"><b>05</b> / <span class="ru">Когда ехать</span><span class="en">When to come</span></p>
+        <p class="label"><b>06</b> / <span class="ru">Когда ехать</span><span class="en">When to come</span></p>
         <h2><span class="ru">Лучшее море — с марта по июнь</span><span class="en">Best sea: March to June</span></h2>
       </div>
       <div class="season" id="season"></div>
@@ -403,10 +414,10 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
     </div>
   </section>
 
-  <section class="block alt" id="faq">
+  <section class="block" id="faq">
     <div class="wrap">
       <div class="head">
-        <p class="label"><b>06</b> / <span class="ru">Вопросы</span><span class="en">FAQ</span></p>
+        <p class="label"><b>07</b> / <span class="ru">Вопросы</span><span class="en">FAQ</span></p>
         <h2><span class="ru">Если немного страшно</span><span class="en">If you're a bit nervous</span></h2>
       </div>
       <div class="fgrid">
@@ -428,10 +439,10 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
     </div>
   </section>
 
-  <section class="block" id="book">
+  <section class="block alt" id="book">
     <div class="wrap">
       <div class="head">
-        <p class="label"><b>07</b> / <span class="ru">Запись</span><span class="en">Booking</span></p>
+        <p class="label"><b>08</b> / <span class="ru">Запись</span><span class="en">Booking</span></p>
         <h2><span class="ru">Напиши мне, и я всё организую</span><span class="en">Message me and I'll arrange it</span></h2>
       </div>
       <div class="book">
@@ -492,6 +503,7 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
   <a class="wa" id="m-wa" href="#book" target="_blank" rel="noopener"><span class="ru">Написать</span><span class="en">Message me</span></a>
 </nav>
 
+<div id="lb" role="dialog" aria-modal="true" aria-label="Dive site map" hidden><button type="button" id="lb-x" aria-label="Close">×</button><div class="lb-scroll"><img id="lb-img" alt=""></div></div>
 <div id="tip" role="dialog" aria-live="polite" hidden><button type="button" id="tip-x" aria-label="Close">×</button><b id="tip-t"></b><p id="tip-p"></p></div>
 <script src="config.js"></script>
 <script src="app.js"></script>

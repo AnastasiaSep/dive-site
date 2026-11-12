@@ -221,6 +221,18 @@ $("c-ig").textContent = "@" + CONTACT.instagram;
 applyLang();
 
 
+/* dive-site map viewer */
+let lbFrom = null;
+document.addEventListener("click", e => {
+  const z = e.target.closest(".zoom"); if(!z) return;
+  lbFrom = z; $("lb-img").src = z.dataset.full; $("lb-img").alt = z.querySelector("img").alt;
+  $("lb").hidden = false; document.body.style.overflow = "hidden"; $("lb-x").focus();
+});
+function closeLb(){ if($("lb").hidden) return; $("lb").hidden = true; document.body.style.overflow = ""; if(lbFrom) lbFrom.focus(); }
+$("lb-x").addEventListener("click", closeLb);
+$("lb").addEventListener("click", e => { if(e.target.id==="lb" || e.target.classList.contains("lb-scroll")) closeLb(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeLb(); });
+
 /* ===== Backend (optional): live prices, booking requests, anonymous analytics ===== */
 (function(){
   const C = window.SITE_CONFIG || {};
