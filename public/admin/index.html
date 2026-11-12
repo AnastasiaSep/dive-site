@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Админка · Nastya dives</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+<header class="top">
+  <b>Nastya<span>·</span>dives — админка</b>
+  <button type="button" id="logout" class="ghost" hidden>Выйти</button>
+</header>
+
+<main class="wrap">
+  <!-- step 1: password -->
+  <form id="login" class="card narrow" hidden>
+    <h1>Вход</h1>
+    <label>E-mail<input id="l-email" type="email" autocomplete="username" required></label>
+    <label>Пароль<input id="l-pass" type="password" autocomplete="current-password" required></label>
+    <button type="submit">Войти</button>
+    <p class="err" id="l-err" aria-live="polite"></p>
+  </form>
+
+  <!-- step 2: 2FA (enrol once, then a code every time) -->
+  <form id="mfa" class="card narrow" hidden>
+    <h1>Код из приложения</h1>
+    <div id="enrol" hidden>
+      <p>Первый вход: отсканируй QR в Google Authenticator, 2FAS или Aegis.</p>
+      <img id="qr" alt="QR-код для приложения-аутентификатора" width="200" height="200">
+      <p class="mono small" id="secret"></p>
+    </div>
+    <label>6 цифр<input id="m-code" inputmode="numeric" autocomplete="one-time-code" pattern="\d{6}" maxlength="6" required></label>
+    <button type="submit">Подтвердить</button>
+    <p class="err" id="m-err" aria-live="polite"></p>
+  </form>
+
+  <section id="app" hidden>
+    <nav class="tabs" role="tablist">
+      <button type="button" data-view="dash" aria-selected="true">Дашборд</button>
+      <button type="button" data-view="leads">Заявки</button>
+      <button type="button" data-view="content">Контент</button>
+      <button type="button" data-view="invites">Инвайты</button>
+      <button type="button" data-view="users">Пользователи</button>
+      <button type="button" data-view="log">Журнал</button>
+    </nav>
+
+    <div class="view" id="v-dash">
+      <div class="row"><h2>За последние</h2>
+        <select id="d-days"><option value="7">7 дней</option><option value="30" selected>30 дней</option><option value="90">90 дней</option></select></div>
+      <div class="tiles" id="tiles"></div>
+      <div class="card"><h3>По дням: посетители и клики «написать»</h3><div class="chart" id="chart"></div></div>
+      <div class="grid2">
+        <div class="card"><h3>Какие программы выбирают</h3><table id="top"></table></div>
+        <div class="card"><h3>«С чего начать»: что нажимают</h3><table id="paths"></table></div>
+      </div>
+    </div>
+
+    <div class="view" id="v-leads" hidden>
+      <div class="row"><h2>Заявки</h2>
+        <select id="lf"><option value="">все</option><option>new</option><option>contacted</option><option>booked</option><option>done</option><option>cancelled</option><option>spam</option></select></div>
+      <div class="tw"><table id="leads" class="list"></table></div>
+      <form id="lead-edit" class="card" hidden>
+        <h3 id="le-title"></h3>
+        <p id="le-info" class="pre"></p>
+        <div class="grid3">
+          <label>Статус<select id="le-status"><option>new</option><option>contacted</option><option>booked</option><option>done</option><option>cancelled</option><option>spam</option></select></label>
+          <label>Депозит, $<input id="le-dep" type="number" min="0" max="10000"></label>
+          <label>Депозит<select id="le-dstat"><option>none</option><option>requested</option><option>paid</option><option>refunded</option></select></label>
+        </div>
+        <label>Ссылка на оплату (https://…)<input id="le-link" type="url" maxlength="500" placeholder="PayPal / Wise / другой сервис"></label>
+        <label>Заметка<textarea id="le-note" maxlength="2000"></textarea></label>
+        <div class="row"><button type="submit">Сохранить</button><button type="button" class="ghost" id="le-close">Закрыть</button><span id="le-msg" class="ok"></span></div>
+      </form>
+    </div>
+
+    <div class="view" id="v-content" hidden>
+      <div class="row"><h2>Программы и цены</h2><button type="button" id="p-new">+ Новая</button></div>
+      <p class="small">Изменения сразу видны на сайте. Скрытые программы не показываются клиентам.</p>
+      <div class="tw"><table id="progs" class="list"></table></div>
+      <form id="p-edit" class="card" hidden>
+        <h3 id="pe-title"></h3>
+        <div class="grid3">
+          <label>ID (латиница)<input id="pe-id" pattern="[a-z0-9_\-]{2,40}" required></label>
+          <label>Группа<select id="pe-grp"><option value="first">Первый раз</option><option value="courses">Курсы</option><option value="cert">С сертификатом</option><option value="snork">Не ныряют</option></select></label>
+          <label>Порядок<input id="pe-sort" type="number" value="100"></label>
+          <label>Цена, $<input id="pe-price" type="number" min="0" max="100000" required></label>
+          <label class="chk"><input id="pe-from" type="checkbox"> «от»</label>
+          <label class="chk"><input id="pe-rec" type="checkbox"> «Советую»</label>
+          <label class="chk"><input id="pe-active" type="checkbox" checked> Показывать</label>
+        </div>
+        <div class="grid2">
+          <label>Название RU<input id="pe-nru" maxlength="120" required></label>
+          <label>Название EN<input id="pe-nen" maxlength="120" required></label>
+          <label>Описание RU<textarea id="pe-dru" maxlength="600"></textarea></label>
+          <label>Описание EN<textarea id="pe-den" maxlength="600"></textarea></label>
+        </div>
+        <div class="row"><button type="submit">Сохранить</button><button type="button" class="ghost" id="pe-close">Закрыть</button><span id="pe-msg" class="ok"></span></div>
+      </form>
+    </div>
+
+    <div class="view" id="v-invites" hidden>
+      <h2>Инвайты на регистрацию</h2>
+      <form id="inv-new" class="card row">
+        <label>Роль<select id="inv-role"><option value="guide">гид</option><option value="client">клиент</option></select></label>
+        <label class="grow">Для кого (заметка)<input id="inv-note" maxlength="200" placeholder="например: Вика, гид из Rainbow"></label>
+        <button type="submit">Создать</button>
+      </form>
+      <div class="card" id="inv-out" hidden>
+        <p><b>Ссылка показывается один раз.</b> Отправь её человеку лично. Действует 7 дней, одно использование.</p>
+        <p class="mono pre" id="inv-link"></p>
+        <button type="button" id="inv-copy">Скопировать</button> <span id="inv-copied" class="ok"></span>
+      </div>
+      <div class="tw"><table id="invites" class="list"></table></div>
+    </div>
+
+    <div class="view" id="v-users" hidden>
+      <h2>Пользователи</h2>
+      <p class="small">Админа нельзя выдать через сайт: только вручную в базе (см. README). Гида или клиента можно лишить роли.</p>
+      <div class="tw"><table id="users" class="list"></table></div>
+    </div>
+
+    <div class="view" id="v-log" hidden>
+      <h2>Журнал действий</h2>
+      <p class="small">Записи нельзя изменить или удалить, даже админу.</p>
+      <div class="tw"><table id="log" class="list"></table></div>
+    </div>
+  </section>
+</main>
+<script src="/config.js"></script>
+<script src="/vendor/supabase-2.45.4.js"></script>
+<script src="/admin/admin.js"></script>
+</body>
+</html>

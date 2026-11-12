@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Регистрация · Nastya dives</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+<header class="top"><b>Nastya<span>·</span>dives</b></header>
+<main class="wrap">
+  <form id="step1" class="card narrow" hidden>
+    <h1>Регистрация по приглашению</h1>
+    <p class="small">Укажи e-mail. Придёт письмо со ссылкой, по ней задашь пароль.</p>
+    <label>E-mail<input id="email" type="email" autocomplete="email" required maxlength="254"></label>
+    <div id="captcha"></div>
+    <button type="submit" id="go">Продолжить</button>
+    <p class="err" id="err1" aria-live="polite"></p>
+  </form>
+  <div id="sent" class="card narrow" hidden><h1>Проверь почту</h1><p>Открой письмо и нажми ссылку, чтобы задать пароль.</p></div>
+  <form id="step2" class="card narrow" hidden>
+    <h1>Придумай пароль</h1>
+    <label>Пароль, минимум 12 символов<input id="pass" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label>
+    <label>Ещё раз<input id="pass2" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label>
+    <button type="submit">Сохранить</button>
+    <p class="err" id="err2" aria-live="polite"></p>
+  </form>
+  <div id="done" class="card narrow" hidden><h1>Готово</h1><p>Аккаунт создан.</p></div>
+  <div id="bad" class="card narrow" hidden><h1>Ссылка не работает</h1><p>Попроси у Насти новое приглашение.</p></div>
+</main>
+<script src="/config.js"></script>
+<script src="/vendor/supabase-2.45.4.js"></script>
+<script src="/join/join.js"></script>
+</body>
+</html>
