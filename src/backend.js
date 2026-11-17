@@ -67,7 +67,7 @@
         captcha, name, contact, program_id:$("f-prog").value, people:Number($("f-people").value)||1,
         date_from:$("f-from").value||null, date_to:$("f-to").value||null, hotel:$("f-hotel").value,
         wants_media:$("f-photo").checked, note:$("f-note").value, lang })});
-      if(r.ok) say("Заявка у меня. Отвечу туда, куда ты указал(а).", "Got it. I'll reply where you told me.");
+      if(r.ok) say("Заявка у меня, скоро отвечу по твоему контакту.", "Got it, I'll reply to the contact you left soon.");
       else if(r.status===429) say("Слишком много заявок с этого адреса. Напиши в WhatsApp.", "Too many requests. Please use WhatsApp.");
       else say("Не получилось отправить. Напиши в WhatsApp.", "Couldn't send. Please use WhatsApp.");
     }catch(e){ say("Нет связи. Напиши в WhatsApp.", "No connection. Please use WhatsApp."); }

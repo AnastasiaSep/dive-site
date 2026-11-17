@@ -6,14 +6,14 @@ Usage: python3 tools/build.py"""
 import base64, pathlib, re
 R = pathlib.Path(__file__).resolve().parent.parent
 page = (R/"src/page.html").read_text()
-js = (R/"src/app.js").read_text() + "\n" + (R/"src/backend.js").read_text()
+js = "\n".join((R/f"src/{n}.js").read_text() for n in ("intro", "app", "maps")) + "\napplyLang();\n\n" + (R/"src/backend.js").read_text()
 IMGS = {"HERO": "hero", "ME": "me", "CEMSM": "site-cemetery-sm", "CEM": "site-cemetery", "MADSM": "site-madonna-sm", "MAD": "site-madonna"}
 
 # 1) public/
 title = re.search(r"<title>.*?</title>", page).group(0)
 body = page.replace(title, "").replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
 for k, v in IMGS.items(): body = body.replace(f"%%{k}%%", f"img/{v}.webp")
-split = body.index('<header class="bar">')
+split = body.index('<div id="intro">')
 html = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -23,6 +23,7 @@ html = f'''<!doctype html>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 {title}
 <link rel="icon" href="data:,">
+<link rel="stylesheet" href="vendor/air-datepicker-3.5.3.css">
 <meta property="og:title" content="Dive Nha Trang with Nastya">
 <meta property="og:image" content="img/hero.webp">
 <style>:root{{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}}body{{margin:0}}img{{max-width:100%}}[hidden]{{display:none!important}}</style>
@@ -30,6 +31,7 @@ html = f'''<!doctype html>
 </head>
 <body>
 {body[split:].strip()}
+<script src="vendor/air-datepicker-3.5.3.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
@@ -44,5 +46,7 @@ for k, v in IMGS.items():
     data = base64.b64encode((R/f"public/img/{v}.webp").read_bytes()).decode()
     art = art.replace(f"%%{k}%%", "data:image/webp;base64," + data)
 (R/"dist").mkdir(exist_ok=True)
-(R/"dist/artifact.html").write_text(art + "\n<script>\n" + js + "</script>\n")
+adp_css = (R/"public/vendor/air-datepicker-3.5.3.css").read_text()
+adp_js = (R/"public/vendor/air-datepicker-3.5.3.js").read_text()
+(R/"dist/artifact.html").write_text("<style>" + adp_css + "</style>\n" + art + "\n<script>\n" + adp_js + "\n</script>\n<script>\n" + js + "</script>\n")
 print("built public/ and dist/artifact.html")
