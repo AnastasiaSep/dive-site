@@ -62,15 +62,10 @@ const SPECIALTIES = [
  ["Deep","3–4",250],["Deep + Nitrox","3–4",450],["Navigation","3",200],["Search & Recovery","3",250],["Night","3",250],
  ["Vietnam Diver","3",225],["Vietnam Nudibranch","2",200],["Self-Reliant (Solo)","3",250],["VN Deco Chamber","—",150]
 ];
-/* ===== EDIT HERE: season (Jan…Dec): good / ok / rough ===== */
-const SEASON = ["rough","ok","good","good","good","good","ok","ok","ok","rough","rough","rough"];
 /* ================================ */
 
-const SEASON_WORD = {ru:{good:"лучше всего",ok:"хорошо",rough:"дожди"}, en:{good:"best",ok:"good",rough:"rain"}};
 const MONTHS = {ru:["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"],
                 en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]};
-const MONTHS_FULL = {ru:["январе","феврале","марте","апреле","мае","июне","июле","августе","сентябре","октябре","ноябре","декабре"],
-                     en:["January","February","March","April","May","June","July","August","September","October","November","December"]};
 
 /* ===== EDIT HERE: the 2-question match ===== */
 const QUIZ = {
@@ -161,16 +156,6 @@ function resultHTML(){
 }
 function saveQuiz(){ try{ localStorage.setItem("quiz", JSON.stringify({path:quiz.path, pick:quiz.pick})); }catch(e){} }
 
-function renderSeason(){
-  const now = new Date().getMonth();
-  $("season").innerHTML = SEASON.map((s,i)=>`<div class="m ${s}${i===now?" now":""}"><i></i><span>${MONTHS[lang][i]}</span><small>${i===now?T("сейчас","now"):SEASON_WORD[lang][s]}</small></div>`).join("");
-  const s = SEASON[now], m = MONTHS_FULL[lang][now];
-  $("season-now").textContent = s === "good"
-    ? T(`Сейчас, в ${m}, лучшее время: спокойное море и хорошая видимость.`, `Right now, in ${m}, is the best time: calm sea and good visibility.`)
-    : s === "ok"
-    ? T(`В ${m} нырять хорошо, иногда планктон снижает видимость.`, `${m} is good for diving, though plankton sometimes cuts visibility.`)
-    : T(`В ${m} бывают дожди и волна, но между ними ныряем. Напиши даты, подскажу по прогнозу.`, `${m} brings rain and swell, but we dive between them. Send me your dates and I'll check the forecast.`);
-}
 /* program picker: a styled listbox in front of the native <select>, which stays the source of truth */
 function renderSelect(){
   renderNativeSelect();
@@ -258,8 +243,7 @@ function updateMsg(){
   const it = quiz.pick && ALL.find(i => i.id === quiz.pick);
   const hi = it ? T(`Привет, Настя! Хочу записаться: ${it.ru}.`, `Hi Nastya! I'd like to book: ${it.en}.`)
                : T("Привет, Настя! Хочу записаться на погружение в Нячанге.", "Hi Nastya! I'd like to book a dive in Nha Trang.");
-  $("hero-wa").href = waLink(hi); $("m-wa").href = waLink(hi);
-  $("m-wa-t").textContent = it ? `${T("Записаться","Book")} · ${money(it)}` : T("Записаться на погружение","Book a dive");
+  $("hero-wa").href = waLink(hi);
   syncProg(); syncPeople(); syncDates();
 }
 function applyLang(){
@@ -268,7 +252,7 @@ function applyLang(){
   $("lang-ru").setAttribute("aria-pressed", lang==="ru");
   $("lang-en").setAttribute("aria-pressed", lang==="en");
   $("intro-skip") && ($("intro-skip").textContent = T("Пропустить ›","Skip ›"));
-  renderTabs(); renderList(); renderQuiz(); renderSeason(); renderSelect(); updateMsg(); hideTip();
+  renderTabs(); renderList(); renderQuiz(); renderSelect(); updateMsg(); hideTip();
   if(typeof renderMaps === "function") renderMaps();
 }
 function setTab(id, focus){
@@ -387,16 +371,14 @@ $("c-wa").textContent = "+" + CONTACT.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\
 $("c-ig").textContent = "@" + CONTACT.instagram;
 if(quiz.pick) tab = quiz.path;
 
-/* ===== scroll effects: solid top bar, mobile CTA, depth gauge, reveals ===== */
+/* ===== scroll effects: depth gauge, reveals ===== */
 (function(){
-  const bar = $("bar"), mbar = $("mbar"), gauge = $("gauge"), gv = $("g-val");
+  const gauge = $("gauge"), gv = $("g-val");
   const secs = [...document.querySelectorAll("section[data-depth]")];
   let ticking = false;
   function onScroll(){
     ticking = false;
     const y = scrollY, vh = innerHeight;
-    bar.classList.toggle("solid", y > 40);
-    mbar.classList.toggle("on", y > vh * .6 && $("book").getBoundingClientRect().top > vh * .5);
     // depth = interpolated between the sections' data-depth values
     let d = 0;
     for(const s of secs){ const r = s.getBoundingClientRect(); if(r.top < vh * .5) d = +s.dataset.depth + Math.min(1, Math.max(0, (vh * .5 - r.top) / r.height)) * 3; }
