@@ -17,7 +17,7 @@
   }
   track("view");
   document.addEventListener("click", e => {
-    const t = e.target.closest("[data-path],[data-tab],[data-term],[data-pick],#go-wa,#hero-wa,#m-wa,#c-wa-a,#go-tg,#c-tg-a,#copy,[data-set]");
+    const t = e.target.closest("[data-path],[data-tab],[data-term],[data-pick],#go-wa,#hero-wa,#c-wa-a,#go-tg,#c-tg-a,#copy,[data-set]");
     if(!t) return;
     if(t.dataset.path) track("path", t.dataset.path);
     else if(t.dataset.tab) track("tab", t.dataset.tab);

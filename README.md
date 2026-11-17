@@ -15,15 +15,16 @@ Settings → Pages → Source: **GitHub Actions**. Через минуту са�
 ```
 src/                    исходник лендинга — правки делать тут:
   page.html             разметка и стили
-  app.js                цены, контакты, подбор программы (QUIZ), сезон, форма
+  app.js                цены, контакты, подбор программы (QUIZ), форма
   maps.js               интерактивные карты дайв-сайтов (SITES: маршруты, точки, тексты RU/EN)
   intro.js              3D-анимация погружения при загрузке (WebGL, без библиотек)
+  sea.js                фон-море на скролл: рыбы, рифы, лучи; глубина = прокрутка (WebGL, без библиотек)
   backend.js            заявки и аналитика через Supabase (по желанию)
 public/vendor/air-datepicker-3.5.3.*   календарь дат в форме (Air Datepicker, MIT, из npm; тема в page.html)
 tools/build.py          собирает src/ → public/ (команда: python3 tools/build.py)
 public/                 сайт (кладётся на Cloudflare Pages как есть)
   index.html, app.js    лендинг; без настроек работает как сейчас (WhatsApp/Telegram)
-  config.js             3 публичных ключа, заполнить один раз
+  config.js             3 публичных ключа (заполнить один раз) и SEA_BACKGROUND: фон-море вкл/выкл
   admin/                админка: дашборд, заявки, цены, инвайты, пользователи, журнал
   join/                 регистрация по инвайту
   _headers              защитные заголовки (CSP, HSTS, запрет встраивания)

@@ -4,4 +4,5 @@ window.SITE_CONFIG = {
   SUPABASE_URL: "",          // e.g. "https://abcd1234.supabase.co"
   SUPABASE_ANON_KEY: "",     // Project Settings → API → anon public
   TURNSTILE_SITEKEY: "",     // Cloudflare → Turnstile → site key
+  SEA_BACKGROUND: true,      // live sea behind the page while scrolling (fish, reefs, sandy bottom); false = plain gradient
 };

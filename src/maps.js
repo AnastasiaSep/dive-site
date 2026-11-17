@@ -317,8 +317,15 @@ function playDiver(){
   mapAnim = requestAnimationFrame(step);
 }
 
-/* point-of-interest tooltip, positioned in the map box */
+/* point-of-interest tooltip, positioned in the map box.
+   Hover shows it; a click or tap pins it, and a second one on the same point closes it. */
+let tipOpen = -1, tipPinned = false;
+function togglePoiTip(i){
+  if(tipOpen === i && tipPinned){ hidePoiTip(); return; }
+  showPoiTip(i); tipPinned = true;
+}
 function showPoiTip(i){
+  tipOpen = i;
   const S = SITES[mapSite], p = S.pois[i], tip = $("m-tip"), box = $("site-map");
   tip.innerHTML = `<b>${esc(p[lang])}</b><span class="mono">${esc(p.d)}</span><p>${esc(p["n_" + lang])}</p>`;
   tip.hidden = false;
@@ -334,6 +341,7 @@ function showPoiTip(i){
   document.querySelectorAll("#site-pois [data-poi]").forEach(b => b.classList.toggle("hot", +b.dataset.poi === i));
 }
 function hidePoiTip(){
+  tipOpen = -1; tipPinned = false;
   const t = $("m-tip"); if(t) t.hidden = true;
   document.querySelectorAll(".m-poi.hot, #site-pois .hot").forEach(g => g.classList.remove("hot"));
 }
@@ -352,16 +360,16 @@ function hidePoiTip(){
   $("site-routes").addEventListener("click", e => { const b = e.target.closest("[data-route]"); if(b) setRoute(+b.dataset.route, true); });
   $("m-play").addEventListener("click", playDiver);
   $("site-svg").addEventListener("click", e => {
-    const p = e.target.closest(".m-poi"); if(p){ showPoiTip(+p.dataset.poi); return; }
+    const p = e.target.closest(".m-poi"); if(p){ togglePoiTip(+p.dataset.poi); return; }
     const r = e.target.closest(".m-route"); if(r){ setRoute(+r.dataset.route, true); return; }
     hidePoiTip();
   });
   $("site-svg").addEventListener("keydown", e => {
-    const p = e.target.closest(".m-poi"); if(p && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); showPoiTip(+p.dataset.poi); }
+    const p = e.target.closest(".m-poi"); if(p && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); togglePoiTip(+p.dataset.poi); }
   });
-  $("site-svg").addEventListener("pointerover", e => { const p = e.target.closest(".m-poi"); if(p && e.pointerType === "mouse") showPoiTip(+p.dataset.poi); });
-  $("site-svg").addEventListener("pointerout", e => { const p = e.target.closest(".m-poi"); if(p && e.pointerType === "mouse" && !p.contains(e.relatedTarget)) hidePoiTip(); });
-  $("site-pois").addEventListener("click", e => { const b = e.target.closest("[data-poi]"); if(b) showPoiTip(+b.dataset.poi); });
+  $("site-svg").addEventListener("pointerover", e => { const p = e.target.closest(".m-poi"); if(p && e.pointerType === "mouse" && !tipPinned) showPoiTip(+p.dataset.poi); });
+  $("site-svg").addEventListener("pointerout", e => { const p = e.target.closest(".m-poi"); if(p && e.pointerType === "mouse" && !tipPinned && !p.contains(e.relatedTarget)) hidePoiTip(); });
+  $("site-pois").addEventListener("click", e => { const b = e.target.closest("[data-poi]"); if(b) togglePoiTip(+b.dataset.poi); });
   document.addEventListener("click", e => { if(!e.target.closest("#site-map") && !e.target.closest("#site-pois")) hidePoiTip(); });
   addEventListener("resize", hidePoiTip);
   // swim the first route once when the map scrolls into view

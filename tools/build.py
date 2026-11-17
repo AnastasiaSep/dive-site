@@ -6,7 +6,7 @@ Usage: python3 tools/build.py"""
 import base64, pathlib, re
 R = pathlib.Path(__file__).resolve().parent.parent
 page = (R/"src/page.html").read_text()
-js = "\n".join((R/f"src/{n}.js").read_text() for n in ("intro", "app", "maps")) + "\napplyLang();\n\n" + (R/"src/backend.js").read_text()
+js = "\n".join((R/f"src/{n}.js").read_text() for n in ("intro", "sea", "app", "maps")) + "\napplyLang();\n\n" + (R/"src/backend.js").read_text()
 IMGS = {"HERO": "hero", "ME": "me", "CEMSM": "site-cemetery-sm", "CEM": "site-cemetery", "MADSM": "site-madonna-sm", "MAD": "site-madonna"}
 
 # 1) public/
