@@ -183,7 +183,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-uniform vec2 R;uniform float T;uniform float Y;uniform float D;uniform float M;uniform float C;uniform float F;
+uniform vec2 R;uniform float T;uniform float Y;uniform float D;uniform float M;uniform float C;uniform float F;uniform vec2 Q;
 float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
@@ -304,8 +304,10 @@ vec4 reef(vec2 uv,float z,float par,float seed,float edge,float floorH){
  return vec4(col,1.)*r.a;
 }
 void main(){
- vec2 uv=(gl_FragCoord.xy-.5*R)/R.y;
- float A=.5*R.x/R.y;
+ // Q.x = scene scale in pixels (stable viewport height), Q.y = pixel row of the viewport centre,
+ // so the scene stays put while the canvas itself is resized
+ vec2 uv=vec2(gl_FragCoord.x-.5*R.x,gl_FragCoord.y-Q.y)/Q.x;
+ float A=.5*R.x/Q.x;
  W=mix(vec3(.039,.2,.255),vec3(.016,.072,.1),smoothstep(0.,1.,D));
  vec3 col=W*(1.+.4*uv.y);
  // quieter in the column where the text sits
@@ -346,26 +348,30 @@ void main(){
   const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = {}; ["R","T","Y","D","M","C","F"].forEach(k => U[k] = gl.getUniformLocation(pr, k));
+  const U = {}; ["R","T","Y","D","M","C","F","Q"].forEach(k => U[k] = gl.getUniformLocation(pr, k));
 
   document.body.prepend(cv);
   document.body.classList.add("sea-on");
   const hero = document.querySelector(".hero");
 
   // a soft background does not need many pixels; slow devices get fewer still
-  // the mobile URL bar changes innerHeight while scrolling; keep the largest height for the
-  // current width so the scene neither rescales nor jumps (a new width, e.g. rotation, resets it)
-  let VW = 0, VH = 0;
+  // the mobile URL bar changes innerHeight while scrolling; the scene is scaled by the largest
+  // height seen for the current width, so it neither rescales nor jumps (a new width resets it).
+  // The canvas keeps EDGE px clear of the top and bottom of the viewport: iOS 26 Safari tints its
+  // toolbars from fixed elements touching those edges, and a full-screen canvas there turns into a
+  // dark band that photos then scroll over. The gaps sit under the browser bars.
+  const EDGE = 6;
+  let VW = 0, VH = 0, CH = 0, PX = 1;
   function view(){
     if(innerWidth !== VW){ VW = innerWidth; VH = innerHeight; } else VH = Math.max(VH, innerHeight);
-    cv.style.height = VH + "px";
+    CH = Math.max(1, innerHeight - 2 * EDGE);
+    cv.style.top = EDGE + "px"; cv.style.height = CH + "px";
   }
   let quality = 1, W = 0, H = 0;
   function size(){
     view();
-    const w = VW, h = VH;
-    const k = Math.min(1, (devicePixelRatio || 1) * .6, Math.sqrt(420000 * quality / (w * h)));
-    const cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+    PX = Math.min(1, (devicePixelRatio || 1) * .6, Math.sqrt(420000 * quality / (VW * VH)));
+    const cw = Math.max(1, Math.round(VW * PX)), ch = Math.max(1, Math.round(CH * PX));
     if(cw === W && ch === H) return;
     W = cv.width = cw; H = cv.height = ch;
     gl.viewport(0, 0, W, H);
@@ -415,6 +421,8 @@ void main(){
     if(still && !moved && !dirty) return;
     last = now; dirty = false;
     if(!still) t += dt;
+    // viewport centre in canvas pixels, counted from the canvas bottom
+    gl.uniform2f(U.Q, VH * PX, (CH + EDGE - VH / 2) * PX * H / (CH * PX));
     gl.uniform2f(U.R, W, H); gl.uniform1f(U.T, t); gl.uniform1f(U.Y, cam);
     gl.uniform1f(U.D, dep); gl.uniform1f(U.M, maxCam); gl.uniform1f(U.F, floorRun);
     gl.uniform1f(U.C, Math.min(1180, VW) / 2 / VH);
