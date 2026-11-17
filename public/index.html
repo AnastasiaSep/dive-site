@@ -7,261 +7,558 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>Dive Nha Trang with Nastya</title>
 <link rel="icon" href="data:,">
+<link rel="stylesheet" href="vendor/air-datepicker-3.5.3.css">
 <meta property="og:title" content="Dive Nha Trang with Nastya">
 <meta property="og:image" content="img/hero.webp">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<meta name="description" content="Scuba diving in Nha Trang with a Russian-speaking PADI Divemaster: first dives, fun dives and PADI courses.">
+<meta name="description" content="Scuba diving in Nha Trang with Nastya, a Russian- and English-speaking PADI Divemaster: first dives, fun dives and PADI courses.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Dark by design: the page reads like a dive computer at depth. One accent (computer cyan), one warning colour, numbers in mono. */
 :root{
-  --bg:#061217; --bg2:#0a1a21; --raise:#0f242d; --line:#1b3640; --line2:#2a4d58;
-  --fg:#e7f0ef; --muted:#93acb0; --dim:#7b959a;
-  --accent:#5fe3c9; --accent-ink:#03201a; --warn:#f1d05c; --rain:#4f6a72;
-  --sea:#0c2a33; --land:#16313a; --land-line:#2b4f5a;
-  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#04121a; --bg2:#06202b; --card:#0a2733; --card2:#0d3240; --line:#163c49; --line2:#245566;
+  --fg:#eef8f7; --muted:#a7c2c6; --dim:#83a2a8;
+  --aqua:#5fe3c9; --aqua-ink:#03201a; --coral:#ff7a59; --coral-2:#ff9475; --coral-ink:#2b0a02; --sun:#ffc94a; --rain:#4a6872;
+  --f-head:"Unbounded","Manrope",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --f-data:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:22px; --pad:max(20px,env(safe-area-inset-left,0px));
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html.intro-lock{overflow:hidden}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{background:var(--bg);color:var(--fg);font:400 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+body{background:var(--bg);color:var(--fg);font:500 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:clip}
+/* the page gets darker the deeper you scroll, like the water column */
+.ocean{background:linear-gradient(180deg,#0a3341 0%,#072634 18%,#05202b 40%,#041824 65%,#030f16 100%)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
 body[data-lang="ru"] .en, body[data-lang="en"] .ru{display:none!important}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.02em;line-height:1.08;text-wrap:balance}
-h1{font-size:clamp(2.3rem,6.4vw,4.6rem)}
-h2{font-size:clamp(1.7rem,3.6vw,2.6rem)}
-h3{font-size:1.08rem;letter-spacing:-.01em;line-height:1.3}
+.wrap{max-width:1180px;margin:0 auto;padding-left:var(--pad);padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.1;text-wrap:balance}
+h1,h2{font-family:var(--f-head);letter-spacing:-.02em}
+h1{font-size:clamp(2.2rem,5.6vw,4.4rem);font-weight:600}
+h2{font-size:clamp(1.65rem,3.4vw,2.7rem)}
+h3{font-size:1.18rem;letter-spacing:-.01em;line-height:1.3}
 p{margin:0}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-.label{font:500 .74rem/1 var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.label b{color:var(--accent);font-weight:500}
-.muted{color:var(--muted)}
+img,video{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:6px}
 .mono{font-family:var(--f-data)}
+.muted{color:var(--muted)}
+.eyebrow{font:600 .95rem/1.4 var(--f-body);color:var(--aqua)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:700 1rem/1.2 var(--f-body);text-decoration:none;border-radius:999px;padding:15px 26px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--fg);cursor:pointer;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s;text-align:center}
+.btn:hover{border-color:var(--fg);transform:translateY(-1px)}
+.btn svg{flex:none}
+.btn.primary{background:var(--coral);border-color:var(--coral);color:var(--coral-ink);box-shadow:0 10px 30px -10px rgba(255,122,89,.7)}
+.btn.primary:hover{background:var(--coral-2);box-shadow:0 14px 34px -10px rgba(255,122,89,.85)}
+.btn.aqua{background:var(--aqua);border-color:var(--aqua);color:var(--aqua-ink)}
+.btn.sm{padding:10px 18px;font-size:.9rem}
+.btn:disabled{opacity:.6;cursor:wait}
 
-/* top bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.bar .wrap{display:flex;align-items:center;gap:28px;height:60px}
-.logo{font:600 1rem var(--f-body);text-decoration:none;letter-spacing:-.01em;margin-right:auto}
-.logo i{font-style:normal;color:var(--accent)}
-.nav{display:flex;gap:24px;font-size:.92rem}
-.nav a{text-decoration:none;color:var(--muted)}
+/* ===== intro ===== */
+#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(120% 90% at 50% 0%,#2a7f95 0%,#0b3a4c 45%,#04121a 100%);display:grid;place-items:center;transition:opacity .85s ease,visibility .85s;animation:introSafe .6s 7s forwards}
+#intro.out{opacity:0;visibility:hidden;pointer-events:none}
+#intro canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.intro-ui{position:relative;text-align:center;color:#fff;text-shadow:0 2px 20px rgba(0,20,30,.5);pointer-events:none}
+.intro-logo{font:600 clamp(1.6rem,4vw,2.6rem) var(--f-head);letter-spacing:-.02em;opacity:calc(.25 + var(--p,0) * 3)}
+.intro-logo i{font-style:normal;color:var(--aqua)}
+.intro-depth{margin-top:14px;font:500 clamp(2.6rem,9vw,5.5rem)/1 var(--f-data);letter-spacing:-.04em}
+.intro-depth small{font-size:.38em;margin-left:6px;opacity:.7}
+.intro-cap{margin-top:12px;font:500 .78rem var(--f-data);letter-spacing:.3em;text-transform:uppercase;opacity:.8;min-height:1em}
+#intro-skip{position:absolute;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));background:rgba(4,18,26,.45);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:10px 18px;font:500 .8rem var(--f-data);letter-spacing:.1em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@keyframes introSafe{to{opacity:0;visibility:hidden;pointer-events:none}}
+@media (prefers-reduced-motion:reduce){#intro{display:none}}
+
+/* ===== top bar ===== */
+.bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:30;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.bar.solid{background:rgba(4,18,26,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:26px;height:68px}
+.logo{font:600 1.05rem var(--f-head);text-decoration:none;letter-spacing:-.02em;margin-right:auto;white-space:nowrap}
+.logo i{font-style:normal;color:var(--aqua)}
+.nav{display:flex;gap:22px;font-size:.93rem;font-weight:600}
+.nav a{text-decoration:none;color:var(--muted);transition:color .15s}
 .nav a:hover{color:var(--fg)}
-.langs{display:flex;gap:2px;font:500 .78rem var(--f-data)}
-.langs button{background:none;border:0;color:var(--dim);padding:6px 8px;cursor:pointer;font:inherit;letter-spacing:.06em}
-.langs button[aria-pressed="true"]{color:var(--fg);box-shadow:inset 0 -2px 0 var(--accent)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:600 .98rem var(--f-body);text-decoration:none;border-radius:999px;padding:14px 24px;border:1px solid var(--line2);background:none;color:var(--fg);cursor:pointer;transition:background .15s,border-color .15s}
-.btn:hover{border-color:var(--fg)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn.primary:hover{background:#86ecd8}
-.btn.sm{padding:9px 16px;font-size:.88rem}
+.langs{display:flex;gap:2px;font:500 .78rem var(--f-data);background:rgba(255,255,255,.06);border-radius:999px;padding:3px}
+.langs button{background:none;border:0;color:var(--muted);padding:6px 10px;cursor:pointer;font:inherit;letter-spacing:.06em;border-radius:999px}
+.langs button[aria-pressed="true"]{color:var(--aqua-ink);background:var(--aqua)}
 
-/* hero */
-.hero{position:relative;min-height:min(92vh,860px);display:grid;align-items:end;overflow:hidden;isolation:isolate}
-.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,18,23,.15) 0%,rgba(6,18,23,.35) 40%,rgba(6,18,23,.92) 78%,var(--bg) 100%)}
-.hero .wrap{padding-block:120px 48px;width:100%}
-.hero h1{max-width:15ch;margin-top:18px}
-.hero .lead{font-size:clamp(1.05rem,1.6vw,1.22rem);color:#c9d9d8;max-width:46ch;margin-top:20px}
+/* ===== hero ===== */
+.hero{position:relative;min-height:100svh;display:grid;align-items:end;overflow:hidden;isolation:isolate}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-3;transform:scale(1.08);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
+.intro-done .hero>img{transform:scale(1)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(4,18,26,.55) 0%,rgba(4,18,26,.1) 30%,rgba(4,18,26,.35) 55%,rgba(7,38,52,.95) 86%,#0a3341 100%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 50% at 15% 85%,rgba(4,18,26,.65),transparent 70%)}
+.hero .wrap{width:100%;padding-top:120px;padding-bottom:56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,330px);gap:48px;align-items:end}
+.hero h1{max-width:13ch;margin-top:18px;text-shadow:0 2px 30px rgba(0,20,30,.35)}
+.hero h1 em{font-style:normal;color:var(--aqua)}
+.hero .lead{font-size:clamp(1.05rem,1.5vw,1.2rem);color:#d7e8e7;max-width:48ch;margin-top:22px}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.readout{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:56px;border-top:1px solid color-mix(in srgb,var(--fg) 22%,transparent)}
-.readout div{padding:16px 16px 0 0}
-.readout div+div{padding-left:18px;border-left:1px solid color-mix(in srgb,var(--fg) 14%,transparent)}
-.readout b{display:block;font:500 clamp(1.3rem,2.4vw,1.9rem)/1.1 var(--f-data);letter-spacing:-.02em;margin-top:8px}
-.readout b small{font-size:.55em;color:var(--muted);margin-left:3px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px;padding:0;list-style:none}
+.chips li{font:500 .82rem var(--f-data);padding:8px 12px;border-radius:999px;background:rgba(4,18,26,.5);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);white-space:nowrap}
+.chips b{color:var(--aqua);font-weight:500}
+.hi{background:rgba(6,30,40,.72);border:1px solid rgba(255,255,255,.14);border-radius:var(--r);padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.hi-top{display:flex;gap:14px;align-items:center}
+.hi img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 30%;border:2px solid var(--aqua)}
+.hi b{display:block;font-size:1.05rem}
+.hi small{color:var(--muted);font-size:.86rem}
+.hi p{margin-top:14px;color:#d7e8e7;font-size:.96rem;line-height:1.5}
+.hi .btn{width:100%;margin-top:16px}
+.hi .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3ddc84;margin-right:6px;box-shadow:0 0 0 3px rgba(61,220,132,.25)}
+.reveal-h>*{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.intro-done .reveal-h>*{opacity:1;transform:none}
+.intro-done .reveal-h>*:nth-child(2){transition-delay:.08s}.intro-done .reveal-h>*:nth-child(3){transition-delay:.16s}
+.intro-done .reveal-h>*:nth-child(4){transition-delay:.24s}.intro-done .reveal-h>*:nth-child(5){transition-delay:.32s}
+.scroll-cue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:24px;height:38px;border:2px solid rgba(255,255,255,.4);border-radius:14px}
+.scroll-cue::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:cue 1.8s infinite}
+@keyframes cue{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 
-section.block{scroll-margin-top:60px;padding-block:clamp(72px,10vw,128px)}
-section.alt{background:var(--bg2)}
-.head{display:grid;gap:16px;margin-bottom:clamp(36px,5vw,56px);max-width:760px}
-.head p.sub{color:var(--muted);font-size:1.06rem;max-width:56ch}
+/* ===== depth gauge on the side ===== */
+.gauge{position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:20;display:grid;justify-items:center;gap:10px;opacity:0;transition:opacity .4s;pointer-events:none}
+.gauge.on{opacity:1}
+.gauge .g-bar{width:2px;height:180px;background:rgba(255,255,255,.12);border-radius:2px;position:relative;overflow:hidden}
+.gauge .g-bar i{position:absolute;left:0;right:0;top:0;height:var(--g,0%);background:linear-gradient(var(--aqua),#2aa3c2)}
+.gauge b{font:500 .75rem var(--f-data);color:var(--aqua);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.1em}
+@media (max-width:1300px){.gauge{display:none}}
 
-/* where to start */
-.paths{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
-.path{all:unset;box-sizing:border-box;color:var(--fg);display:grid;gap:12px;align-content:start;padding:28px 28px 30px 0;cursor:pointer;border-bottom:1px solid var(--line);position:relative}
-.path+.path{padding-left:28px;border-left:1px solid var(--line)}
-.path::before{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
-.path:hover::before,.path[aria-pressed="true"]::before{transform:scaleX(1)}
-.path:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.path .n{font:500 .8rem var(--f-data);color:var(--dim)}
-.path b{font-size:1.4rem;font-weight:600;letter-spacing:-.015em;line-height:1.2}
-.path span{color:var(--muted)}
-.path em{font:500 .95rem var(--f-data);font-style:normal;color:var(--accent);margin-top:6px}
-.levels{margin-top:56px}
-.levels .label{display:block;margin-bottom:18px}
-.levels svg{display:block;width:100%;height:auto}
-.levels .scroll{overflow-x:auto}
-.levels .scroll svg{min-width:520px}
+/* ===== sections ===== */
+section.block{scroll-margin-top:68px;padding-block:clamp(72px,9vw,120px);position:relative}
+.head{display:grid;gap:14px;margin-bottom:clamp(32px,4.5vw,52px);max-width:780px}
+.head p.sub{color:var(--muted);font-size:1.08rem;max-width:58ch}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal,.reveal-h>*{opacity:1!important;transform:none!important;transition:none!important}}
 
-/* prices */
-.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tabs button{background:none;border:0;color:var(--muted);font:500 .98rem var(--f-body);padding:14px 16px 16px;cursor:pointer;white-space:nowrap;box-shadow:inset 0 -2px 0 transparent}
-.tabs button:first-child{padding-left:0}
-.tabs button[aria-selected="true"]{color:var(--fg);box-shadow:inset 0 -2px 0 var(--accent)}
-.plist{display:grid}
-.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 32px;padding:26px 0;border-bottom:1px solid var(--line);align-items:start}
+/* ===== quiz: one card, questions then the answer ===== */
+.quiz{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:28px;padding:clamp(22px,3.4vw,40px);position:relative;overflow:hidden}
+.quiz::after{content:"";position:absolute;right:-90px;top:-90px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(95,227,201,.14),transparent 70%);pointer-events:none}
+.q-top{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.q-step{font:600 .88rem var(--f-body);color:var(--muted);white-space:nowrap}
+.q-prog{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+.q-prog i{display:block;height:100%;width:33%;border-radius:4px;background:linear-gradient(90deg,var(--aqua),#2aa3c2);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.q-title{font:600 clamp(1.3rem,2.4vw,1.7rem)/1.2 var(--f-head)}
+.q-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:22px}
+.q-opts:has(> :nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+.q-opt{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 18px;border-radius:18px;border:1px solid var(--line2);background:rgba(4,18,26,.35);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.q-opt:hover{border-color:var(--aqua);background:rgba(95,227,201,.07);transform:translateY(-2px)}
+.q-opt:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+.q-opt .ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(95,227,201,.12);color:var(--aqua);font:600 .9rem var(--f-body)}
+.q-opt b{display:block;font-size:1.04rem;line-height:1.3}
+.q-opt small{display:block;color:var(--muted);font-size:.88rem;margin-top:3px;line-height:1.4}
+.q-opt i{font-style:normal;color:var(--dim);transition:transform .2s,color .2s}
+.q-opt:hover i{color:var(--aqua);transform:translateX(3px)}
+.q-link{all:unset;cursor:pointer;color:var(--muted);font-size:.94rem;font-weight:600;margin-top:18px;display:inline-block;padding:4px 0}
+.q-link:hover{color:var(--fg)}
+.q-link:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
+.q-result{animation:qIn .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes qIn{from{opacity:0;transform:translateY(10px)}}
+.q-ans{color:var(--dim);font-size:.9rem}
+.q-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 24px;margin-top:14px}
+.q-tag{display:inline-block;font:700 .78rem var(--f-body);color:var(--coral-ink);background:var(--coral);padding:5px 11px;border-radius:999px}
+.q-head h3{font:600 clamp(1.35rem,2.6vw,1.9rem)/1.2 var(--f-head);margin-top:12px}
+.q-price{font:500 clamp(2rem,4vw,2.8rem)/1 var(--f-data);letter-spacing:-.04em;white-space:nowrap}
+.q-price small{font-size:.35em;color:var(--muted);letter-spacing:0;margin-left:8px}
+.q-why{margin-top:16px;color:#d7e8e7;max-width:62ch;font-size:1.04rem}
+.q-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;padding:0;list-style:none}
+.q-meta li{font-size:.86rem;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--muted)}
+.q-act{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:26px}
+.q-act .q-link{margin:0 0 0 auto}
+
+/* ===== prices ===== */
+.cats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.cats button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:4px;padding:16px 18px;border-radius:18px;border:1px solid var(--line);background:var(--card);min-width:0;transition:border-color .2s,background .2s}
+.cats button:hover{border-color:var(--line2);background:var(--card2)}
+.cats button:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+.cats button[aria-selected="true"]{border-color:var(--aqua);background:linear-gradient(160deg,rgba(95,227,201,.16),var(--card2));box-shadow:inset 0 -3px 0 var(--aqua)}
+.cats b{font-size:1.02rem;line-height:1.25}
+.cats small{color:var(--muted);font-size:.84rem}
+.cats button[aria-selected="true"] small{color:var(--aqua)}
+.plist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:26px}
+.item{display:grid;grid-template-rows:auto auto 1fr auto;gap:10px;padding:24px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);transition:border-color .2s,transform .2s;min-width:0}
+.item:hover{border-color:var(--line2);transform:translateY(-2px)}
+.item.rec{border-color:rgba(255,122,89,.55);background:linear-gradient(160deg,rgba(255,122,89,.1),var(--card) 55%)}
 .item .name{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px}
-.item h3{font-size:1.25rem}
-.item .rec{font:500 .7rem var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);padding:4px 8px;border-radius:4px}
-.item .meta{font:400 .82rem var(--f-data);color:var(--dim);letter-spacing:.02em}
-.item p{color:var(--muted);max-width:62ch;grid-column:1}
-.item .right{grid-row:1/span 3;grid-column:2;display:grid;justify-items:end;gap:12px}
+.item h3{font-size:1.22rem}
+.item .badge{font:700 .74rem var(--f-body);color:var(--coral-ink);background:var(--coral);padding:4px 9px;border-radius:999px}
+.item .meta{font:400 .82rem var(--f-data);color:var(--dim)}
+.item p{color:var(--muted);font-size:.97rem}
+.item .row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;padding-top:16px;border-top:1px solid var(--line)}
 .item .price{font:500 1.7rem/1 var(--f-data);letter-spacing:-.03em;white-space:nowrap}
-.item .price small{display:block;text-align:right;font-size:.42em;color:var(--dim);letter-spacing:0;margin-top:6px}
+.item .price small{font-size:.45em;color:var(--dim);letter-spacing:0;margin-left:6px}
 .term{all:unset;cursor:help;border-bottom:1px dashed var(--line2);transition:border-color .15s}
-.term:hover{border-color:var(--accent)}
-.term:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.hint{font-size:.9rem;color:var(--dim);margin-top:14px}
-.incl{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:28px;font-size:.95rem;color:var(--muted)}
-.incl span::before{content:"+ ";color:var(--accent);font-family:var(--f-data)}
-.spec{margin-top:26px;border:1px solid var(--line);border-radius:14px;padding:18px 22px}
-.spec summary{cursor:pointer;font-weight:500}
+.term:hover{border-color:var(--aqua)}
+.term:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
+.hint{font-size:.9rem;color:var(--dim);margin-top:16px}
+.spec{margin-top:22px;border:1px solid var(--line);border-radius:var(--r);padding:18px 22px;background:var(--card)}
+.spec summary{cursor:pointer;font-weight:600}
 .spec .tw{overflow-x:auto}
 .spec table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.94rem}
 .spec td{padding:9px 0;border-bottom:1px solid var(--line)}
-.spec td:last-child{text-align:right;font-family:var(--f-data);white-space:nowrap}
+.spec td:last-child{text-align:right;font-family:var(--f-data);white-space:nowrap;padding-left:12px}
+.small{font-size:.88rem;color:var(--dim)}
 
-/* the day */
-.timeline{display:grid;border-top:1px solid var(--line)}
-.step{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--line)}
-.step .t{font:500 1.15rem var(--f-data);color:var(--accent)}
+/* ===== the day ===== */
+.day{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:clamp(28px,5vw,64px);align-items:start}
+.timeline{list-style:none;margin:0;padding:0;display:grid;position:relative}
+.timeline::before{content:"";position:absolute;left:103px;top:14px;bottom:14px;width:2px;background:linear-gradient(var(--sun),var(--aqua) 40%,#2a7ea0)}
+.step{display:grid;grid-template-columns:104px minmax(0,1fr);gap:18px;padding:16px 0;position:relative}
+.step .t{font:500 1.05rem var(--f-data);color:var(--fg);text-align:right;padding-right:30px;position:relative}
+.step .t::after{content:"";position:absolute;right:-6px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bg2);border:2px solid var(--aqua)}
+.step:first-child .t::after{border-color:var(--sun)}
 .step p{color:var(--muted);margin-top:4px}
+.day figure{margin:0;border-radius:var(--r);overflow:hidden;position:relative}
+.day figure img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.day figcaption{position:absolute;left:14px;right:14px;bottom:14px;padding:10px 14px;border-radius:14px;background:rgba(4,18,26,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:.9rem}
 
-/* about */
-.about{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,6vw,80px);align-items:center}
-.about img{width:100%;max-width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:18px;display:block}
-.about .facts{display:grid;margin-top:30px;border-top:1px solid var(--line)}
-.about .facts div{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
-.about .facts b{font:500 1rem var(--f-data);color:var(--accent)}
-.about .facts span{color:var(--muted)}
+/* ===== dive sites ===== */
+.sites-panel{background:linear-gradient(170deg,rgba(13,50,64,.75),rgba(10,39,51,.6));border:1px solid var(--line);border-radius:28px;padding:10px;display:grid;gap:10px}
+.site-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:20px;background:rgba(4,18,26,.45)}
+.site-tabs button{all:unset;box-sizing:border-box;cursor:pointer;padding:11px 16px;border-radius:16px;display:grid;gap:1px;align-content:center;min-width:0;text-align:center;transition:background .2s,color .2s;color:var(--muted)}
+.site-tabs button:hover{color:var(--fg);background:rgba(255,255,255,.04)}
+.site-tabs button:focus-visible{outline:2px solid var(--aqua);outline-offset:-2px}
+.site-tabs button[aria-selected="true"]{background:var(--card2);color:var(--fg);box-shadow:0 0 0 1px var(--line2)}
+.site-tabs b{font:600 .98rem var(--f-head)}
+.site-tabs small{font-size:.8rem;color:var(--dim)}
+.site-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:10px;align-items:start}
+.site-main{min-width:0}
+.site-map{position:relative;border-radius:20px;overflow:hidden;background:#062338;container-type:inline-size;container-name:map}
+.m-scroll{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+.m-scroll::-webkit-scrollbar{display:none}
+#site-svg{display:block;width:100%;height:auto;aspect-ratio:1000/625;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.m-caus{animation:caus 14s linear infinite}
+@keyframes caus{to{transform:translate(140px,140px)}}
+.m-depth{font:600 24px var(--f-data);fill:#fff;fill-opacity:.28;letter-spacing:-.5px}
+.m-route path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.m-route .m-hit{stroke:transparent;stroke-width:26;cursor:pointer}
+.m-route .m-glow{stroke:var(--rc);stroke-width:12;opacity:0;transition:opacity .3s}
+.m-route .m-line{stroke:var(--rc);stroke-width:4;opacity:.35;stroke-dasharray:2 10;transition:opacity .3s}
+.m-route.on .m-glow{opacity:.18}
+.m-route.on .m-line{opacity:1;stroke-width:5}
+.m-route:not(.on):hover .m-line{opacity:.7}
+.m-poi{cursor:pointer;outline:none}
+.m-poi-hit{fill:transparent}
+.m-poi>*:not(.m-poi-hit):not(.m-tag):not(.m-num){transition:transform .2s}
+.m-poi:hover>*:not(.m-poi-hit):not(.m-tag):not(.m-num),.m-poi.hot>*:not(.m-poi-hit):not(.m-tag):not(.m-num),.m-poi:focus-visible>*:not(.m-poi-hit):not(.m-tag):not(.m-num){transform:scale(1.25)}
+.m-poi:focus-visible .m-poi-hit{stroke:var(--aqua);stroke-width:2}
+.m-tag text{font:600 15px var(--f-body);fill:#fff;paint-order:stroke;stroke:#04161f;stroke-width:4px;stroke-linejoin:round}
+.m-tag tspan{font:500 13px var(--f-data);fill:#bff6ea}
+.m-num{display:none}
+.m-num circle{fill:var(--aqua);stroke:#04161f;stroke-width:2}
+.m-num text{font:700 11px var(--f-data);fill:#04161f;text-anchor:middle}
+.m-n{font:700 13px var(--f-data);fill:#fff;text-anchor:middle}
+.m-current text{font:600 15px var(--f-data);fill:#7fd8ff;text-transform:uppercase;letter-spacing:2px}
+.m-diver{pointer-events:none}
+.m-diver .m-dot{fill:#fff;stroke:var(--rc,#fff);stroke-width:4}
+.m-diver .m-pulse{fill:var(--rc,#fff);opacity:.3;transform-origin:0 0;animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.4);opacity:.5}100%{transform:scale(1.4);opacity:0}}
+@container map (max-width:620px){#site-svg{width:640px;max-width:none}.m-tag{display:none}.m-num{display:inline}.m-depth{font-size:30px}.m-current text{font-size:22px}}
+.m-hud{position:absolute;left:10px;bottom:10px;display:flex;gap:14px;align-items:center;padding:6px 14px 6px 6px;border-radius:14px;background:rgba(4,18,26,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);font:500 .8rem var(--f-data);max-width:calc(100% - 20px)}
+.m-read{display:grid;line-height:1.15}
+.m-hud small{color:var(--dim);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase}
+.m-hud b{font-weight:500;font-size:1rem;white-space:nowrap}
+.m-hud #m-route-name{font:600 .82rem var(--f-body);max-width:16ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-play{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:10px;background:var(--aqua);color:var(--aqua-ink);font:700 .84rem var(--f-body);white-space:nowrap}
+.m-play:hover{background:#86ecd8}
+.m-play:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.playing .m-play{opacity:.6}
+#m-tip{position:absolute;z-index:3;width:min(260px,calc(100% - 16px));padding:12px 14px;border-radius:14px;background:rgba(4,18,26,.94);border:1px solid var(--line2);box-shadow:0 18px 40px rgba(0,0,0,.45);pointer-events:none}
+#m-tip b{display:block;font-size:.98rem}
+#m-tip .mono{font-size:.8rem;color:var(--aqua)}
+#m-tip p{margin-top:6px;color:var(--muted);font-size:.88rem;line-height:1.45}
+.m-side{min-width:0;padding:14px;border-radius:20px;background:rgba(4,18,26,.35)}
+.m-h{font:600 .86rem var(--f-body);color:var(--muted);margin:2px 4px 10px}
+.m-rt-w{border-radius:14px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.m-rt-w+.m-rt-w{margin-top:4px}
+.m-rt-w.on{border-color:color-mix(in srgb,var(--rc) 55%,transparent);background:rgba(255,255,255,.04)}
+.m-rt{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;width:100%;padding:11px 12px;border-radius:14px;cursor:pointer}
+.m-rt-w:not(.on) .m-rt:hover{background:rgba(255,255,255,.04)}
+.m-rt:focus-visible{outline:2px solid var(--aqua)}
+.m-sw{width:12px;height:12px;border-radius:50%;background:var(--rc);box-shadow:0 0 0 4px color-mix(in srgb,var(--rc) 22%,transparent)}
+.m-rt b{display:block;font-size:.98rem}
+.m-rt small{display:block;color:var(--muted);font:400 .76rem var(--f-data);margin-top:2px}
+.m-steps{margin:0;padding:0 14px 14px 42px;color:var(--muted);font-size:.9rem;display:grid;gap:6px}
+.m-steps li::marker{color:var(--rc);font-family:var(--f-data)}
+.m-hint{font-size:.86rem;color:var(--dim);margin:12px 4px 0}
+.m-pois{list-style:none;margin:10px 0 4px;padding:0 4px;display:flex;flex-wrap:wrap;gap:6px}
+.m-pois button{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:5px 11px 5px 5px;border-radius:999px;background:rgba(4,18,26,.4);border:1px solid var(--line);font-size:.86rem;max-width:100%}
+.m-pois button:hover,.m-pois button.hot{border-color:var(--aqua)}
+.m-pois button:focus-visible{outline:2px solid var(--aqua)}
+.m-pois em{font:400 .76rem var(--f-data);font-style:normal;color:var(--dim)}
+@media (min-width:1061px){.m-pois{display:none}}
+.m-pn{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--aqua);color:#04161f;font:700 .7rem var(--f-data);flex:none}
+.site-info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);margin:4px 6px 0}
+.site-info details{padding:18px 18px 10px;min-width:0}
+.site-info details+details{border-left:1px solid var(--line)}
+.site-info summary{list-style:none;font:600 .92rem var(--f-body);color:var(--aqua);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.site-info summary::-webkit-details-marker{display:none}
+@media (min-width:701px){.site-info summary{pointer-events:none}}
+.site-info dl{margin:0;display:grid}
+.site-info dl div{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.site-info dl div:last-child{border-bottom:0}
+.site-info dt{color:var(--dim)}
+.site-info dd{margin:0}
+.site-info ul{margin:0;padding:0;list-style:none;display:grid;gap:7px;font-size:.92rem;color:#d7e8e7}
+.site-info li{padding-left:18px;position:relative}
+.site-info li::before{content:"";position:absolute;left:2px;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--aqua)}
+.site-info ul.warn li::before{background:var(--sun)}
 
-/* season */
-.season{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;align-items:end;height:200px}
-.m{display:grid;grid-template-rows:1fr auto auto;gap:8px;height:100%;text-align:center}
-.m i{align-self:end;display:block;border-radius:4px 4px 0 0}
-.m.good i{height:100%;background:var(--accent)}
-.m.ok i{height:62%;background:var(--warn)}
+/* ===== moments ===== */
+.moments{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:200px;gap:14px}
+.mo{margin:0;position:relative;border-radius:var(--r);overflow:hidden;background:var(--card);min-width:0}
+.mo img,.mo video{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.mo:hover img{transform:scale(1.04)}
+.mo figcaption{position:absolute;left:10px;bottom:10px;right:10px;font-size:.84rem;padding:7px 11px;border-radius:12px;background:rgba(4,18,26,.68);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);width:max-content;max-width:calc(100% - 20px);pointer-events:none}
+.mo.tall{grid-row:span 2}
+.mo.wide{grid-column:span 2}
+.mo .play{position:absolute;inset:0;margin:auto;width:62px;height:62px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#04161f;display:grid;place-items:center;cursor:pointer;transition:transform .2s}
+.mo .play:hover{transform:scale(1.08)}
+.mo.on .play{display:none}
+
+/* ===== about ===== */
+.about{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(32px,6vw,80px);align-items:center}
+.about .ph{position:relative}
+.about .ph img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:28px}
+.about .ph .ph2{position:absolute;right:-18px;bottom:-22px;width:46%;aspect-ratio:16/10;border-radius:18px;border:4px solid var(--bg2);object-position:40% 30%}
+.about blockquote{margin:22px 0 0;font-size:1.12rem;color:#d7e8e7;max-width:56ch}
+.about blockquote p+p{margin-top:12px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px}
+.facts div{padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line);min-width:0}
+.facts b{display:block;font:500 1.5rem var(--f-data);color:var(--aqua);letter-spacing:-.02em}
+.facts span{color:var(--muted);font-size:.88rem;line-height:1.4;display:block;margin-top:4px}
+.certs{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;padding:0;list-style:none}
+.certs li{font:500 .78rem var(--f-data);padding:6px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+
+/* ===== season ===== */
+.season{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;align-items:end;height:220px}
+.m{display:grid;grid-template-rows:minmax(0,1fr) auto 2.4em;gap:8px;height:100%;text-align:center;position:relative;min-width:0}
+.m i{align-self:end;display:block;border-radius:8px 8px 3px 3px;transition:height .9s cubic-bezier(.2,.7,.2,1)}
+.m.good i{height:100%;background:linear-gradient(var(--aqua),#2aa3a0)}
+.m.ok i{height:62%;background:linear-gradient(var(--sun),#c99a2e)}
 .m.rough i{height:28%;background:var(--rain)}
-.m span{font:500 .78rem var(--f-data);color:var(--fg)}
-.m small{font-size:.72rem;color:var(--dim);line-height:1.2}
-.fly{margin-top:36px;padding:18px 22px;border-left:2px solid var(--warn);background:var(--raise);border-radius:0 12px 12px 0;color:var(--muted);max-width:720px}
-.fly b{color:var(--fg);font-weight:500}
+.m span{font:500 .8rem var(--f-data);color:var(--fg)}
+.m small{font-size:.72rem;color:var(--dim);line-height:1.2;overflow-wrap:anywhere;align-self:start}
+.m.now span{color:var(--coral)}
+.m.now i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--coral)}
+.m.now small{color:var(--coral)}
+.fly{margin-top:40px;padding:18px 22px;border-radius:18px;border:1px solid rgba(255,201,74,.35);background:rgba(255,201,74,.06);color:var(--muted);max-width:760px}
+.fly b{color:var(--fg)}
 
-/* faq */
-.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 56px}
-.fgroup .label{display:block;padding-bottom:14px;border-bottom:1px solid var(--line)}
+/* ===== faq ===== */
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 48px}
+.fgroup h3{font:500 .78rem var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--aqua);padding-bottom:14px;border-bottom:1px solid var(--line)}
 details.q{border-bottom:1px solid var(--line)}
-details.q summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;padding:20px 0;font-weight:500;font-size:1.05rem}
+details.q summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;padding:20px 0;font-weight:600;font-size:1.04rem}
 details.q summary::-webkit-details-marker{display:none}
-details.q summary::after{content:"+";font:400 1.3rem/1 var(--f-data);color:var(--accent);transition:transform .2s}
+details.q summary::after{content:"+";font:400 1.4rem/1 var(--f-data);color:var(--aqua);transition:transform .25s;flex:none}
 details.q[open] summary::after{transform:rotate(45deg)}
 details.q p{color:var(--muted);padding:0 32px 22px 0}
 
-/* booking */
-.book{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,6vw,72px);align-items:start}
-form{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px}
-label{display:grid;gap:8px;font:500 .74rem var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-label.full{grid-column:1/-1}
-label.chk{display:flex;align-items:center;gap:12px;font:400 1rem var(--f-body);letter-spacing:0;text-transform:none;color:var(--fg);cursor:pointer}
-label.chk input{width:20px;height:20px;accent-color:var(--accent);margin:0}
-input,select,textarea{font:400 1rem var(--f-body);color:var(--fg);background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:13px 14px;width:100%;min-width:0;letter-spacing:0;text-transform:none}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
-select option{background:var(--raise)}
-textarea{min-height:96px;resize:vertical}
-.out{grid-column:1/-1;display:grid;gap:12px;margin-top:6px}
-.msg{font:400 .86rem/1.6 var(--f-data);white-space:pre-wrap;background:var(--bg2);border:1px dashed var(--line2);border-radius:12px;padding:16px;color:var(--muted)}
-.send{display:flex;flex-wrap:wrap;gap:10px}
-.small{font-size:.86rem;color:var(--dim)}
-.toast{font-size:.9rem;color:var(--accent);min-height:1.2em}
-.leadbox{display:grid;gap:12px;margin-top:10px;padding-top:20px;border-top:1px solid var(--line)}
-.next{margin:0;padding:0;list-style:none;display:grid;border-top:1px solid var(--line)}
-.next li{display:grid;grid-template-columns:40px 1fr;padding:16px 0;border-bottom:1px solid var(--line);color:var(--muted)}
-.next li b{font:500 .9rem var(--f-data);color:var(--accent)}
-.contacts{display:grid;margin-top:32px}
-.contact{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid var(--line);text-decoration:none}
-.contact span{color:var(--dim);font:500 .74rem var(--f-data);letter-spacing:.1em;text-transform:uppercase}
-.contact b{font:500 1.05rem var(--f-data);word-break:break-all}
-a.contact:hover b{color:var(--accent)}
-footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;padding-block:28px 40px}
+/* ===== booking ===== */
+.book{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,4vw,48px);align-items:start}
+.formcard{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:28px;padding:clamp(20px,3vw,32px)}
+form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 14px}
+label{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;font:600 .82rem var(--f-body);color:var(--muted);min-width:0}
+label.full,.fld.full{grid-column:1/-1}
+.fld{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;min-width:0}
+.lbl{font:600 .82rem var(--f-body);color:var(--muted)}
+.pk{position:relative}
+.pk select{position:absolute;inset:0;opacity:0;pointer-events:none;width:100%}
+.pk-btn{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;cursor:pointer;background:rgba(4,18,26,.55);border:1px solid var(--line2);border-radius:14px;padding:12px 14px;min-height:50px;transition:border-color .2s,box-shadow .2s}
+.pk-btn:hover{border-color:#3a7486}
+.pk-btn:focus-visible,.pk.open .pk-btn{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(95,227,201,.18)}
+.pk-t{flex:1;min-width:0;display:flex;justify-content:space-between;gap:12px;font:600 1rem var(--f-body)}
+.pk-t span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-t em{flex:none}
+.pk-btn{min-width:0;max-width:100%}
+.pk-list [role="option"] span{min-width:0}
+.pk-list [role="option"] em{flex:none}
+.pk-t em,.pk-list em{font:500 .92rem var(--f-data);font-style:normal;color:var(--aqua);white-space:nowrap}
+.pk-chev{flex:none;color:var(--muted);transition:transform .25s}
+.pk.open .pk-chev{transform:rotate(180deg);color:var(--aqua)}
+.pk-list{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:25;margin:0;padding:6px;list-style:none;max-height:320px;overflow-y:auto;overscroll-behavior:contain;background:#0b2a36;border:1px solid var(--line2);border-radius:18px;box-shadow:0 24px 50px -12px rgba(0,0,0,.7);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .18s,transform .18s,visibility .18s;outline:none;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.pk.up .pk-list{top:auto;bottom:calc(100% + 8px);transform:translateY(6px)}
+.pk.open .pk-list{opacity:1;visibility:visible;transform:none}
+.pk-g{font:600 .74rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:12px 12px 6px}
+.pk-g:first-child{padding-top:6px}
+.pk-list [role="option"]{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px 10px 34px;border-radius:12px;cursor:pointer;font-size:.96rem;position:relative}
+.pk-list [role="option"].hl{background:rgba(95,227,201,.1)}
+.pk-list [role="option"][aria-selected="true"]{color:var(--aqua);font-weight:700}
+.pk-list [role="option"][aria-selected="true"]::before{content:"";position:absolute;left:13px;top:50%;width:10px;height:5px;border-left:2px solid var(--aqua);border-bottom:2px solid var(--aqua);transform:translateY(-70%) rotate(-45deg)}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:8px;height:50px;padding:0 6px;background:rgba(4,18,26,.55);border:1px solid var(--line2);border-radius:14px;transition:border-color .2s,box-shadow .2s}
+.stepper:focus-within{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(95,227,201,.18)}
+.stepper button{all:unset;box-sizing:border-box;flex:none;cursor:pointer;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:rgba(95,227,201,.12);color:var(--aqua);transition:background .15s,opacity .15s}
+.stepper button:hover{background:rgba(95,227,201,.22)}
+.stepper button:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+.stepper button:disabled{opacity:.3;cursor:default;background:rgba(255,255,255,.05);color:var(--muted)}
+.st-v{flex:1;min-width:0;display:flex;align-items:baseline;justify-content:center;gap:6px;cursor:text}
+.st-v input{width:2.4ch;padding:0;border:0;background:none;border-radius:0;box-shadow:none!important;text-align:right;font:600 1.1rem var(--f-body);-moz-appearance:textfield;appearance:textfield}
+.st-v input::-webkit-inner-spin-button,.st-v input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.st-v span{color:var(--muted);font-size:.95rem;white-space:nowrap}
+label.chk{display:flex;align-items:center;gap:12px;font:500 1rem var(--f-body);color:var(--fg);cursor:pointer}
+label.chk input{width:20px;height:20px;accent-color:var(--aqua);margin:0;flex:none}
+input,select,textarea{font:500 1rem var(--f-body);color:var(--fg);background:rgba(4,18,26,.55);border:1px solid var(--line2);border-radius:14px;padding:13px 14px;width:100%;min-width:0;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--aqua);box-shadow:0 0 0 3px rgba(95,227,201,.18)}
+input[type="date"]{min-height:50px;-webkit-appearance:none;appearance:none}
+input::-webkit-date-and-time-value{text-align:left}
+select option,select optgroup{background:#0a2733}
+textarea{min-height:90px;resize:vertical}
+.chat{display:grid;gap:14px;position:sticky;top:90px}
+.chat-win{border-radius:28px;overflow:hidden;border:1px solid var(--line);background:#0b1f26}
+.chat-top{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#103039;border-bottom:1px solid var(--line)}
+.chat-top img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 30%}
+.chat-top b{display:block;font-size:.98rem}
+.chat-top small{color:var(--aqua);font-size:.8rem}
+.chat-body{padding:18px 16px 16px;background:radial-gradient(circle at 20% 0%,rgba(95,227,201,.06),transparent 60%)}
+.msg{margin-left:auto;max-width:92%;font:500 .92rem/1.55 var(--f-body);white-space:pre-wrap;overflow-wrap:anywhere;background:#1f6b5e;color:#f1fffb;border-radius:18px 18px 4px 18px;padding:12px 14px;box-shadow:0 6px 20px -10px rgba(0,0,0,.6)}
+.send{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 16px 16px}
+.send #go-wa{grid-column:1/-1}
+.toast{font-size:.9rem;color:var(--aqua);min-height:1.2em}
+.leadbox{display:grid;gap:12px;margin-top:4px;padding-top:18px;border-top:1px solid var(--line);grid-column:1/-1}
+.next{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.next li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;color:var(--muted);font-size:.94rem;align-items:start}
+.next li b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(95,227,201,.12);color:var(--aqua);font:600 .78rem var(--f-data)}
+.contacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.contact{display:grid;gap:2px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--card);text-decoration:none;min-width:0;transition:border-color .2s}
+.contact span{color:var(--dim);font:500 .7rem var(--f-data);letter-spacing:.1em;text-transform:uppercase}
+.contact b{font:500 .86rem var(--f-data);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+a.contact:hover{border-color:var(--aqua)}
+footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;padding-block:28px 40px;background:#030f16}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
+
+/* trip dates field + Air Datepicker theme */
+.dates{position:relative;display:flex;align-items:center}
+.dates-ic{position:absolute;left:14px;color:var(--aqua);pointer-events:none}
+#f-dates{padding-left:44px;padding-right:84px;min-height:50px;cursor:pointer;caret-color:transparent;text-overflow:ellipsis;font-weight:600}
+#f-dates::placeholder{color:var(--dim);font-weight:500}
+.dates-n{position:absolute;right:14px;font:500 .86rem var(--f-data);color:var(--aqua);pointer-events:none;white-space:nowrap}
+.dates-fallback{grid-column:span 1}
+.air-datepicker{--adp-font-family:var(--f-body);--adp-font-size:15px;--adp-width:330px;--adp-padding:10px;--adp-z-index:110;
+  --adp-background-color:#0b2a36;--adp-border-color:var(--line2);--adp-border-color-inner:var(--line);--adp-border-radius:22px;
+  --adp-accent-color:var(--aqua);--adp-color:var(--fg);--adp-color-secondary:var(--muted);--adp-color-other-month:#3a5660;--adp-color-other-month-hover:#5d7c86;
+  --adp-color-disabled:#35505a;--adp-color-disabled-in-range:#5d7c86;--adp-background-color-hover:rgba(255,255,255,.07);--adp-background-color-active:rgba(255,255,255,.1);
+  --adp-background-color-in-range:rgba(95,227,201,.14);--adp-background-color-in-range-focused:rgba(95,227,201,.22);
+  --adp-cell-background-color-hover:rgba(255,255,255,.08);--adp-cell-background-color-selected:var(--aqua);--adp-cell-background-color-selected-hover:#86ecd8;
+  --adp-cell-background-color-in-range:rgba(95,227,201,.14);--adp-cell-background-color-in-range-hover:rgba(95,227,201,.24);--adp-cell-border-color-in-range:transparent;
+  --adp-cell-border-radius:11px;--adp-day-cell-height:40px;--adp-nav-height:46px;--adp-nav-action-size:38px;--adp-nav-arrow-color:var(--aqua);
+  --adp-day-name-color:var(--dim);--adp-day-name-color-hover:var(--aqua);--adp-color-current-date:var(--coral);
+  --adp-btn-color:var(--muted);--adp-btn-color-hover:var(--fg);--adp-btn-height:40px;--adp-btn-border-radius:12px;--adp-btn-background-color-hover:rgba(255,255,255,.06);
+  --adp-pointer-size:0px;--adp-transition-offset:6px;
+  box-shadow:0 26px 60px -14px rgba(0,0,0,.75)}
+.air-datepicker--pointer{display:none}
+.air-datepicker-nav{border-bottom:0;padding:2px 2px 6px}
+.air-datepicker-nav--action{border-radius:12px;background:rgba(95,227,201,.1)}
+.air-datepicker-nav--action:hover{background:rgba(95,227,201,.2)}
+.air-datepicker-nav--action svg{width:20px;height:20px}
+.air-datepicker-nav--action path{stroke:currentColor;stroke-width:2;fill:none}
+.air-datepicker-nav--action.-disabled-{opacity:.25}
+.air-datepicker-nav--title{font-size:1rem;flex-wrap:wrap;justify-content:center;gap:2px 0;border-radius:12px;padding:4px 10px}
+.air-datepicker-nav--title b{font-weight:700}
+.air-datepicker-body--day-name{font:700 .72rem var(--f-body);text-transform:uppercase;letter-spacing:.04em}
+.air-datepicker-body--cells.-days-{row-gap:3px}
+.air-datepicker-cell.-day-{font-weight:500}
+.air-datepicker-cell.-current-{font-weight:800}
+.air-datepicker-cell.-selected-,.air-datepicker-cell.-selected-.-current-{color:var(--aqua-ink);font-weight:700}
+.air-datepicker-cell.-selected-.-focus-{background:var(--adp-cell-background-color-selected-hover)}
+.air-datepicker-cell.-in-range-{color:var(--fg)}
+.air-datepicker-cell.-disabled-{cursor:default}
+.air-datepicker-buttons{border-top:1px solid var(--line)}
+.air-datepicker--buttons{border-top:0;padding:6px 0 0}
+.air-datepicker-button{font:600 .9rem var(--f-body)}
+.air-datepicker.-is-mobile-{--adp-width:min(360px,calc(100vw - 28px));--adp-day-cell-height:42px;--adp-font-size:16px;border-radius:24px}
+.air-datepicker-overlay{--adp-overlay-background-color:rgba(2,10,14,.62);--adp-overlay-z-index:105;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 
 /* glossary popover */
-#tip{position:fixed;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:460px;margin:0 auto;z-index:40;background:var(--raise);border:1px solid var(--line2);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:18px 52px 20px 20px}
-#tip b{display:block;font:500 .78rem var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-#tip p{color:var(--fg)}
+#tip{position:fixed;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:460px;margin:0 auto;z-index:40;background:#0d3240;border:1px solid var(--line2);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:18px 52px 20px 20px}
+#tip b{display:block;font:500 .78rem var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--aqua);margin-bottom:8px}
 #tip button{position:absolute;right:10px;top:8px;border:0;background:none;font-size:1.6rem;color:var(--muted);cursor:pointer;padding:4px 10px}
 
-/* dive sites */
-.sites{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
-.site{display:grid;gap:18px;align-content:start;min-width:0}
-.zoom{all:unset;cursor:zoom-in;display:block;border-radius:16px;overflow:hidden;border:1px solid var(--line);transition:border-color .15s}
-.zoom:hover{border-color:var(--accent)}
-.zoom:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.zoom{aspect-ratio:8/5;max-width:100%;background:#061a22}
-.zoom img{display:block;width:100%;height:100%;object-fit:contain}
-.site h3{font-size:1.4rem}
-.site p{margin-top:6px}
-.site dl{display:grid;margin:14px 0 0;border-top:1px solid var(--line)}
-.site dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-.site dt{font:500 .74rem var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);align-self:center}
-.site dd{margin:0;font-family:var(--f-data);font-size:.95rem}
-#lb{position:fixed;inset:0;z-index:50;background:#030a0d;display:grid}
-#lb .lb-scroll{overflow:auto;display:grid;place-items:center;padding:56px max(12px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
-#lb img{display:block;width:min(100%,1800px);height:auto;border-radius:10px}
-#lb-x{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:51;background:var(--raise);border:1px solid var(--line2);color:var(--fg);border-radius:999px;width:44px;height:44px;font-size:1.6rem;cursor:pointer}
-@media (max-width:900px){.sites{grid-template-columns:1fr}#lb img{width:1100px;max-width:none}#lb .lb-scroll{place-items:start}}
-
 .mbar{display:none}
-@media (max-width:900px){
+@media (max-width:1060px){
   .nav{display:none}
-  .paths{grid-template-columns:1fr}
-  .path,.path+.path{padding:24px 0;border-left:0}
-  .where,.about,.book,.fgrid{grid-template-columns:1fr}
-  .about img{max-width:380px}
-  .readout{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .readout div:nth-child(3){padding-left:0;border-left:0}
-  .readout div:nth-child(n+3){border-top:1px solid color-mix(in srgb,var(--fg) 14%,transparent);margin-top:16px}
-  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
-  .mbar{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px max(14px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
-  .mbar a{display:grid;place-items:center;text-decoration:none;font-weight:600;font-size:.92rem;border:1px solid var(--line2);border-radius:999px;padding:12px 6px}
-  .mbar a.wa{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-  #tip{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
+  .hero .wrap{grid-template-columns:minmax(0,1fr);gap:28px}
+  .hi{max-width:420px}
+  .site-wrap{grid-template-columns:minmax(0,1fr)}
 }
-.lvl-list{display:none}
+@media (max-width:900px){
+  .quiz,.day,.about,.book,.fgrid{grid-template-columns:minmax(0,1fr)}
+  .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .moments{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:180px}
+  .about .ph{max-width:420px}
+  .day figure{max-width:420px}
+  .chat{position:static}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .mbar{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(4,18,26,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:10px max(14px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));transform:translateY(110%);transition:transform .35s}
+  .mbar.on{transform:none}
+  .mbar a{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:700;font-size:.94rem;border:1px solid var(--line2);border-radius:999px;padding:13px 8px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mbar a.wa{background:var(--coral);border-color:var(--coral);color:var(--coral-ink)}
+  #tip{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:700px){
+  .plist{grid-template-columns:minmax(0,1fr)}
+  .site-info{grid-template-columns:minmax(0,1fr)}
+  .site-info details{padding:14px 10px 6px}
+  .site-info details+details{border-left:0;border-top:1px solid var(--line)}
+  .site-info summary{margin-bottom:0;cursor:pointer}
+  .site-info summary::after{content:"+";font:400 1.3rem/1 var(--f-data);transition:transform .2s}
+  .site-info details[open] summary{margin-bottom:10px}
+  .site-info details[open] summary::after{transform:rotate(45deg)}
+  .q-opts,.q-opts:has(> :nth-child(3):last-child){grid-template-columns:minmax(0,1fr)}
+  .sites-panel{padding:6px;border-radius:22px;margin-inline:-6px}
+  .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .contacts{grid-template-columns:minmax(0,1fr)}
+}
 @media (max-width:560px){
   body{font-size:16px}
   .bar .btn{display:none}
-  .levels .scroll{display:none}
-  .lvl-list{display:grid;gap:14px;margin:0;padding:0;list-style:none}
-  .lvl-list li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
-  .lvl-list b{font-weight:500}
-  .lvl-list li>span{font:500 .9rem var(--f-data);color:var(--accent)}
-  .lvl-list i{grid-column:1/-1;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--d),var(--line) var(--d))}
-  form{grid-template-columns:1fr}
-  .item{grid-template-columns:1fr}
-  .item .right{grid-row:auto;grid-column:1;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-  .item .price small{display:inline;margin-left:6px}
-  .step{grid-template-columns:76px minmax(0,1fr);gap:14px}
-  .season{grid-template-columns:repeat(6,minmax(0,1fr));height:auto;row-gap:18px}
-  .m{height:130px}
-  .about .facts div{grid-template-columns:80px 1fr}
-  .hero .wrap{padding-top:100px}
+  .hero .wrap{padding-top:96px;padding-bottom:64px}
+  .hero .cta .btn{width:100%}
+  .hi{display:none}
+  form{grid-template-columns:minmax(0,1fr)}
+  .season{grid-template-columns:repeat(6,minmax(0,1fr));height:auto;row-gap:40px;margin-top:30px}
+  .m{height:150px}
+  .step{grid-template-columns:78px minmax(0,1fr);gap:14px}
+  .timeline::before{left:77px}
+  .mo figcaption{font-size:.74rem;padding:5px 9px;left:8px;bottom:8px}
+  .step .t{font-size:.92rem;padding-right:24px}
+  .moments{grid-auto-rows:150px;gap:10px}
+  .mo.wide{grid-column:span 2}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .facts div{display:flex;align-items:baseline;gap:12px}
+  .about .ph .ph2{right:-6px;bottom:-16px}
+  .m-hud{left:6px;bottom:6px;gap:10px;padding:4px 10px 4px 4px}
+  .m-play{padding:8px 10px}
+  .m-hud #m-route-name{display:none}
+  .site-tabs button{padding:9px 6px}
+  .site-tabs b{font-size:.8rem;line-height:1.25}
+  .site-tabs small{display:none}
+  .cats button{padding:13px 14px}
+  .cats b{font-size:.95rem}
+  .q-act .btn{flex:1 1 100%}
+  .q-act .q-link{margin:4px auto 0}
+  .site-tabs button{padding:12px 14px}
+  .q-opt{padding:14px}
 }
 </style>
 </head>
 <body>
-<header class="bar">
+<div id="intro">
+  <canvas id="intro-gl" aria-hidden="true"></canvas>
+  <div class="intro-ui" aria-hidden="true">
+    <div class="intro-logo">nastya<i>.</i>dives</div>
+    <div class="intro-depth"><span id="intro-d">0.0</span><small>m</small></div>
+    <div class="intro-cap" id="intro-cap"></div>
+  </div>
+  <button type="button" id="intro-skip">Skip ›</button>
+</div>
+
+<header class="bar" id="bar">
   <div class="wrap">
     <a class="logo" href="#top">nastya<i>.</i>dives</a>
     <nav class="nav" aria-label="Main">
       <a href="#start"><span class="ru">С чего начать</span><span class="en">Start here</span></a>
       <a href="#prices"><span class="ru">Цены</span><span class="en">Prices</span></a>
-      <a href="#day"><span class="ru">День</span><span class="en">The day</span></a>
       <a href="#sites"><span class="ru">Дайв-сайты</span><span class="en">Dive sites</span></a>
       <a href="#about"><span class="ru">Обо мне</span><span class="en">About</span></a>
       <a href="#faq"><span class="ru">Вопросы</span><span class="en">FAQ</span></a>
@@ -270,169 +567,186 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
       <button type="button" id="lang-ru" data-set="ru">RU</button>
       <button type="button" id="lang-en" data-set="en">EN</button>
     </div>
-    <a class="btn primary sm" href="#book"><span class="ru">Написать</span><span class="en">Message me</span></a>
+    <a class="btn primary sm" href="#book"><span class="ru">Записаться</span><span class="en">Book a dive</span></a>
   </div>
 </header>
 
-<main id="top">
+<div class="gauge" id="gauge" aria-hidden="true"><span class="g-bar"><i></i></span><b id="g-val">0 m</b></div>
+
+<main id="top" class="ocean">
   <section class="hero">
-    <img src="img/hero.webp" alt="Turquoise water off a green island near Nha Trang">
+    <img src="img/hero.webp" alt="Turquoise water by a green island near Nha Trang" fetchpriority="high">
     <div class="wrap">
-      <p class="label"><span class="ru">Нячанг · Вьетнам · дайвмастер PADI</span><span class="en">Nha Trang · Vietnam · PADI Divemaster</span></p>
-      <h1><span class="ru">Первое погружение в Нячанге — на твоём языке</span><span class="en">Your first dive in Nha Trang, in your language</span></h1>
-      <p class="lead"><span class="ru">Я Настя, дайвмастер PADI. Помогу выбрать программу, всё объясню и буду рядом на лодке и под водой.</span><span class="en">I'm Nastya, a PADI Divemaster. I'll help you pick a program, explain everything and stay with you on the boat and underwater.</span></p>
-      <div class="cta">
-        <a class="btn primary" id="hero-wa" href="#book" target="_blank" rel="noopener"><span class="ru">Написать в WhatsApp</span><span class="en">Message on WhatsApp</span></a>
-        <a class="btn" href="#start"><span class="ru">Подобрать программу</span><span class="en">Find my program</span></a>
-      </div>
-      <div class="readout">
-        <div><span class="label"><span class="ru">Пробное</span><span class="en">Try dive</span></span><b>$95</b></div>
-        <div><span class="label"><span class="ru">Глубина</span><span class="en">Depth</span></span><b>12<small>m</small></b></div>
-        <div><span class="label"><span class="ru">На лодке</span><span class="en">On the boat</span></span><b>7:30–14:00</b></div>
-        <div><span class="label"><span class="ru">Погружений</span><span class="en">Dives logged</span></span><b>80+</b></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="start">
-    <div class="wrap">
-      <div class="head">
-        <p class="label"><b>01</b> / <span class="ru">С чего начать</span><span class="en">Start here</span></p>
-        <h2><span class="ru">Ты раньше нырял(а)?</span><span class="en">Have you dived before?</span></h2>
-        <p class="sub"><span class="ru">Выбери свой вариант — покажу подходящие программы и цены.</span><span class="en">Pick one and I'll show you the programs and prices that fit.</span></p>
-      </div>
-      <div class="paths">
-        <button type="button" class="path" data-path="first"><span class="n">A</span><b><span class="ru">Ни разу не нырял(а)</span><span class="en">Never dived</span></b><span><span class="ru">Пробное погружение с инструктором. Сертификат не нужен.</span><span class="en">A try dive with an instructor. No certificate needed.</span></span><em><span class="ru">от $65 →</span><span class="en">from $65 →</span></em></button>
-        <button type="button" class="path" data-path="courses"><span class="n">B</span><b><span class="ru">Хочу сертификат</span><span class="en">I want a certificate</span></b><span><span class="ru">Курс PADI: после него ныряешь сам(а) по всему миру.</span><span class="en">A PADI course that lets you dive anywhere in the world.</span></span><em><span class="ru">от $450 →</span><span class="en">from $450 →</span></em></button>
-        <button type="button" class="path" data-path="cert"><span class="n">C</span><b><span class="ru">Я уже дайвер</span><span class="en">I'm already certified</span></b><span><span class="ru">Погружения с гидом на лучших сайтах Нячанга.</span><span class="en">Guided dives at the best sites around Nha Trang.</span></span><em><span class="ru">от $80 за 2 погружения →</span><span class="en">from $80 for 2 dives →</span></em></button>
-      </div>
-      <div class="levels">
-        <span class="label"><span class="ru">На какую глубину можно</span><span class="en">How deep you can go</span></span>
-        <ul class="lvl-list">
-          <li><b><span class="ru">Пробное</span><span class="en">Try dive</span></b><i style="--d:40%"></i><span>12 m</span></li>
-          <li><b>Open Water</b><i style="--d:60%"></i><span>18 m</span></li>
-          <li><b>Advanced</b><i style="--d:100%"></i><span>30 m</span></li>
-        </ul>
-        <div class="scroll">
-          <svg viewBox="0 0 760 190" role="img" aria-label="Maximum depth: try dive 12 m, Open Water 18 m, Advanced 30 m"><g id="gauge"></g></svg>
+      <div class="reveal-h">
+        <p class="eyebrow"><span class="ru">Нячанг, Вьетнам · дайвинг на русском и английском</span><span class="en">Nha Trang, Vietnam · diving in English and Russian</span></p>
+        <h1><span class="ru">Покажу тебе <em>подводный</em> Нячанг</span><span class="en">Come see Nha Trang <em>underwater</em></span></h1>
+        <p class="lead"><span class="ru">Привет, я Настя, дайвмастер PADI. Вожу к рифам у островов и тех, кто ныряет впервые, и тех, у кого за плечами сотня погружений. Всё объясню, проверю снаряжение и буду рядом под водой.</span><span class="en">Hi, I'm Nastya, a PADI Divemaster. I take first-timers and seasoned divers out to the reefs around the islands. I'll explain everything, check your gear and stay close to you underwater.</span></p>
+        <div class="cta">
+          <a class="btn primary" id="hero-wa" href="#book" target="_blank" rel="noopener"><span class="ru">Записаться на погружение</span><span class="en">Book a dive</span></a>
+          <a class="btn" href="#start"><span class="ru">Подобрать программу</span><span class="en">Find my program</span></a>
         </div>
+        <ul class="chips">
+          <li><b>80+</b> <span class="ru">погружений в логбуке</span><span class="en">logged dives</span></li>
+          <li><b>PADI</b> Divemaster</li>
+          <li><span class="ru">от</span><span class="en">from</span> <b>$65</b> <span class="ru">за день в море</span><span class="en">a day at sea</span></li>
+        </ul>
+      </div>
+      <aside class="hi reveal-h" aria-label="Nastya">
+        <div>
+          <div class="hi-top"><img src="img/me.webp" alt="" width="64" height="64"><div><b><span class="ru">Настя</span><span class="en">Nastya</span></b><small><span class="dot"></span><span class="ru">отвечаю сама</span><span class="en">I reply myself</span></small></div></div>
+          <p><span class="ru">Сомневаешься, получится ли? Спроси меня о чём угодно: про уши, страх глубины, плавание. Отвечу честно.</span><span class="en">Not sure you can do it? Ask me anything: ears, fear of depth, swimming. I'll give you an honest answer.</span></p>
+          <a class="btn aqua sm" id="hi-tg" href="#book" target="_blank" rel="noopener"><span class="ru">Задать вопрос в Telegram</span><span class="en">Ask me on Telegram</span></a>
+        </div>
+      </aside>
+    </div>
+    <span class="scroll-cue" aria-hidden="true"></span>
+  </section>
+
+  <section class="block" id="start" data-depth="3">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2><span class="ru">С чего начать</span><span class="en">Where to start</span></h2>
+        <p class="sub"><span class="ru">Ответь на два вопроса, и я подскажу, какое погружение тебе подойдёт.</span><span class="en">Answer two questions and I'll tell you which dive suits you.</span></p>
+      </div>
+      <div class="quiz reveal" id="quiz">
+        <div class="q-top"><span class="q-step" id="q-step"></span><span class="q-prog"><i id="q-bar"></i></span></div>
+        <div id="q-body" aria-live="polite"></div>
       </div>
     </div>
   </section>
 
-  <section class="block alt" id="prices">
+  <section class="block" id="prices" data-depth="6">
     <div class="wrap">
-      <div class="head">
-        <p class="label"><b>02</b> / <span class="ru">Цены</span><span class="en">Prices</span></p>
-        <h2><span class="ru">Выбери, как нырнуть</span><span class="en">Pick how you want to dive</span></h2>
+      <div class="head reveal">
+        <h2><span class="ru">Цены</span><span class="en">Prices</span></h2>
+        <p class="sub"><span class="ru">Снаряжение, трансфер из отеля, лодка и обед уже включены. Доплачивать на месте ничего не нужно.</span><span class="en">Gear, hotel pick-up, the boat and lunch are all included. Nothing extra to pay on the day.</span></p>
       </div>
-      <div class="tabs" role="tablist" id="tabs" aria-label="Program groups"></div>
+      <div class="cats" role="tablist" id="tabs" aria-label="Program groups"></div>
       <div class="plist" id="plist" role="tabpanel"></div>
-      <p class="hint"><span class="ru">Пунктирные слова можно нажать — объясню, что это.</span><span class="en">Tap a dashed word for a short explanation.</span></p>
+      <p class="hint"><span class="ru">Подчёркнутые пунктиром названия можно нажать: объясню, что это.</span><span class="en">Tap a dashed name for a short explanation.</span></p>
       <details class="spec" id="spec-box" hidden>
         <summary><span class="ru">Все специализации PADI (с онлайн-теорией)</span><span class="en">All PADI specialties (with eLearning)</span></summary>
         <div class="tw"><table id="spec-table"></table></div>
-        <p class="small" style="margin-top:12px"><span class="ru">PADI Master Scuba Diver — заявка бесплатно: 5 специализаций, Rescue и 50+ погружений.</span><span class="en">PADI Master Scuba Diver: free application once you have 5 specialties, Rescue and 50+ dives.</span></p>
+        <p class="small" style="margin-top:12px"><span class="ru">PADI Master Scuba Diver: заявка бесплатно, если есть 5 специализаций, Rescue и 50+ погружений.</span><span class="en">PADI Master Scuba Diver: free application once you have 5 specialties, Rescue and 50+ dives.</span></p>
       </details>
-      <div class="incl">
-        <span class="ru">снаряжение</span><span class="en">equipment</span>
-        <span class="ru">вода, чай, кофе</span><span class="en">water, tea, coffee</span>
-        <span class="ru">фрукты и вьетнамский обед</span><span class="en">fruit and Vietnamese lunch</span>
-      </div>
-      <p class="small" style="margin-top:10px"><span class="ru">Включено в каждый день на лодке. Цены в долларах США, точную сумму подтверждаю при записи.</span><span class="en">Included on every boat day. Prices in USD; I confirm the final amount when you book.</span></p>
+      <p class="small" style="margin-top:12px"><span class="ru">Цены в долларах США. Итоговую сумму подтверждаю при записи.</span><span class="en">Prices in USD. I confirm the final amount when you book.</span></p>
     </div>
   </section>
 
-  <section class="block" id="day">
+  <section class="block" id="day" data-depth="9">
     <div class="wrap">
-      <div class="head">
-        <p class="label"><b>03</b> / <span class="ru">Как проходит день</span><span class="en">How the day goes</span></p>
-        <h2><span class="ru">С 7:30 до 14:00 на лодке</span><span class="en">On the boat from 7:30 am to 2 pm</span></h2>
+      <div class="head reveal">
+        <h2><span class="ru">Как проходит день на лодке</span><span class="en">A day on the boat</span></h2>
+        <p class="sub"><span class="ru">Выезжаем в 7:30, к 14:00 ты уже в городе, и вторая половина дня свободна.</span><span class="en">We leave at 7:30 and you're back in town by 2 pm with the afternoon free.</span></p>
       </div>
-      <div class="timeline">
-        <div class="step"><span class="t">07:30</span><div><h3><span class="ru">Трансфер</span><span class="en">Pick-up</span></h3><p><span class="ru">Трансфер забирает из отеля, едем в дайв-шоп и на причал.</span><span class="en">A transfer picks you up from your hotel; we stop at the dive shop, then the harbour.</span></p></div></div>
-        <div class="step"><span class="t">~08:00</span><div><h3><span class="ru">Лодка</span><span class="en">Boat</span></h3><p><span class="ru">Выходим к островам, по пути брифинг и подбор снаряжения.</span><span class="en">Out to the islands, with a briefing and gear fitting on the way.</span></p></div></div>
-        <div class="step"><span class="t">~09:00</span><div><h3><span class="ru">Погружение 1</span><span class="en">Dive 1</span></h3><p><span class="ru">Около 40–45 минут под водой.</span><span class="en">About 40–45 minutes underwater.</span></p></div></div>
-        <div class="step"><span class="t">~11:00</span><div><h3><span class="ru">Погружение 2</span><span class="en">Dive 2</span></h3><p><span class="ru">Другой сайт, потом фрукты и обед.</span><span class="en">A second site, then fruit and lunch.</span></p></div></div>
-        <div class="step"><span class="t">14:00</span><div><h3><span class="ru">Назад</span><span class="en">Back</span></h3><p><span class="ru">Возвращаемся в город.</span><span class="en">Back in town.</span></p></div></div>
+      <div class="day">
+        <ol class="timeline reveal">
+          <li class="step"><span class="t">07:30</span><div><h3><span class="ru">Трансфер</span><span class="en">Pick-up</span></h3><p><span class="ru">Забираем из отеля, заезжаем в дайв-шоп и едем на причал.</span><span class="en">We pick you up at your hotel, stop at the dive shop and head to the harbour.</span></p></div></li>
+          <li class="step"><span class="t">~08:00</span><div><h3><span class="ru">Лодка</span><span class="en">Boat</span></h3><p><span class="ru">Идём к островам. По пути брифинг, подбираем снаряжение.</span><span class="en">Out to the islands, with a briefing and gear fitting on the way.</span></p></div></li>
+          <li class="step"><span class="t">~09:00</span><div><h3><span class="ru">Погружение 1</span><span class="en">Dive 1</span></h3><p><span class="ru">40–45 минут под водой. Рыбы-попугаи, мурены, кораллы.</span><span class="en">40–45 minutes underwater with parrotfish, morays and coral.</span></p></div></li>
+          <li class="step"><span class="t">~11:00</span><div><h3><span class="ru">Погружение 2</span><span class="en">Dive 2</span></h3><p><span class="ru">Другой сайт, потом фрукты и обед на лодке.</span><span class="en">A second site, then fruit and lunch on board.</span></p></div></li>
+          <li class="step"><span class="t">14:00</span><div><h3><span class="ru">Назад</span><span class="en">Back</span></h3><p><span class="ru">Возвращаемся в город. Можно сразу смотреть фото.</span><span class="en">Back in town, just in time to look through the photos.</span></p></div></li>
+        </ol>
+        <figure class="reveal"><img src="media/boat-morning.jpg" alt="Morning on the dive boat, a scuba tank by the rail and green islands ahead" loading="lazy"><figcaption><span class="ru">Утро. Идём к островам</span><span class="en">Morning, heading for the islands</span></figcaption></figure>
       </div>
     </div>
   </section>
 
-  <section class="block alt" id="sites">
+  <section class="block" id="sites" data-depth="12">
     <div class="wrap">
-      <div class="head">
-        <p class="label"><b>04</b> / <span class="ru">Где ныряем</span><span class="en">Dive sites</span></p>
-        <h2><span class="ru">Дайв-сайты</span><span class="en">Dive sites</span></h2>
-        <p class="sub"><span class="ru">Нажми на карту, чтобы открыть её целиком: маршруты, глубины, опасности.</span><span class="en">Tap a map to open it full size: routes, depths, hazards.</span></p>
+      <div class="head reveal">
+        <h2><span class="ru">Куда поплывём</span><span class="en">Where we'll dive</span></h2>
+        <p class="sub"><span class="ru">Три места у островов, куда я вожу чаще всего. Выбери маршрут, и маркер проплывёт его с глубиной и временем.</span><span class="en">The three island sites I dive most. Pick a route and the marker swims it, showing depth and time.</span></p>
       </div>
-      <div class="sites">
-        <article class="site">
-          <button type="button" class="zoom" data-full="img/site-cemetery.webp" aria-label="Open Cemetery Bay map"><img src="img/site-cemetery-sm.webp" alt="Cemetery Bay dive site map with three routes" loading="lazy"></button>
-          <div class="site-info">
-            <h3>Cemetery Bay</h3>
-            <p class="muted"><span class="ru">Закрытая бухта: кораллы, камни, песок. Три маршрута.</span><span class="en">Sheltered bay: coral, rocks, sand. Three routes.</span></p>
-            <dl><div><dt><span class="ru">Глубина</span><span class="en">Depth</span></dt><dd>2–18 m</dd></div><div><dt><span class="ru">Уровень</span><span class="en">Level</span></dt><dd>DSD · OW · AOW</dd></div><div><dt><span class="ru">Где</span><span class="en">Where</span></dt><dd>Hon Mun</dd></div></dl>
+      <div class="sites-panel reveal">
+        <div class="site-tabs" id="site-tabs" role="tablist" aria-label="Dive sites"></div>
+        <div class="site-wrap">
+          <div class="site-main">
+            <div class="site-map" id="site-map">
+              <div class="m-scroll" id="m-scroll"><svg id="site-svg" viewBox="0 0 1000 625" role="img"></svg></div>
+              <div class="m-hud">
+                <button type="button" class="m-play" id="m-play"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>Show the route</button>
+                <span class="m-read"><small><span class="ru">глубина</span><span class="en">depth</span></small><b><span id="m-depth">0.0</span> m</b></span>
+                <span class="m-read"><small><span class="ru">время</span><span class="en">time</span></small><b><span id="m-time">0</span>′</b></span>
+                <span id="m-route-name"></span>
+              </div>
+              <div id="m-tip" role="status" hidden></div>
+            </div>
+            <p class="m-hint" id="site-points-h"></p>
+            <ul class="m-pois" id="site-pois"></ul>
           </div>
-        </article>
-        <article class="site">
-          <button type="button" class="zoom" data-full="img/site-madonna.webp" aria-label="Open Madonna Rock map"><img src="img/site-madonna-sm.webp" alt="Madonna Rock dive site map with three routes" loading="lazy"></button>
-          <div class="site-info">
-            <h3>Madonna Rock</h3>
-            <p class="muted"><span class="ru">Скальный риф, проход-туннель и обрыв до 30 м.</span><span class="en">Rock reef with a swim-through and a drop-off to 30 m.</span></p>
-            <dl><div><dt><span class="ru">Глубина</span><span class="en">Depth</span></dt><dd>10–18 m · max 30–35 m</dd></div><div><dt><span class="ru">Уровень</span><span class="en">Level</span></dt><dd>OW · AOW</dd></div><div><dt><span class="ru">Где</span><span class="en">Where</span></dt><dd>Hon Mun</dd></div></dl>
-          </div>
-        </article>
+          <div class="m-side" id="site-routes"></div>
+        </div>
+        <div class="site-info" id="site-info"></div>
       </div>
     </div>
   </section>
 
-  <section class="block" id="about">
+  <section class="block" id="moments" data-depth="15">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2><span class="ru">Немного из моего телефона</span><span class="en">Straight from my phone</span></h2>
+        <p class="sub"><span class="ru">Тренировки в бассейне, подводный скутер и утро на лодке. Так выглядят наши дни.</span><span class="en">Pool training, an underwater scooter and early mornings on the boat. This is what our days look like.</span></p>
+      </div>
+      <div class="moments reveal">
+        <figure class="mo tall wide"><video src="media/dpv-pool.mp4" poster="media/dpv-pool.jpg" preload="none" playsinline muted loop></video><button type="button" class="play" aria-label="Play video"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg></button><figcaption><span class="ru">Подводный скутер в бассейне</span><span class="en">Underwater scooter in the pool</span></figcaption></figure>
+        <figure class="mo"><img src="media/pool-ok.jpg" alt="Diver showing the OK sign underwater" loading="lazy"><figcaption><span class="ru">«Всё ок» под водой</span><span class="en">"OK" underwater</span></figcaption></figure>
+        <figure class="mo tall"><video src="media/mask-skill.mp4#t=0.5" preload="metadata" playsinline muted loop></video><button type="button" class="play" aria-label="Play video"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg></button><figcaption><span class="ru">Навык: снять и надеть маску</span><span class="en">Skill: mask off and on</span></figcaption></figure>
+        <figure class="mo"><img src="media/dpv-pool.jpg" alt="Diver with an underwater scooter on the pool floor" loading="lazy"><figcaption><span class="ru">Скутер, ближе</span><span class="en">The scooter, close up</span></figcaption></figure>
+        <figure class="mo wide"><img src="media/nastya-pool.jpg" alt="Nastya in a wetsuit by the pool after training" loading="lazy" style="object-position:50% 25%"><figcaption><span class="ru">После тренировки</span><span class="en">After training</span></figcaption></figure>
+        <figure class="mo wide"><video src="media/rescue.mp4#t=0.5" preload="metadata" playsinline muted loop></video><button type="button" class="play" aria-label="Play video"><svg width="22" height="22" viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg></button><figcaption><span class="ru">Тренировка Rescue</span><span class="en">Rescue training</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="about" data-depth="18">
     <div class="wrap about">
-      <img src="img/me.webp" alt="Nastya, PADI Divemaster">
-      <div>
-        <p class="label"><b>05</b> / <span class="ru">Обо мне</span><span class="en">About me</span></p>
-        <h2 style="margin-top:16px"><span class="ru">Привет, я Настя</span><span class="en">Hi, I'm Nastya</span></h2>
-        <p class="muted" style="margin-top:18px;max-width:52ch"><span class="ru">Дайвмастер PADI в Нячанге. Работаю с новичками и дайверами, говорю по-русски и по-английски.</span><span class="en">PADI Divemaster in Nha Trang. I work with beginners and certified divers, in Russian and English.</span></p>
+      <div class="ph reveal"><img src="img/me.webp" alt="Nastya, PADI Divemaster" loading="lazy"><img class="ph2" src="media/nastya-pool.jpg" alt="" loading="lazy"></div>
+      <div class="reveal">
+        <h2><span class="ru">Привет, я Настя</span><span class="en">Hi, I'm Nastya</span></h2>
+        <blockquote>
+          <p><span class="ru">Я дайвмастер PADI и ныряю в Нячанге. Больше всего люблю момент, когда человек, который утром на лодке боялся надеть маску, после погружения не может перестать рассказывать про рыбу-клоуна.</span><span class="en">I'm a PADI Divemaster diving in Nha Trang. My favourite moment is when someone who was scared to put the mask on that morning comes up and can't stop talking about the clownfish.</span></p>
+          <p><span class="ru">Брифинг и разбор провожу на русском или английском, так что ничего не теряется в переводе. Если страшно, просто скажи: пойдём медленно, и остановиться можно в любой момент.</span><span class="en">I brief and debrief in English or Russian, so nothing gets lost in translation. If you're nervous, just say so: we'll take it slowly and you can stop at any moment.</span></p>
+        </blockquote>
         <div class="facts">
           <div><b>80+</b><span><span class="ru">погружений в логбуке</span><span class="en">logged dives</span></span></div>
-          <div><b>PADI</b><span>Open Water · Advanced · Rescue · EFR · Divemaster</span></div>
-          <div><b>RU / EN</b><span><span class="ru">брифинг и разбор после дайва на твоём языке</span><span class="en">briefing and debrief in your language</span></span></div>
+          <div><b>RU/EN</b><span><span class="ru">два языка на брифинге</span><span class="en">briefings in two languages</span></span></div>
+          <div><b>5★</b><span><span class="ru">центр Rainbow Divers, PADI IDC</span><span class="en">Rainbow Divers, PADI IDC centre</span></span></div>
         </div>
+        <ul class="certs"><li>Open Water</li><li>Advanced</li><li>Rescue</li><li>EFR</li><li>Divemaster</li></ul>
       </div>
     </div>
   </section>
 
-  <section class="block alt" id="when">
+  <section class="block" id="when" data-depth="22">
     <div class="wrap">
-      <div class="head">
-        <p class="label"><b>06</b> / <span class="ru">Когда ехать</span><span class="en">When to come</span></p>
-        <h2><span class="ru">Лучшее море — с марта по июнь</span><span class="en">Best sea: March to June</span></h2>
+      <div class="head reveal">
+        <h2><span class="ru">Когда приезжать</span><span class="en">When to come</span></h2>
+        <p class="sub" id="season-now"></p>
       </div>
-      <div class="season" id="season"></div>
-      <p class="fly"><b><span class="ru">Перелёт.</span><span class="en">Flying out?</span></b> <span class="ru">После погружений не летай минимум 18 часов — последний дайв лучше за сутки до вылета.</span><span class="en">Wait at least 18 hours after diving; plan your last dive a day before your flight.</span></p>
+      <div class="season reveal" id="season"></div>
+      <p class="fly reveal"><b><span class="ru">Перелёт.</span><span class="en">Flying out?</span></b> <span class="ru">После погружений не летай минимум 18 часов. Последний дайв лучше за сутки до вылета.</span><span class="en">Wait at least 18 hours after diving; plan your last dive a day before your flight.</span></p>
     </div>
   </section>
 
-  <section class="block" id="faq">
+  <section class="block" id="faq" data-depth="26">
     <div class="wrap">
-      <div class="head">
-        <p class="label"><b>07</b> / <span class="ru">Вопросы</span><span class="en">FAQ</span></p>
-        <h2><span class="ru">Если немного страшно</span><span class="en">If you're a bit nervous</span></h2>
+      <div class="head reveal">
+        <h2><span class="ru">Частые вопросы</span><span class="en">Questions people ask</span></h2>
+        <p class="sub"><span class="ru">Немного страшно перед первым разом? Это нормально. Вот что спрашивают чаще всего.</span><span class="en">A bit nervous before your first time? That's normal. Here's what people ask most.</span></p>
       </div>
-      <div class="fgrid">
+      <div class="fgrid reveal">
         <div class="fgroup">
-          <span class="label"><span class="ru">Можно ли мне</span><span class="en">Can I do it</span></span>
+          <h3><span class="ru">Можно ли мне</span><span class="en">Can I do it</span></h3>
           <details class="q"><summary><span class="ru">Я плохо плаваю. Можно?</span><span class="en">I'm not a strong swimmer. Can I dive?</span></summary><p><span class="ru">Для пробного погружения достаточно спокойно чувствовать себя в воде: инструктор всё время рядом. Для курса Open Water нужно проплыть 200 м (или 300 м в маске и ластах) и продержаться на воде 10 минут.</span><span class="en">For a try dive you just need to be comfortable in water; the instructor stays right next to you. The Open Water course asks for a 200 m swim (or 300 m with mask and fins) and a 10-minute float.</span></p></details>
           <details class="q"><summary><span class="ru">Будут болеть уши?</span><span class="en">Will my ears hurt?</span></summary><p><span class="ru">Нет, если продуваться заранее и часто. На брифинге покажем как. Спускаемся медленно и останавливаемся, если что-то не так.</span><span class="en">Not if you equalise early and often. We show you how in the briefing, go down slowly and stop whenever you need.</span></p></details>
           <details class="q"><summary><span class="ru">Нужна медсправка?</span><span class="en">Do I need a medical?</span></summary><p><span class="ru">Перед погружением все заполняют медицинскую анкету PADI. Если в ней есть «да» (астма, давление, операции и т.п.), нужна подпись врача. Беременным нырять нельзя.</span><span class="en">Everyone fills in the PADI medical questionnaire. A "yes" on it (asthma, blood pressure, surgery and so on) means you need a doctor's sign-off. No diving while pregnant.</span></p></details>
           <details class="q"><summary><span class="ru">С какого возраста?</span><span class="en">What's the minimum age?</span></summary><p><span class="ru">Пробное погружение и курс Open Water с 10 лет. Для детей 8–9 лет есть Bubblemaker на глубине до 2 м ($60). Дети до 5 лет на лодке бесплатно, под присмотром родителей.</span><span class="en">Try dives and Open Water from 10. Kids aged 8–9 can do Bubblemaker to 2 m ($60). Under-5s ride the boat free, under your supervision.</span></p></details>
         </div>
         <div class="fgroup">
-          <span class="label"><span class="ru">Организация</span><span class="en">Planning</span></span>
+          <h3><span class="ru">Организация</span><span class="en">Planning</span></h3>
           <details class="q"><summary><span class="ru">Что взять с собой?</span><span class="en">What should I bring?</span></summary><p><span class="ru">Купальник, полотенце, крем от солнца и таблетку от укачивания, если укачивает. Снаряжение, вода и обед уже включены.</span><span class="en">Swimwear, a towel, sunscreen and seasickness tablets if you need them. Gear, drinks and lunch are included.</span></p></details>
-          <details class="q"><summary><span class="ru">Давно не нырял(а)</span><span class="en">I haven't dived in a while</span></summary><p><span class="ru">Есть рефрешер в бассейне, на пляже или на лодке в рамках первого погружения: $50, онлайн-теория по желанию +$50.</span><span class="en">Take a pool, beach or boat refresher as part of your first dive: $50, optional online theory +$50.</span></p></details>
-          <details class="q"><summary><span class="ru">Когда можно лететь?</span><span class="en">When can I fly after diving?</span></summary><p><span class="ru">Минимум 12 часов после одного погружения и 18 часов после нескольких. Планируй последний дайв за сутки до вылета.</span><span class="en">At least 12 hours after a single dive and 18 hours after several. Plan your last dive a day before your flight.</span></p></details>
+          <details class="q"><summary><span class="ru">Последний дайв был давно</span><span class="en">I haven't dived in a while</span></summary><p><span class="ru">Есть рефрешер в бассейне, на пляже или на лодке в рамках первого погружения: $50, онлайн-теория по желанию +$50.</span><span class="en">Take a pool, beach or boat refresher as part of your first dive: $50, optional online theory +$50.</span></p></details>
           <details class="q"><summary><span class="ru">Как оплатить?</span><span class="en">How do I pay?</span></summary><p><span class="ru">Обычно по предоплате: перевод по QR-коду. Можно и утром в день погружения: трансфер заберёт из отеля, оплатишь в дайв-шопе и сразу едем на лодку.</span><span class="en">Usually a prepayment by QR code. You can also pay on the morning of the dive: a transfer picks you up from your hotel, you pay at the dive shop and we head straight to the boat.</span></p></details>
           <details class="q"><summary><span class="ru">Заберёте из отеля?</span><span class="en">Do you pick up from the hotel?</span></summary><p><span class="ru">Да, утром тебя заберёт трансфер. Напиши название отеля, когда будешь записываться.</span><span class="en">Yes, a transfer picks you up in the morning. Just tell me your hotel when you book.</span></p></details>
           <details class="q"><summary><span class="ru">А если планы поменяются?</span><span class="en">What if my plans change?</span></summary><p><span class="ru">Предупреди меня, и деньги вернём без сложностей.</span><span class="en">Just let me know and we'll refund you, no hassle.</span></p></details>
@@ -442,46 +756,60 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
     </div>
   </section>
 
-  <section class="block alt" id="book">
+  <section class="block" id="book" data-depth="30">
     <div class="wrap">
-      <div class="head">
-        <p class="label"><b>08</b> / <span class="ru">Запись</span><span class="en">Booking</span></p>
-        <h2><span class="ru">Напиши мне, и я всё организую</span><span class="en">Message me and I'll arrange it</span></h2>
+      <div class="head reveal">
+        <h2><span class="ru">Записаться на погружение</span><span class="en">Book your dive</span></h2>
+        <p class="sub"><span class="ru">Заполни то, что уже знаешь, остальное уточним в переписке. Сообщение отправится мне в WhatsApp или Telegram, отвечаю сама.</span><span class="en">Fill in what you already know and we'll sort out the rest in chat. The message goes to my WhatsApp or Telegram and I reply myself.</span></p>
       </div>
       <div class="book">
-        <form id="f" novalidate>
-          <label class="full"><span class="ru">Имя</span><span class="en">Name</span><input id="f-name" autocomplete="name" maxlength="80"></label>
-          <label class="full"><span class="ru">Программа</span><span class="en">Program</span><select id="f-prog"></select></label>
-          <label><span class="ru">Сколько человек</span><span class="en">People</span><input id="f-people" type="number" min="1" max="20" value="1" inputmode="numeric"></label>
-          <label><span class="ru">Отель</span><span class="en">Hotel</span><input id="f-hotel" maxlength="120"></label>
-          <label><span class="ru">С какого числа</span><span class="en">From</span><input id="f-from" type="date"></label>
-          <label><span class="ru">По какое</span><span class="en">To</span><input id="f-to" type="date"></label>
-          <label class="chk full"><input id="f-photo" type="checkbox"><span><span class="ru">Хочу фото и видео погружения</span><span class="en">I'd like photos and video of my dive</span></span></label>
-          <label class="full"><span class="ru">Вопросы, пожелания</span><span class="en">Questions or notes</span><textarea id="f-note" maxlength="1000"></textarea></label>
-          <div class="out">
-            <span class="label"><span class="ru">Твоё сообщение мне</span><span class="en">Your message to me</span></span>
-            <div class="msg" id="msg" aria-live="polite"></div>
-            <div class="send">
-              <a class="btn primary" id="go-wa" href="#" target="_blank" rel="noopener"><span class="ru">Отправить в WhatsApp</span><span class="en">Send on WhatsApp</span></a>
-              <a class="btn" id="go-tg" href="#" target="_blank" rel="noopener">Telegram</a>
-              <button class="btn" type="button" id="copy"><span class="ru">Скопировать</span><span class="en">Copy</span></button>
-            </div>
-            <span class="toast" id="toast"></span>
-            <span class="small"><span class="ru">WhatsApp откроется с готовым текстом. Для Telegram нажми «Скопировать» и вставь в чат.</span><span class="en">WhatsApp opens with the text filled in. For Telegram, tap Copy and paste it into the chat.</span></span>
+        <div class="formcard reveal">
+          <form id="f" novalidate>
+            <label class="full"><span class="ru">Как тебя зовут</span><span class="en">Your name</span><input id="f-name" autocomplete="name" maxlength="80"></label>
+            <div class="full fld"><span class="lbl" id="prog-l"><span class="ru">Программа</span><span class="en">Program</span></span>
+              <div class="pk" id="prog">
+                <select id="f-prog" tabindex="-1" aria-hidden="true"></select>
+                <button type="button" class="pk-btn" id="prog-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="prog-l prog-btn-t"><span class="pk-t" id="prog-btn-t"></span><svg class="pk-chev" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <ul class="pk-list" id="prog-list" role="listbox" tabindex="-1" aria-labelledby="prog-l"></ul>
+              </div></div>
+            <div class="fld"><label class="lbl" for="f-people"><span class="ru">Сколько человек</span><span class="en">People</span></label>
+              <div class="stepper"><button type="button" data-step="-1" id="pp-minus" aria-label="−1"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+                <span class="st-v"><input id="f-people" type="number" min="1" max="20" value="1" inputmode="numeric"><span id="pp-unit"></span></span>
+                <button type="button" data-step="1" id="pp-plus" aria-label="+1"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></div>
+            <label><span class="ru">Отель</span><span class="en">Hotel</span><input id="f-hotel" maxlength="120"></label>
+            <div class="full fld"><label class="lbl" for="f-dates"><span class="ru">Даты поездки</span><span class="en">Trip dates</span></label>
+              <div class="dates">
+                <svg class="dates-ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <input id="f-dates" readonly autocomplete="off" inputmode="none">
+                <span class="dates-n" id="f-nights"></span>
+                <input type="hidden" id="f-from"><input type="hidden" id="f-to">
+              </div></div>
+            <label class="chk full"><input id="f-photo" type="checkbox"><span><span class="ru">Хочу фото и видео погружения</span><span class="en">I'd like photos and video of my dive</span></span></label>
+            <label class="full"><span class="ru">Вопросы, пожелания</span><span class="en">Questions or notes</span><textarea id="f-note" maxlength="1000"></textarea></label>
             <div class="leadbox" id="lead-box" hidden>
               <label><span class="ru">Куда тебе ответить (Telegram, WhatsApp или e-mail)</span><span class="en">Where should I reply (Telegram, WhatsApp or e-mail)</span><input id="f-contact" maxlength="80" autocomplete="tel"></label>
               <div id="captcha"></div>
               <button class="btn primary" type="button" id="send-lead"><span class="ru">Отправить заявку</span><span class="en">Send request</span></button>
               <span class="toast" id="lead-status" aria-live="polite"></span>
             </div>
+          </form>
+        </div>
+        <div class="chat reveal">
+          <div class="chat-win">
+            <div class="chat-top"><img src="img/me.webp" alt=""><div><b><span class="ru">Настя</span><span class="en">Nastya</span></b><small><span class="ru">твоё сообщение</span><span class="en">your message</span></small></div></div>
+            <div class="chat-body"><div class="msg" id="msg" aria-live="polite"></div></div>
+            <div class="send">
+              <a class="btn primary" id="go-wa" href="#" target="_blank" rel="noopener"><span class="ru">Отправить в WhatsApp</span><span class="en">Send on WhatsApp</span></a>
+              <a class="btn" id="go-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+              <button class="btn" type="button" id="copy"><span class="ru">Копировать</span><span class="en">Copy</span></button>
+            </div>
           </div>
-        </form>
-        <div>
-          <span class="label" style="display:block;margin-bottom:14px"><span class="ru">Что будет дальше</span><span class="en">What happens next</span></span>
+          <span class="toast" id="toast"></span>
+          <span class="small"><span class="ru">WhatsApp откроется с готовым текстом. Для Telegram нажми «Копировать» и вставь в чат.</span><span class="en">WhatsApp opens with the text filled in. For Telegram, tap Copy and paste it into the chat.</span></span>
           <ol class="next">
-            <li><b>01</b><span><span class="ru">Я отвечу и задам пару вопросов, если нужно.</span><span class="en">I reply and ask a couple of questions if needed.</span></span></li>
-            <li><b>02</b><span><span class="ru">Подтвердим дату, программу и цену.</span><span class="en">We confirm the date, program and price.</span></span></li>
-            <li><b>03</b><span><span class="ru">Перед погружением заполнишь медицинскую анкету PADI.</span><span class="en">Before the dive you fill in the PADI medical form.</span></span></li>
+            <li><b>1</b><span><span class="ru">Отвечу и уточню пару деталей: опыт, даты, отель.</span><span class="en">I reply and check a few details: experience, dates, hotel.</span></span></li>
+            <li><b>2</b><span><span class="ru">Подтвердим дату, программу и цену.</span><span class="en">We confirm the date, program and price.</span></span></li>
+            <li><b>3</b><span><span class="ru">Перед погружением заполнишь медицинскую анкету PADI.</span><span class="en">Before the dive you fill in the PADI medical form.</span></span></li>
           </ol>
           <div class="contacts">
             <a class="contact" id="c-tg-a" target="_blank" rel="noopener"><span>Telegram</span><b id="c-tg"></b></a>
@@ -495,19 +823,18 @@ footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;paddin
 </main>
 <footer>
   <div class="wrap">
-    <span class="ru">Погружения проводит Rainbow Divers, Нячанг (PADI 5★ IDC). Цены по прайсу центра на октябрь 2026, подтверждаются при записи.</span>
-    <span class="en">Dives are run by Rainbow Divers, Nha Trang (PADI 5★ IDC). Prices from the centre's October 2026 price list, confirmed when you book.</span>
+    <span><span class="ru">Погружения проводит Rainbow Divers, Нячанг (PADI 5★ IDC). Цены по прайсу центра на октябрь 2026, подтверждаются при записи.</span><span class="en">Dives are run by Rainbow Divers, Nha Trang (PADI 5★ IDC). Prices from the centre's October 2026 price list, confirmed when you book.</span></span>
+    <span>nastya.dives</span>
   </div>
 </footer>
 
-<nav class="mbar" aria-label="Quick links">
+<nav class="mbar" id="mbar" aria-label="Quick links">
   <a href="#prices"><span class="ru">Цены</span><span class="en">Prices</span></a>
-  <a href="#faq"><span class="ru">Вопросы</span><span class="en">FAQ</span></a>
-  <a class="wa" id="m-wa" href="#book" target="_blank" rel="noopener"><span class="ru">Написать</span><span class="en">Message me</span></a>
+  <a class="wa" id="m-wa" href="#book" target="_blank" rel="noopener"><span id="m-wa-t"></span></a>
 </nav>
 
-<div id="lb" role="dialog" aria-modal="true" aria-label="Dive site map" hidden><button type="button" id="lb-x" aria-label="Close">×</button><div class="lb-scroll"><img id="lb-img" alt=""></div></div>
 <div id="tip" role="dialog" aria-live="polite" hidden><button type="button" id="tip-x" aria-label="Close">×</button><b id="tip-t"></b><p id="tip-p"></p></div>
+<script src="vendor/air-datepicker-3.5.3.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>

@@ -13,7 +13,13 @@ Settings → Pages → Source: **GitHub Actions**. Через минуту са�
 ## Что внутри
 
 ```
-src/                    исходник лендинга (page.html, app.js, backend.js) — правки делать тут
+src/                    исходник лендинга — правки делать тут:
+  page.html             разметка и стили
+  app.js                цены, контакты, подбор программы (QUIZ), сезон, форма
+  maps.js               интерактивные карты дайв-сайтов (SITES: маршруты, точки, тексты RU/EN)
+  intro.js              3D-анимация погружения при загрузке (WebGL, без библиотек)
+  backend.js            заявки и аналитика через Supabase (по желанию)
+public/vendor/air-datepicker-3.5.3.*   календарь дат в форме (Air Datepicker, MIT, из npm; тема в page.html)
 tools/build.py          собирает src/ → public/ (команда: python3 tools/build.py)
 public/                 сайт (кладётся на Cloudflare Pages как есть)
   index.html, app.js    лендинг; без настроек работает как сейчас (WhatsApp/Telegram)

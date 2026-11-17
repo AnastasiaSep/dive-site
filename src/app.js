@@ -8,7 +8,7 @@ const TERMS = {
  ow:{t:"Open Water",ru:"Первый курс PADI. После него можно нырять до 18 м с напарником в любой стране.",en:"The first PADI course. Afterwards you can dive to 18 m with a buddy anywhere in the world."},
  aow:{t:"Advanced",ru:"Следующий курс после Open Water: глубина до 30 м, навигация, плавучесть.",en:"The course after Open Water: depth to 30 m, navigation and buoyancy."},
  nitrox:{t:"Nitrox",ru:"Воздух с повышенным содержанием кислорода. Позволяет дольше оставаться на глубине.",en:"Air with extra oxygen. It lets you stay longer at depth."},
- refresh:{t:"Refresher",ru:"Короткое повторение навыков, если давно не нырял(а).",en:"A short skills review if you haven't dived in a while."},
+ refresh:{t:"Refresher",ru:"Короткое повторение навыков, если последнее погружение было давно.",en:"A short skills review if you haven't dived in a while."},
  elearn:{t:"eLearning",ru:"Онлайн-теория PADI: проходишь на телефоне до приезда.",en:"PADI online theory you do on your phone before you arrive."},
  rescue:{t:"Rescue Diver",ru:"Курс, где учишься помогать себе и напарнику в сложных ситуациях.",en:"The course where you learn to handle problems and help your buddy."},
  bubble:{t:"Bubblemaker",ru:"Первое знакомство с аквалангом для детей 8–9 лет, на глубине до 2 м.",en:"A first taste of scuba for kids aged 8–9, to 2 m."}
@@ -46,7 +46,7 @@ const GROUPS = [
   {id:"night", price:75, ru:"Ночное погружение", en:"Night dive", meta_ru:["лодка, от 2 дайверов"], meta_en:["boat, 2+ divers"],
    d_ru:"С пляжа $50.", d_en:"From the beach $50."},
   {id:"refresh", term:"refresh", price:50, ru:"Рефрешер", en:"Refresher", meta_ru:["бассейн / пляж / лодка"], meta_en:["pool / beach / boat"],
-   d_ru:"Если давно не нырял(а). Проходит в рамках первого погружения, онлайн-теория +$50.", d_en:"If you haven't dived in a while. Done as part of your first dive; online theory +$50."},
+   d_ru:"Если последнее погружение было давно. Проходит в рамках первого погружения, онлайн-теория +$50.", d_en:"If you haven't dived in a while. Done as part of your first dive; online theory +$50."},
   {id:"speed", price:75, unit:{ru:"/ чел. в день",en:"/ person / day"}, ru:"Частный катер", en:"Private speedboat", meta_ru:["2–4 человека","Electric Nose"], meta_en:["2–4 people","Electric Nose"],
    d_ru:"Гибкий график и дальние сайты: The Wall 42 м, Ray Plateau 30 м, The Freefall 40 м. Для курсов и fun dives.", d_en:"Flexible schedule and remote sites: The Wall 42 m, Ray Plateau 30 m, The Freefall 40 m. For courses and fun dives."}
  ]},
@@ -66,19 +66,51 @@ const SPECIALTIES = [
 const SEASON = ["rough","ok","good","good","good","good","ok","ok","ok","rough","rough","rough"];
 /* ================================ */
 
-const SEASON_WORD = {ru:{good:"лучше",ok:"хорошо",rough:"дожди"}, en:{good:"best",ok:"good",rough:"rain"}};
+const SEASON_WORD = {ru:{good:"лучше всего",ok:"хорошо",rough:"дожди"}, en:{good:"best",ok:"good",rough:"rain"}};
 const MONTHS = {ru:["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"],
                 en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]};
+const MONTHS_FULL = {ru:["январе","феврале","марте","апреле","мае","июне","июле","августе","сентябре","октябре","ноябре","декабре"],
+                     en:["January","February","March","April","May","June","July","August","September","October","November","December"]};
+
+/* ===== EDIT HERE: the 2-question match ===== */
+const QUIZ = {
+ q1:{ru:"Был опыт с аквалангом?", en:"Have you dived with scuba before?", opts:[
+  {path:"first", ru:"Пока нет", en:"Not yet", s_ru:"Попробуем вместе, сертификат не нужен", s_en:"We'll try it together, no certificate needed"},
+  {path:"courses", ru:"Хочу научиться", en:"I want to learn", s_ru:"Курс PADI и сертификат на всю жизнь", s_en:"A PADI course and a licence for life"},
+  {path:"cert", ru:"Да, есть сертификат", en:"Yes, I'm certified", s_ru:"Покажу лучшие сайты у островов", s_en:"I'll show you the best island sites"}]},
+ first:{ru:"Как тебе в воде?", en:"How do you feel in the water?", opts:[
+  {pick:"dsd95", ru:"Спокойно, плаваю уверенно", en:"Relaxed, I swim well", why_ru:"Раз в воде тебе спокойно, сразу едем в море. Два погружения до 12 м, инструктор всё время рядом и держит тебя в поле зрения.", why_en:"Since you're at ease in the water, we head straight out to sea. Two dives to 12 m with an instructor right beside you the whole time."},
+  {pick:"dsd135", ru:"Немного волнуюсь", en:"A bit nervous", why_ru:"Сначала спокойно разберёмся со всем в бассейне, где можно встать на дно. К выходу в море ты уже будешь знать, что делать, и волнение уйдёт.", why_en:"First we sort everything out in a pool where you can stand up. By the time we're at sea you'll know what to do and the nerves fade."},
+  {pick:"dsd65", ru:"Хочу попробовать чуть-чуть", en:"Just a taste", why_ru:"Одно погружение с инструктором, а потом плаваешь с маской над рифом. Хороший способ понять, твоё это или нет.", why_en:"One dive with an instructor, then snorkelling over the reef. A good way to find out if diving is for you."},
+  {pick:"bubble", ru:"Это для ребёнка 8–9 лет", en:"It's for a child aged 8–9", why_ru:"Bubblemaker: ребёнок дышит из акваланга на глубине до 2 м под присмотром инструктора. Обычно после этого просят ещё.", why_en:"Bubblemaker: your child breathes from a real scuba set no deeper than 2 m, with an instructor watching. Most kids ask to go again."}]},
+ courses:{ru:"Сколько дней есть на обучение?", en:"How many days do you have for training?", opts:[
+  {pick:"ow", ru:"2–3 дня", en:"2–3 days", why_ru:"Open Water: теорию проходишь онлайн ещё дома, здесь бассейн и два дня в море. Дальше можно нырять с напарником в любой стране.", why_en:"Open Water: theory online before you fly, then a pool session and two days at sea. After that you can dive with a buddy anywhere."},
+  {pick:"owaow", ru:"5 дней, хочу сразу больше", en:"5 days, I want more", why_ru:"С нуля до Advanced за одну поездку: 9 погружений и глубина до 30 м. Выходит на $150 дешевле, чем брать курсы по отдельности.", why_en:"From zero to Advanced in one trip: 9 dives and depth to 30 m, $150 less than booking the courses separately."},
+  {pick:"aow", ru:"У меня уже есть Open Water", en:"I already have Open Water", why_ru:"Advanced + Nitrox за 2 дня: глубина до 30 м, навигация и дыхание найтроксом, чтобы дольше оставаться на глубине.", why_en:"Advanced + Nitrox in 2 days: depth to 30 m, navigation and nitrox so you can stay down longer."},
+  {pick:"rescue", ru:"Хочу Rescue", en:"I want Rescue", why_ru:"Rescue Diver учит замечать проблемы раньше, чем они случились, и помогать напарнику. После него ныряешь заметно спокойнее.", why_en:"Rescue Diver teaches you to spot problems before they happen and help your buddy. You dive a lot calmer afterwards."}]},
+ cert:{ru:"Когда был последний дайв?", en:"When was your last dive?", opts:[
+  {pick:"fun2", ru:"Меньше полугода назад", en:"Less than 6 months ago", why_ru:"Два погружения с гидом у Хон Мун. Маршруты можно посмотреть на картах ниже и выбрать, куда хочется.", why_en:"Two guided dives around Hon Mun. Check the routes on the maps below and pick where you'd like to go."},
+  {pick:"refresh", ru:"Больше года назад", en:"Over a year ago", why_ru:"Начнём с короткого рефрешера прямо в первый день: вспомним навыки без спешки, и дальше ныряем как обычно.", why_en:"We start with a short refresher on day one: we go over the skills without rushing, then dive as usual."},
+  {pick:"speed", ru:"Хочу дальние сайты", en:"I want remote sites", why_ru:"Частный катер на 2–4 человека: The Wall 42 м, Ray Plateau 30 м, The Freefall 40 м, и график под вас.", why_en:"A private speedboat for 2–4 people: The Wall 42 m, Ray Plateau 30 m, The Freefall 40 m, on your schedule."},
+  {pick:"night", ru:"Хочу ночной дайв", en:"I want a night dive", why_ru:"Ночью риф совсем другой: выходят охотники, а планктон светится от каждого движения руки.", why_en:"The reef is a different place at night: hunters come out and the plankton lights up when you move your hand."}]}
+};
+
 const ALL = GROUPS.flatMap(g => g.items.map(i => ({...i, group:g})));
-let lang = "en", tab = "first";
+let lang = "en", tab = "first", quiz = {step:"q1", path:null, pick:null};
 try{ const s = localStorage.getItem("lang"); if(s==="ru"||s==="en") lang = s; else if((navigator.language||"").toLowerCase().startsWith("ru")) lang = "ru"; }catch(e){ if((navigator.language||"").toLowerCase().startsWith("ru")) lang = "ru"; }
+try{ const q = JSON.parse(localStorage.getItem("quiz") || "null"); if(q && QUIZ[q.path] && q.pick) quiz = {step:"done", path:q.path, pick:q.pick}; }catch(e){}
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money = i => `${i.from ? (lang==="ru"?"от ":"from ") : ""}$${i.price.toLocaleString("en-US")}`;
+const T = (ru, en) => lang === "ru" ? ru : en;
 
 function renderTabs(){
-  $("tabs").innerHTML = GROUPS.map(g => `<button type="button" role="tab" id="tab-${g.id}" aria-controls="plist" aria-selected="${g.id===tab}" tabindex="${g.id===tab?0:-1}" data-tab="${g.id}">${esc(g[lang])}</button>`).join("");
+  $("tabs").innerHTML = GROUPS.map(g => {
+    const min = Math.min(...g.items.map(i => i.price));
+    return `<button type="button" role="tab" id="tab-${g.id}" aria-controls="plist" aria-selected="${g.id===tab}" tabindex="${g.id===tab?0:-1}" data-tab="${g.id}">
+      <b>${esc(g[lang])}</b><small>${T("от","from")} $${min} · ${g.items.length} ${T(g.items.length>4?"вариантов":"варианта", "options")}</small></button>`;
+  }).join("");
   $("plist").setAttribute("aria-labelledby","tab-"+tab);
 }
 function title(i){
@@ -86,38 +118,118 @@ function title(i){
   return i.term ? `<button type="button" class="term" data-term="${i.term}">${t}</button>` : t;
 }
 function renderList(){
-  const g = GROUPS.find(x=>x.id===tab);
+  const g = GROUPS.find(x=>x.id===tab) || GROUPS[0];
   $("plist").innerHTML = g.items.map(i => `
-    <article class="item">
-      <div class="name"><h3>${title(i)}</h3>${i.rec?`<span class="rec">${lang==="ru"?"советую":"start here"}</span>`:""}</div>
-      ${i["meta_"+lang].length?`<div class="meta">${i["meta_"+lang].map(esc).join("  ·  ")}</div>`:""}
+    <article class="item${i.rec?" rec":""}">
+      <div class="name"><h3>${title(i)}</h3>${i.rec?`<span class="badge">${T("советую","my pick")}</span>`:""}</div>
+      ${(i["meta_"+lang]||[]).length?`<div class="meta">${i["meta_"+lang].map(esc).join("  ·  ")}</div>`:"<div></div>"}
       <p>${esc(i["d_"+lang]||"")}</p>
-      <div class="right"><span class="price">${money(i)}${i.unit?`<small>${esc(i.unit[lang])}</small>`:""}</span>
-        <button type="button" class="btn sm" data-pick="${esc(i.id)}">${lang==="ru"?"Записаться":"Book"}</button></div>
+      <div class="row"><span class="price">${money(i)}${i.unit?`<small>${esc(i.unit[lang])}</small>`:""}</span>
+        <button type="button" class="btn sm${i.rec?" primary":""}" data-pick="${esc(i.id)}">${T("Записаться","Book this")}</button></div>
     </article>`).join("");
   $("spec-box").hidden = tab !== "courses";
-  $("spec-table").innerHTML = SPECIALTIES.map(([n,d,p]) => `<tr><td>${esc(n)} <span class="muted">${d==="—"?"":"· "+d+(lang==="ru"?" погр.":" dives")}</span></td><td>$${p}</td></tr>`).join("");
+  $("spec-table").innerHTML = SPECIALTIES.map(([n,d,p]) => `<tr><td>${esc(n)} <span class="muted">${d==="—"?"":"· "+d+T(" погр."," dives")}</span></td><td>$${p}</td></tr>`).join("");
 }
-function renderGauge(){
-  // side view: surface at the top, depth grows downward, like a dive profile
-  const y0=22, y1=170, max=30, sy=d=>y0+(y1-y0)*d/max, L=58;
-  let s=`<rect x="${L}" y="0" width="${760-L}" height="${y0}" fill="var(--bg2)"/>`;
-  for(let d=0; d<=30; d+=6) s+=`<line x1="${L}" y1="${sy(d)}" x2="760" y2="${sy(d)}" stroke="var(--line)" ${d?'stroke-dasharray="2 6"':''}/><text x="${L-10}" y="${sy(d)+4}" text-anchor="end" style="font:400 11px var(--f-data);fill:var(--dim)">${d} m</text>`;
-  const rows=[[lang==="ru"?"Пробное":"Try dive",12],["Open Water",18],["Advanced",30]];
-  rows.forEach(([n,d],k)=>{const x=L+120+k*210;
-    s+=`<line x1="${x}" y1="${y0}" x2="${x}" y2="${sy(d)}" stroke="var(--accent)" stroke-width="2"/>
-        <circle cx="${x}" cy="${sy(d)}" r="5" fill="var(--accent)"/>
-        <text x="${x+12}" y="${sy(d)-6}" style="font:600 14px var(--f-body);fill:var(--fg)">${esc(n)}</text>
-        <text x="${x+12}" y="${sy(d)+12}" style="font:500 12px var(--f-data);fill:var(--accent)">${lang==="ru"?"до":"to"} ${d} m</text>`;});
-  $("gauge").innerHTML = s;
+
+/* ===== quiz: questions and the answer live in one card ===== */
+function renderQuiz(){
+  const body = $("q-body"), done = quiz.step === "done" && quiz.pick;
+  $("q-bar").style.width = done ? "100%" : quiz.step === "q1" ? "33%" : "66%";
+  $("q-step").textContent = done ? T("Готово","Done") : T(`Вопрос ${quiz.step==="q1"?1:2} из 2`, `Question ${quiz.step==="q1"?1:2} of 2`);
+  if(done){ body.innerHTML = resultHTML(); return; }
+  const q = QUIZ[quiz.step];
+  body.innerHTML = `<h3 class="q-title">${esc(q[lang])}</h3><div class="q-opts">${q.opts.map((o,k) => {
+    if(o.path) return `<button type="button" class="q-opt" data-path="${o.path}"><span class="ic">${k+1}</span><span><b>${esc(o[lang])}</b><small>${esc(o["s_"+lang])}</small></span><i aria-hidden="true">→</i></button>`;
+    const it = ALL.find(i => i.id === o.pick);
+    return `<button type="button" class="q-opt" data-q="${o.pick}"><span class="ic">${k+1}</span><span><b>${esc(o[lang])}</b>${it?`<small>${esc(it[lang])} · ${money(it)}</small>`:""}</span><i aria-hidden="true">→</i></button>`;
+  }).join("")}</div>${quiz.step!=="q1"?`<button type="button" class="q-link" data-qback>← ${T("Назад","Back")}</button>`:""}`;
 }
+function resultHTML(){
+  const it = ALL.find(i => i.id === quiz.pick); if(!it) return "";
+  const p = QUIZ.q1.opts.find(o => o.path === quiz.path), opt = (QUIZ[quiz.path]?.opts || []).find(o => o.pick === it.id);
+  return `<div class="q-result">
+    <p class="q-ans">${T("Твои ответы","Your answers")}: ${p?esc(p[lang]):""}${opt?` · ${esc(opt[lang])}`:""}</p>
+    <div class="q-head"><div><span class="q-tag">${T("Мой совет","My pick for you")}</span><h3>${title(it)}</h3></div>
+      <div class="q-price">${money(it)}${it.unit?`<small>${esc(it.unit[lang])}</small>`:""}</div></div>
+    ${opt?`<p class="q-why">${esc(opt["why_"+lang])}</p>`:""}
+    <ul class="q-meta">${(it["meta_"+lang]||[]).map(m=>`<li>${esc(m)}</li>`).join("")}<li>${T("снаряжение и обед включены","gear and lunch included")}</li></ul>
+    <div class="q-act">
+      <button type="button" class="btn primary" data-pick="${esc(it.id)}">${T("Записаться","Book this dive")}</button>
+      <button type="button" class="btn" data-see="${esc(it.group.id)}">${T("Сравнить с другими","Compare options")}</button>
+      <button type="button" class="q-link" data-qredo>↺ ${T("Пройти заново","Start over")}</button>
+    </div></div>`;
+}
+function saveQuiz(){ try{ localStorage.setItem("quiz", JSON.stringify({path:quiz.path, pick:quiz.pick})); }catch(e){} }
+
 function renderSeason(){
-  $("season").innerHTML = SEASON.map((s,i)=>`<div class="m ${s}"><i></i><span>${MONTHS[lang][i]}</span><small>${SEASON_WORD[lang][s]}</small></div>`).join("");
+  const now = new Date().getMonth();
+  $("season").innerHTML = SEASON.map((s,i)=>`<div class="m ${s}${i===now?" now":""}"><i></i><span>${MONTHS[lang][i]}</span><small>${i===now?T("сейчас","now"):SEASON_WORD[lang][s]}</small></div>`).join("");
+  const s = SEASON[now], m = MONTHS_FULL[lang][now];
+  $("season-now").textContent = s === "good"
+    ? T(`Сейчас, в ${m}, лучшее время: спокойное море и хорошая видимость.`, `Right now, in ${m}, is the best time: calm sea and good visibility.`)
+    : s === "ok"
+    ? T(`В ${m} нырять хорошо, иногда планктон снижает видимость.`, `${m} is good for diving, though plankton sometimes cuts visibility.`)
+    : T(`В ${m} бывают дожди и волна, но между ними ныряем. Напиши даты, подскажу по прогнозу.`, `${m} brings rain and swell, but we dive between them. Send me your dates and I'll check the forecast.`);
 }
+/* program picker: a styled listbox in front of the native <select>, which stays the source of truth */
 function renderSelect(){
-  const keep = $("f-prog").value;
-  $("f-prog").innerHTML = GROUPS.map(g => `<optgroup label="${esc(g[lang])}">${g.items.map(i=>`<option value="${i.id}">${esc(i[lang])} — ${money(i)}</option>`).join("")}</optgroup>`).join("");
-  if(keep) $("f-prog").value = keep;
+  renderNativeSelect();
+  $("prog-list").innerHTML = GROUPS.map(g => `<li role="presentation" class="pk-g">${esc(g[lang])}</li>` + g.items.map(i =>
+    `<li role="option" id="pk-${i.id}" data-v="${i.id}" aria-selected="false"><span>${esc(i[lang])}</span><em>${money(i)}</em></li>`).join("")).join("");
+  syncProg();
+}
+function syncProg(){
+  const v = $("f-prog").value, it = ALL.find(i => i.id === v);
+  $("prog-btn-t").innerHTML = it ? `<span>${esc(it[lang])}</span><em>${money(it)}</em>` : "";
+  $("prog-list").querySelectorAll("[data-v]").forEach(li => li.setAttribute("aria-selected", li.dataset.v === v));
+}
+function progOpen(open){
+  const box = $("prog"), list = $("prog-list");
+  box.classList.toggle("open", open); $("prog-btn").setAttribute("aria-expanded", open);
+  if(open){
+    const cur = list.querySelector('[aria-selected="true"]') || list.querySelector("[data-v]");
+    progFocus(cur); list.focus({preventScroll:true});
+    // open upwards when there is no room below
+    const r = $("prog-btn").getBoundingClientRect();
+    box.classList.toggle("up", innerHeight - r.bottom < 300 && r.top > innerHeight - r.bottom);
+  }
+}
+function progFocus(li){
+  if(!li) return;
+  $("prog-list").querySelectorAll(".hl").forEach(x => x.classList.remove("hl"));
+  li.classList.add("hl"); $("prog-list").setAttribute("aria-activedescendant", li.id);
+  const l = $("prog-list"); if(li.offsetTop < l.scrollTop) l.scrollTop = li.offsetTop - 30; else if(li.offsetTop + li.offsetHeight > l.scrollTop + l.clientHeight) l.scrollTop = li.offsetTop + li.offsetHeight - l.clientHeight + 6;
+}
+function progPick(v){ $("f-prog").value = v; updateMsg(); progOpen(false); $("prog-btn").focus(); }
+$("prog-btn").addEventListener("click", () => progOpen(!$("prog").classList.contains("open")));
+$("prog-btn").addEventListener("keydown", e => { if(e.key === "ArrowDown" || e.key === "ArrowUp"){ e.preventDefault(); progOpen(true); } });
+$("prog-list").addEventListener("click", e => { const li = e.target.closest("[data-v]"); if(li) progPick(li.dataset.v); });
+$("prog-list").addEventListener("pointermove", e => { const li = e.target.closest("[data-v]"); if(li && !li.classList.contains("hl")) progFocus(li); });
+$("prog-list").addEventListener("keydown", e => {
+  const opts = [...$("prog-list").querySelectorAll("[data-v]")], i = opts.findIndex(o => o.classList.contains("hl"));
+  if(e.key === "ArrowDown"){ e.preventDefault(); progFocus(opts[Math.min(opts.length - 1, i + 1)]); }
+  else if(e.key === "ArrowUp"){ e.preventDefault(); progFocus(opts[Math.max(0, i - 1)]); }
+  else if(e.key === "Home"){ e.preventDefault(); progFocus(opts[0]); }
+  else if(e.key === "End"){ e.preventDefault(); progFocus(opts[opts.length - 1]); }
+  else if(e.key === "Enter" || e.key === " "){ e.preventDefault(); if(opts[i]) progPick(opts[i].dataset.v); }
+  else if(e.key === "Escape" || e.key === "Tab"){ progOpen(false); if(e.key === "Escape"){ e.stopPropagation(); $("prog-btn").focus(); } }
+});
+document.addEventListener("click", e => { if(!e.target.closest("#prog")) progOpen(false); });
+/* people stepper */
+document.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
+  const f = $("f-people"); f.value = Math.max(1, Math.min(20, (parseInt(f.value, 10) || 1) + +b.dataset.step)); updateMsg();
+}));
+document.querySelector(".st-v").addEventListener("click", () => $("f-people").focus());
+$("f-people").addEventListener("blur", () => { const f = $("f-people"); f.value = Math.max(1, Math.min(20, parseInt(f.value, 10) || 1)); updateMsg(); });
+function syncPeople(){
+  const n = Math.max(1, Math.min(20, parseInt($("f-people").value, 10) || 1)), m10 = n % 10, m100 = n % 100;
+  $("pp-unit").textContent = lang === "ru" ? (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "человека" : "человек") : (n === 1 ? "person" : "people");
+  $("pp-minus").disabled = n <= 1; $("pp-plus").disabled = n >= 20;
+}
+function renderNativeSelect(){
+  const keep = $("f-prog").value || quiz.pick;
+  $("f-prog").innerHTML = GROUPS.map(g => `<optgroup label="${esc(g[lang])}">${g.items.map(i=>`<option value="${i.id}">${esc(i[lang])} · ${money(i)}</option>`).join("")}</optgroup>`).join("");
+  if(keep && ALL.some(i => i.id === keep)) $("f-prog").value = keep;
 }
 function fmtDate(v){
   if(!v) return "";
@@ -135,7 +247,7 @@ function message(){
     ? ["Привет, Настя! Хочу записаться.","Имя","Программа","Человек","Даты","Отель","Фото/видео","Вопросы"]
     : ["Hi Nastya! I'd like to book a dive.","Name","Program","People","Dates","Hotel","Photos/video","Notes"];
   const v = [$("f-name").value, `${p[lang]} (${money(p)})`, $("f-people").value, dates(), $("f-hotel").value,
-             $("f-photo").checked ? (lang==="ru"?"да, хочу":"yes please") : "", $("f-note").value];
+             $("f-photo").checked ? T("да, хочу","yes please") : "", $("f-note").value];
   return [L[0], ...v.map((x,i)=> x && String(x).trim() ? `${L[i+1]}: ${String(x).trim()}` : null)].filter(Boolean).join("\n");
 }
 function waLink(text){ return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`; }
@@ -143,15 +255,21 @@ function updateMsg(){
   const m = message();
   $("msg").textContent = m;
   $("go-wa").href = waLink(m);
-  const hi = lang==="ru" ? "Привет, Настя! Хочу нырнуть в Нячанге." : "Hi Nastya! I'd like to dive in Nha Trang.";
+  const it = quiz.pick && ALL.find(i => i.id === quiz.pick);
+  const hi = it ? T(`Привет, Настя! Хочу записаться: ${it.ru}.`, `Hi Nastya! I'd like to book: ${it.en}.`)
+               : T("Привет, Настя! Хочу записаться на погружение в Нячанге.", "Hi Nastya! I'd like to book a dive in Nha Trang.");
   $("hero-wa").href = waLink(hi); $("m-wa").href = waLink(hi);
+  $("m-wa-t").textContent = it ? `${T("Записаться","Book")} · ${money(it)}` : T("Записаться на погружение","Book a dive");
+  syncProg(); syncPeople(); syncDates();
 }
 function applyLang(){
   document.body.dataset.lang = lang;
   document.documentElement.lang = lang;
   $("lang-ru").setAttribute("aria-pressed", lang==="ru");
   $("lang-en").setAttribute("aria-pressed", lang==="en");
-  renderTabs(); renderList(); renderGauge(); renderSeason(); renderSelect(); updateMsg(); hideTip();
+  $("intro-skip") && ($("intro-skip").textContent = T("Пропустить ›","Skip ›"));
+  renderTabs(); renderList(); renderQuiz(); renderSeason(); renderSelect(); updateMsg(); hideTip();
+  if(typeof renderMaps === "function") renderMaps();
 }
 function setTab(id, focus){
   tab=id; renderTabs(); renderList();
@@ -178,11 +296,16 @@ document.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click",
   lang = b.dataset.set; try{ localStorage.setItem("lang", lang); }catch(e){}
   applyLang();
 }));
-document.querySelectorAll("[data-path]").forEach(b => b.addEventListener("click", () => {
-  document.querySelectorAll("[data-path]").forEach(x => x.setAttribute("aria-pressed", x===b));
-  setTab(b.dataset.path);
-  $("prices").scrollIntoView({behavior: smooth()});
-}));
+$("q-body").addEventListener("click", e => {
+  const p = e.target.closest("[data-path]");
+  if(p){ quiz.path = p.dataset.path; quiz.step = quiz.path; quiz.pick = null; setTab(quiz.path); renderQuiz(); $("q-body").querySelector(".q-opt")?.focus({preventScroll:true}); return; }
+  const q = e.target.closest("[data-q]");
+  if(q){ quiz.pick = q.dataset.q; quiz.step = "done"; saveQuiz(); renderQuiz(); $("f-prog").value = quiz.pick; updateMsg(); return; }
+  if(e.target.closest("[data-qback]")){ quiz.step = "q1"; renderQuiz(); return; }
+  if(e.target.closest("[data-qredo]")){ quiz = {step:"q1", path:null, pick:null}; try{ localStorage.removeItem("quiz"); }catch(err){} renderQuiz(); updateMsg(); $("quiz").scrollIntoView({behavior: smooth(), block:"nearest"}); return; }
+  const s = e.target.closest("[data-see]");
+  if(s){ setTab(s.dataset.see); $("prices").scrollIntoView({behavior: smooth()}); }
+});
 $("tabs").addEventListener("click", e => { const b=e.target.closest("[data-tab]"); if(b) setTab(b.dataset.tab); });
 $("tabs").addEventListener("keydown", e => {
   if(e.key!=="ArrowRight" && e.key!=="ArrowLeft") return;
@@ -190,45 +313,111 @@ $("tabs").addEventListener("keydown", e => {
   const n = (i + (e.key==="ArrowRight"?1:-1) + GROUPS.length) % GROUPS.length;
   e.preventDefault(); setTab(GROUPS[n].id, true);
 });
-$("plist").addEventListener("click", e => {
+document.addEventListener("click", e => {
   const b = e.target.closest("[data-pick]"); if(!b) return;
   $("f-prog").value = b.dataset.pick; updateMsg();
   $("book").scrollIntoView({behavior: smooth()});
+  setTimeout(() => { try{ $("f-name").focus({preventScroll:true}); }catch(err){} }, 700);
 });
 $("f").addEventListener("input", updateMsg);
 $("f").addEventListener("change", updateMsg);
 $("f").addEventListener("submit", e => e.preventDefault());
 $("copy").addEventListener("click", () => {
   const m = message();
-  const done = () => $("toast").textContent = lang==="ru" ? "Скопировано. Вставь в чат Telegram." : "Copied. Paste it into Telegram.";
+  const done = () => $("toast").textContent = T("Скопировано. Вставь в чат Telegram.","Copied. Paste it into Telegram.");
   try{ navigator.clipboard.writeText(m).then(done).catch(selectMsg); }catch(e){ selectMsg(); }
 });
 function selectMsg(){
   const r=document.createRange(); r.selectNodeContents($("msg"));
   const s=getSelection(); s.removeAllRanges(); s.addRange(r);
-  $("toast").textContent = lang==="ru" ? "Текст выделен: скопируй его вручную." : "Text selected: copy it manually.";
+  $("toast").textContent = T("Текст выделен: скопируй его вручную.","Text selected: copy it manually.");
 }
 const today = new Date(); const iso = new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
-$("f-from").min = iso; $("f-to").min = iso;
-$("f-from").addEventListener("change", () => { $("f-to").min = $("f-from").value || iso; });
 
-$("go-tg").href = $("c-tg-a").href = `https://t.me/${CONTACT.telegram}`;
+/* trip dates: Air Datepicker (vendor/air-datepicker-*.js) in range mode; hidden f-from / f-to keep ISO dates for the message and the backend */
+const ADP_LOCALE = {
+  ru:{days:["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],daysShort:["Вс","Пн","Вт","Ср","Чт","Пт","Сб"],daysMin:["Вс","Пн","Вт","Ср","Чт","Пт","Сб"],
+      months:["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],monthsShort:["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"],
+      today:"Сегодня",clear:"Очистить",dateFormat:"dd.MM.yyyy",timeFormat:"HH:mm",firstDay:1},
+  en:{days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],daysShort:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],daysMin:["Su","Mo","Tu","We","Th","Fr","Sa"],
+      months:["January","February","March","April","May","June","July","August","September","October","November","December"],monthsShort:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      today:"Today",clear:"Clear",dateFormat:"MM/dd/yyyy",timeFormat:"hh:mm aa",firstDay:1}
+};
+const isoOf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+let dp = null;
+function dpOpts(){
+  return {
+    locale: ADP_LOCALE[lang], range: true, multipleDatesSeparator: " – ", minDate: new Date(new Date().setHours(0,0,0,0)),
+    dateFormat: d => fmtDate(isoOf(d)), autoClose: true, toggleSelected: false, keyboardNav: true,
+    isMobile: matchMedia("(max-width:560px)").matches, position: "bottom left", buttons: ["clear"],
+    prevHtml: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    nextHtml: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    navTitles: {days: "<b>MMMM</b>&nbsp;yyyy"},
+    onSelect: ({date}) => {
+      const [a, b] = Array.isArray(date) ? date : (date ? [date] : []);
+      $("f-from").value = a ? isoOf(a) : ""; $("f-to").value = b ? isoOf(b) : "";
+      updateMsg();
+    }
+  };
+}
+function syncDates(){
+  const a = $("f-from").value, b = $("f-to").value;
+  $("f-dates").placeholder = T("Когда ты в Нячанге?", "When are you in Nha Trang?");
+  if(dp){
+    if(dp.__lang !== lang){ dp.__lang = lang; dp.update({locale: ADP_LOCALE[lang]}, {silent: true}); }
+    $("f-dates").value = a ? (b && b !== a ? `${fmtDate(a)} – ${fmtDate(b)}` : fmtDate(a) + (b ? "" : " – …")) : "";
+  }
+  const n = a && b ? Math.round((new Date(b) - new Date(a)) / 864e5) + 1 : 0, m10 = n % 10, m100 = n % 100;
+  $("f-nights").textContent = n ? (lang === "ru" ? `${n} ${m10 === 1 && m100 !== 11 ? "день" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "дня" : "дней"}` : `${n} day${n > 1 ? "s" : ""}`) : "";
+}
+if(window.AirDatepicker){
+  dp = new AirDatepicker("#f-dates", dpOpts()); dp.__lang = lang;
+  addEventListener("resize", () => { const mob = matchMedia("(max-width:560px)").matches; if(dp && dp.opts.isMobile !== mob){ if(dp.visible) dp.hide(); dp.update({isMobile: mob}, {silent: true}); } });
+} else {
+  // library failed to load: fall back to two native date fields
+  $("f-dates").closest(".fld").hidden = true;
+  ["f-from","f-to"].forEach(id => { const f = $(id); f.type = "date"; f.min = iso; f.className = "dates-fallback"; f.addEventListener("change", updateMsg); $("f-dates").closest(".fld").after(f); });
+}
+
+$("go-tg").href = $("c-tg-a").href = $("hi-tg").href = `https://t.me/${CONTACT.telegram}`;
 $("c-wa-a").href = `https://wa.me/${CONTACT.whatsapp}`;
 $("c-ig-a").href = `https://instagram.com/${CONTACT.instagram}`;
 $("c-tg").textContent = "@" + CONTACT.telegram;
 $("c-wa").textContent = "+" + CONTACT.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d+)$/,"$1 $2 $3 $4");
 $("c-ig").textContent = "@" + CONTACT.instagram;
-applyLang();
+if(quiz.pick) tab = quiz.path;
 
+/* ===== scroll effects: solid top bar, mobile CTA, depth gauge, reveals ===== */
+(function(){
+  const bar = $("bar"), mbar = $("mbar"), gauge = $("gauge"), gv = $("g-val");
+  const secs = [...document.querySelectorAll("section[data-depth]")];
+  let ticking = false;
+  function onScroll(){
+    ticking = false;
+    const y = scrollY, vh = innerHeight;
+    bar.classList.toggle("solid", y > 40);
+    mbar.classList.toggle("on", y > vh * .6 && $("book").getBoundingClientRect().top > vh * .5);
+    // depth = interpolated between the sections' data-depth values
+    let d = 0;
+    for(const s of secs){ const r = s.getBoundingClientRect(); if(r.top < vh * .5) d = +s.dataset.depth + Math.min(1, Math.max(0, (vh * .5 - r.top) / r.height)) * 3; }
+    d = Math.min(30, d);
+    gauge.classList.toggle("on", y > vh * .5);
+    gauge.style.setProperty("--g", (d / 30 * 100).toFixed(1) + "%");
+    gv.textContent = d.toFixed(0) + " m";
+  }
+  addEventListener("scroll", () => { if(!ticking){ ticking = true; requestAnimationFrame(onScroll); } }, {passive:true});
+  addEventListener("resize", onScroll);
+  onScroll();
+  const els = document.querySelectorAll(".reveal");
+  if(!("IntersectionObserver" in window)){ els.forEach(e => e.classList.add("in")); return; }
+  const io = new IntersectionObserver(es => es.forEach(en => { if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } }), {rootMargin:"0px 0px -8% 0px", threshold:.08});
+  els.forEach(e => io.observe(e));
+})();
 
-/* dive-site map viewer */
-let lbFrom = null;
-document.addEventListener("click", e => {
-  const z = e.target.closest(".zoom"); if(!z) return;
-  lbFrom = z; $("lb-img").src = z.dataset.full; $("lb-img").alt = z.querySelector("img").alt;
-  $("lb").hidden = false; document.body.style.overflow = "hidden"; $("lb-x").focus();
+/* ===== videos: play on tap, pause when scrolled away ===== */
+document.querySelectorAll(".mo video").forEach(v => {
+  const fig = v.closest(".mo"), btn = fig.querySelector(".play");
+  btn && btn.addEventListener("click", () => { v.controls = true; v.play().then(() => fig.classList.add("on")).catch(() => {}); });
+  v.addEventListener("pause", () => { if(v.ended) fig.classList.remove("on"); });
+  if("IntersectionObserver" in window) new IntersectionObserver(es => es.forEach(en => { if(!en.isIntersecting && !v.paused) v.pause(); }), {threshold:0}).observe(v);
 });
-function closeLb(){ if($("lb").hidden) return; $("lb").hidden = true; document.body.style.overflow = ""; if(lbFrom) lbFrom.focus(); }
-$("lb-x").addEventListener("click", closeLb);
-$("lb").addEventListener("click", e => { if(e.target.id==="lb" || e.target.classList.contains("lb-scroll")) closeLb(); });
-document.addEventListener("keydown", e => { if(e.key==="Escape") closeLb(); });
