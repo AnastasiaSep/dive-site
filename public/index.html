@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#061217">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>Dive Nha Trang with Nastya</title>
@@ -35,7 +35,7 @@ body{background:var(--bg);color:var(--fg);font:500 17px/1.6 var(--f-body);-webki
 /* the page gets darker the deeper you scroll, like the water column */
 .ocean{background:linear-gradient(180deg,#0a3341 0%,#072634 18%,#05202b 40%,#041824 65%,#030f16 100%)}
 /* with WebGL the gradient is drawn by the sea canvas (src/sea.js), with fish and reefs */
-#sea{position:fixed;left:0;top:0;width:100%;height:100lvh;z-index:-1;pointer-events:none;display:block}
+#sea{position:fixed;left:0;top:6px;width:100%;height:calc(100svh - 12px);z-index:-1;pointer-events:none;display:block}
 .sea-on .ocean{background:none}
 body[data-lang="ru"] .en, body[data-lang="en"] .ru{display:none!important}
 .wrap{max-width:1180px;margin:0 auto;padding-left:var(--pad);padding-right:max(20px,env(safe-area-inset-right,0px))}
@@ -54,8 +54,9 @@ img,video{max-width:100%;display:block}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:700 1rem/1.2 var(--f-body);text-decoration:none;border-radius:999px;padding:15px 26px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--fg);cursor:pointer;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s;text-align:center}
 .btn:hover{border-color:var(--fg);transform:translateY(-1px)}
 .btn svg{flex:none}
-.btn.primary{background:var(--coral);border-color:var(--coral);color:var(--coral-ink);box-shadow:0 10px 30px -10px rgba(255,122,89,.7)}
-.btn.primary:hover{background:var(--coral-2);box-shadow:0 14px 34px -10px rgba(255,122,89,.85)}
+/* white text on a deeper coral: #c94a2b gives 4.7:1, the hover shade #bf4527 5.1:1 */
+.btn.primary{background:#c94a2b;border-color:#c94a2b;color:#fff;box-shadow:0 10px 30px -12px rgba(201,74,43,.75)}
+.btn.primary:hover{background:#bf4527;border-color:#bf4527;box-shadow:0 14px 34px -12px rgba(201,74,43,.9)}
 .btn.aqua{background:var(--aqua);border-color:var(--aqua);color:var(--aqua-ink)}
 .btn.sm{padding:10px 18px;font-size:.9rem}
 .btn:disabled{opacity:.6;cursor:wait}
@@ -80,20 +81,21 @@ img,video{max-width:100%;display:block}
 .logo{font:600 1.05rem var(--f-head);text-decoration:none;letter-spacing:-.02em;margin-right:auto;white-space:nowrap}
 .logo i{font-style:normal;color:var(--aqua)}
 .nav{display:flex;gap:22px;font-size:.93rem;font-weight:600}
-.nav a{text-decoration:none;color:var(--muted);transition:color .15s}
+.nav a{text-decoration:none;color:#d6e6e5;text-shadow:0 1px 10px rgba(4,18,26,.5);transition:color .15s}
 .nav a:hover{color:var(--fg)}
 .langs{display:flex;gap:2px;font:500 .78rem var(--f-data);background:rgba(255,255,255,.06);border-radius:999px;padding:3px}
-.langs button{background:none;border:0;color:var(--muted);padding:6px 10px;cursor:pointer;font:inherit;letter-spacing:.06em;border-radius:999px}
+.langs button{background:none;border:0;color:#d6e6e5;padding:6px 10px;cursor:pointer;font:inherit;letter-spacing:.06em;border-radius:999px}
 .langs button[aria-pressed="true"]{color:var(--aqua-ink);background:var(--aqua)}
 
 /* ===== hero ===== */
 .hero{position:relative;min-height:100svh;display:grid;align-items:end;overflow:hidden;isolation:isolate}
 .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-3;transform:scale(1.08);transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
 .intro-done .hero>img{transform:scale(1)}
-.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(4,18,26,.55) 0%,rgba(4,18,26,.1) 30%,rgba(4,18,26,.35) 55%,rgba(7,38,52,.95) 86%,#0a3341 100%)}
+/* the photo is bright in the middle (jungle, rocks, sky): the scrim keeps every hero text at 4.5:1 or better */
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(4,18,26,.66) 0%,rgba(4,18,26,.46) 16%,rgba(4,18,26,.46) 30%,rgba(4,18,26,.62) 46%,rgba(7,38,52,.78) 62%,rgba(7,38,52,.95) 86%,#0a3341 100%)}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 50% at 15% 85%,rgba(4,18,26,.65),transparent 70%)}
 /* with the sea background on (config.js → SEA_BACKGROUND) the photo dissolves into the live water instead of a solid colour */
-.sea-on .hero::before{background:linear-gradient(180deg,rgba(4,18,26,.55) 0%,rgba(4,18,26,.1) 30%,rgba(4,18,26,.35) 55%,rgba(7,38,52,.6) 66%,rgba(7,38,52,.42) 78%,rgba(7,38,52,.22) 88%,rgba(7,38,52,.07) 95%,rgba(7,38,52,0) 100%)}
+.sea-on .hero::before{background:linear-gradient(180deg,rgba(4,18,26,.66) 0%,rgba(4,18,26,.46) 16%,rgba(4,18,26,.46) 30%,rgba(4,18,26,.62) 46%,rgba(7,38,52,.72) 60%,rgba(7,38,52,.6) 70%,rgba(7,38,52,.42) 80%,rgba(7,38,52,.22) 89%,rgba(7,38,52,.07) 95%,rgba(7,38,52,0) 100%)}
 .sea-on .hero>img{-webkit-mask-image:linear-gradient(180deg,#000 50%,rgba(0,0,0,.78) 66%,rgba(0,0,0,.45) 80%,rgba(0,0,0,.18) 91%,rgba(0,0,0,.04) 97%,transparent 100%);mask-image:linear-gradient(180deg,#000 50%,rgba(0,0,0,.78) 66%,rgba(0,0,0,.45) 80%,rgba(0,0,0,.18) 91%,rgba(0,0,0,.04) 97%,transparent 100%)}
 .sea-on .hero::after{-webkit-mask-image:linear-gradient(180deg,#000 55%,rgba(0,0,0,.5) 75%,rgba(0,0,0,.15) 90%,transparent 100%);mask-image:linear-gradient(180deg,#000 55%,rgba(0,0,0,.5) 75%,rgba(0,0,0,.15) 90%,transparent 100%)}
 .hero .wrap{width:100%;padding-top:120px;padding-bottom:56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,330px);gap:48px;align-items:end}
@@ -116,9 +118,6 @@ img,video{max-width:100%;display:block}
 .intro-done .reveal-h>*{opacity:1;transform:none}
 .intro-done .reveal-h>*:nth-child(2){transition-delay:.08s}.intro-done .reveal-h>*:nth-child(3){transition-delay:.16s}
 .intro-done .reveal-h>*:nth-child(4){transition-delay:.24s}.intro-done .reveal-h>*:nth-child(5){transition-delay:.32s}
-.scroll-cue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:24px;height:38px;border:2px solid rgba(255,255,255,.4);border-radius:14px}
-.scroll-cue::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:cue 1.8s infinite}
-@keyframes cue{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 
 /* ===== depth gauge on the side ===== */
 .gauge{position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:20;display:grid;justify-items:center;gap:10px;opacity:0;transition:opacity .4s;pointer-events:none}
@@ -420,7 +419,7 @@ textarea{min-height:90px;resize:vertical}
 a.contact:hover{border-color:var(--aqua)}
 footer{border-top:1px solid var(--line);color:var(--dim);font-size:.86rem;padding-block:28px 40px;background:#030f16}
 /* with the sea on, the sandy bottom shows through the footer */
-.sea-on footer{background:linear-gradient(rgba(3,15,22,.35),rgba(3,15,22,.6));border-color:rgba(255,255,255,.08)}
+.sea-on footer{background:linear-gradient(rgba(3,15,22,0),rgba(3,15,22,.55) 40%);border-top:0}
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
 
 /* trip dates field + Air Datepicker theme */
@@ -584,7 +583,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
         </div>
       </aside>
     </div>
-    <span class="scroll-cue" aria-hidden="true"></span>
   </section>
 
   <section class="block" id="start" data-depth="3">
