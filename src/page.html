@@ -26,7 +26,6 @@ body{background:var(--bg);color:var(--fg);font:500 17px/1.6 var(--f-body);-webki
 /* with WebGL the gradient is drawn by the sea canvas (src/sea.js), with fish and reefs */
 #sea{position:fixed;left:0;top:0;width:100%;height:100lvh;z-index:-1;pointer-events:none;display:block}
 .sea-on .ocean{background:none}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
 body[data-lang="ru"] .en, body[data-lang="en"] .ru{display:none!important}
 .wrap{max-width:1180px;margin:0 auto;padding-left:var(--pad);padding-right:max(20px,env(safe-area-inset-right,0px))}
 h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.1;text-wrap:balance}
@@ -129,10 +128,6 @@ section.block{scroll-margin-top:12px;padding-block:clamp(72px,9vw,120px);positio
 /* ===== quiz: one card, questions then the answer ===== */
 .quiz{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:28px;padding:clamp(22px,3.4vw,40px);position:relative;overflow:hidden}
 .quiz::after{content:"";position:absolute;right:-90px;top:-90px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(95,227,201,.14),transparent 70%);pointer-events:none}
-.q-top{display:flex;align-items:center;gap:16px;margin-bottom:22px}
-.q-step{font:600 .88rem var(--f-body);color:var(--muted);white-space:nowrap}
-.q-prog{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
-.q-prog i{display:block;height:100%;width:33%;border-radius:4px;background:linear-gradient(90deg,var(--aqua),#2aa3c2);transition:width .5s cubic-bezier(.2,.7,.2,1)}
 .q-title{font:600 clamp(1.3rem,2.4vw,1.7rem)/1.2 var(--f-head)}
 .q-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:22px}
 .q-opts:has(> :nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -151,8 +146,7 @@ section.block{scroll-margin-top:12px;padding-block:clamp(72px,9vw,120px);positio
 @keyframes qIn{from{opacity:0;transform:translateY(10px)}}
 .q-ans{color:var(--dim);font-size:.9rem}
 .q-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 24px;margin-top:14px}
-.q-tag{display:inline-block;font:700 .78rem var(--f-body);color:var(--coral-ink);background:var(--coral);padding:5px 11px;border-radius:999px}
-.q-head h3{font:600 clamp(1.35rem,2.6vw,1.9rem)/1.2 var(--f-head);margin-top:12px}
+.q-head h3{font:600 clamp(1.35rem,2.6vw,1.9rem)/1.2 var(--f-head)}
 .q-price{font:500 clamp(2rem,4vw,2.8rem)/1 var(--f-data);letter-spacing:-.04em;white-space:nowrap}
 .q-price small{font-size:.35em;color:var(--muted);letter-spacing:0;margin-left:8px}
 .q-why{margin-top:16px;color:#d7e8e7;max-width:62ch;font-size:1.04rem}
@@ -307,10 +301,15 @@ section.block{scroll-margin-top:12px;padding-block:clamp(72px,9vw,120px);positio
 .mo{margin:0;position:relative;border-radius:var(--r);overflow:hidden;background:var(--card);min-width:0}
 .mo img,.mo video{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .mo:hover img{transform:scale(1.04)}
-.mo figcaption{position:absolute;left:10px;bottom:10px;right:10px;font-size:.84rem;padding:7px 11px;border-radius:12px;background:rgba(4,18,26,.68);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);width:max-content;max-width:calc(100% - 20px);pointer-events:none}
+/* a quiet caption on a soft shade at the bottom of the photo, like a note on a print */
+.mo::after{content:"";position:absolute;inset:auto 0 0;height:55%;background:linear-gradient(transparent,rgba(3,14,20,.72));pointer-events:none;transition:opacity .3s}
+.mo figcaption{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;font-size:.86rem;font-weight:600;line-height:1.3;color:#eaf6f4;text-shadow:0 1px 8px rgba(0,0,0,.45);pointer-events:none;transition:opacity .3s}
+.mo.on::after,.mo.on figcaption{opacity:0}
 .mo.tall{grid-row:span 2}
 .mo.wide{grid-column:span 2}
-.mo .play{position:absolute;inset:0;margin:auto;width:62px;height:62px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#04161f;display:grid;place-items:center;cursor:pointer;transition:transform .2s}
+.mo .play{position:absolute;inset:0;z-index:1;margin:auto;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(4,18,26,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .2s,background .2s}
+.mo .play svg{width:18px;height:18px;margin-left:2px}
+.mo .play:hover{background:rgba(4,18,26,.5)}
 .mo .play:hover{transform:scale(1.08)}
 .mo.on .play{display:none}
 
@@ -497,7 +496,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
   form{grid-template-columns:minmax(0,1fr)}
   .step{grid-template-columns:78px minmax(0,1fr);gap:14px}
   .step:not(:last-child)::before{left:77px}
-  .mo figcaption{font-size:.74rem;padding:5px 9px;left:8px;bottom:8px}
+  .mo figcaption{font-size:.78rem;left:10px;right:10px;bottom:9px}
   .step .t{font-size:.92rem;padding-right:24px}
   .moments{grid-auto-rows:150px;gap:10px}
   .mo.wide{grid-column:span 2}
@@ -558,7 +557,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
         <p class="lead"><span class="ru">Привет, я Настя, дайвмастер PADI. Вожу к рифам у островов и тех, кто ныряет впервые, и тех, у кого за плечами сотня погружений. Всё объясню, проверю снаряжение и буду рядом под водой.</span><span class="en">Hi, I'm Nastya, a PADI Divemaster. I take first-timers and seasoned divers out to the reefs around the islands. I'll explain everything, check your gear and stay close to you underwater.</span></p>
         <div class="cta">
           <a class="btn primary" id="hero-wa" href="#book" target="_blank" rel="noopener"><span class="ru">Записаться на погружение</span><span class="en">Book a dive</span></a>
-          <a class="btn" href="#start"><span class="ru">Подобрать программу</span><span class="en">Find my program</span></a>
         </div>
         <ul class="chips">
           <li><b>80+</b> <span class="ru">погружений в логбуке</span><span class="en">logged dives</span></li>
@@ -584,7 +582,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
         <p class="sub"><span class="ru">Ответь на два вопроса, и я подскажу, какое погружение тебе подойдёт.</span><span class="en">Answer two questions and I'll tell you which dive suits you.</span></p>
       </div>
       <div class="quiz reveal" id="quiz">
-        <div class="q-top"><span class="q-step" id="q-step"></span><span class="q-prog"><i id="q-bar"></i></span></div>
         <div id="q-body" aria-live="polite"></div>
       </div>
     </div>

@@ -208,27 +208,35 @@ void main(){
     dirty = true;
   }
 
-  // camera depth follows the scroll with a little lag, like sinking
-  let cam = 0, camT = 0, dep = 0, depT = 0, maxCam = 1, floorRun = 1, dirty = true;
-  function target(){
-    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-    camT = scrollY / VH; maxCam = max / VH;
+  // the camera is locked to the scroll position (read every frame, no easing), so the water moves
+  // exactly with the finger; page measurements are cached and refreshed only when the layout changes
+  let cam = 0, dep = 0, maxCam = 1, floorRun = 1, maxScroll = 1, docH = 0, lastY = -1, dirty = true;
+  function measure(){
+    docH = document.documentElement.scrollHeight;
+    maxScroll = Math.max(1, docH - innerHeight); maxCam = maxScroll / VH;
     // the sandy bottom starts rising once the bottom of the chat preview reaches the screen bottom
     // (on desktop the card is sticky, so measure where it sits in the layout, not where it is stuck)
     const card = document.querySelector(".chat-win"), chat = card && card.closest(".chat");
-    let bottom = 0;
+    let start = maxScroll - VH;
     if(card){
-      bottom = chat && getComputedStyle(chat).position === "sticky"
+      const bottom = chat && getComputedStyle(chat).position === "sticky"
         ? chat.parentElement.getBoundingClientRect().top + scrollY + card.offsetTop + card.offsetHeight
         : card.getBoundingClientRect().bottom + scrollY;
+      start = bottom - innerHeight;
     }
-    const start = card ? bottom - innerHeight : max - VH;
-    floorRun = Math.max(.25, (max - start) / VH);
-    depT = Math.min(1, scrollY / max);
+    floorRun = Math.max(.25, (maxScroll - start) / VH);
+    dirty = true;
   }
-  size(); target(); cam = camT; dep = depT;
-  addEventListener("scroll", () => { target(); dirty = true; }, {passive:true});
-  addEventListener("resize", () => { size(); target(); });
+  function follow(){
+    const y = scrollY;
+    if(document.documentElement.scrollHeight !== docH) measure();
+    if(y === lastY) return false;
+    lastY = y; cam = y / VH; dep = Math.min(1, y / maxScroll);
+    return true;
+  }
+  size(); measure(); follow();
+  addEventListener("resize", () => { size(); measure(); });
+  addEventListener("load", measure);
 
   let last = 0, t = 0, slow = 0, frames = 0;
   function frame(now){
@@ -236,14 +244,13 @@ void main(){
     // the intro owns the GPU first; the hero photo covers everything at the top
     if(!document.body.classList.contains("intro-done")) return;
     if(hero && hero.getBoundingClientRect().bottom > innerHeight + 40){ last = now; return; }
+    const moved = follow();
     const dt = last ? Math.min(.1, (now - last) / 1000) : 0;
-    if(dt && dt < .03) return;                       // ~30 fps is plenty for slow water
-    if(still && !dirty) return;
+    // while scrolling draw every frame; idle water only needs ~30 fps
+    if(!moved && dt && dt < .03) return;
+    if(still && !moved && !dirty) return;
     last = now; dirty = false;
     if(!still) t += dt;
-    const k = still ? 1 : Math.min(1, dt * 7);
-    cam += (camT - cam) * k; dep += (depT - dep) * k;
-    if(Math.abs(camT - cam) > 1e-4) dirty = true;
     gl.uniform2f(U.R, W, H); gl.uniform1f(U.T, t); gl.uniform1f(U.Y, cam);
     gl.uniform1f(U.D, dep); gl.uniform1f(U.M, maxCam); gl.uniform1f(U.F, floorRun);
     gl.uniform1f(U.C, Math.min(1180, VW) / 2 / VH);

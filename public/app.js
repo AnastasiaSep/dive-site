@@ -372,27 +372,35 @@ void main(){
     dirty = true;
   }
 
-  // camera depth follows the scroll with a little lag, like sinking
-  let cam = 0, camT = 0, dep = 0, depT = 0, maxCam = 1, floorRun = 1, dirty = true;
-  function target(){
-    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-    camT = scrollY / VH; maxCam = max / VH;
+  // the camera is locked to the scroll position (read every frame, no easing), so the water moves
+  // exactly with the finger; page measurements are cached and refreshed only when the layout changes
+  let cam = 0, dep = 0, maxCam = 1, floorRun = 1, maxScroll = 1, docH = 0, lastY = -1, dirty = true;
+  function measure(){
+    docH = document.documentElement.scrollHeight;
+    maxScroll = Math.max(1, docH - innerHeight); maxCam = maxScroll / VH;
     // the sandy bottom starts rising once the bottom of the chat preview reaches the screen bottom
     // (on desktop the card is sticky, so measure where it sits in the layout, not where it is stuck)
     const card = document.querySelector(".chat-win"), chat = card && card.closest(".chat");
-    let bottom = 0;
+    let start = maxScroll - VH;
     if(card){
-      bottom = chat && getComputedStyle(chat).position === "sticky"
+      const bottom = chat && getComputedStyle(chat).position === "sticky"
         ? chat.parentElement.getBoundingClientRect().top + scrollY + card.offsetTop + card.offsetHeight
         : card.getBoundingClientRect().bottom + scrollY;
+      start = bottom - innerHeight;
     }
-    const start = card ? bottom - innerHeight : max - VH;
-    floorRun = Math.max(.25, (max - start) / VH);
-    depT = Math.min(1, scrollY / max);
+    floorRun = Math.max(.25, (maxScroll - start) / VH);
+    dirty = true;
   }
-  size(); target(); cam = camT; dep = depT;
-  addEventListener("scroll", () => { target(); dirty = true; }, {passive:true});
-  addEventListener("resize", () => { size(); target(); });
+  function follow(){
+    const y = scrollY;
+    if(document.documentElement.scrollHeight !== docH) measure();
+    if(y === lastY) return false;
+    lastY = y; cam = y / VH; dep = Math.min(1, y / maxScroll);
+    return true;
+  }
+  size(); measure(); follow();
+  addEventListener("resize", () => { size(); measure(); });
+  addEventListener("load", measure);
 
   let last = 0, t = 0, slow = 0, frames = 0;
   function frame(now){
@@ -400,14 +408,13 @@ void main(){
     // the intro owns the GPU first; the hero photo covers everything at the top
     if(!document.body.classList.contains("intro-done")) return;
     if(hero && hero.getBoundingClientRect().bottom > innerHeight + 40){ last = now; return; }
+    const moved = follow();
     const dt = last ? Math.min(.1, (now - last) / 1000) : 0;
-    if(dt && dt < .03) return;                       // ~30 fps is plenty for slow water
-    if(still && !dirty) return;
+    // while scrolling draw every frame; idle water only needs ~30 fps
+    if(!moved && dt && dt < .03) return;
+    if(still && !moved && !dirty) return;
     last = now; dirty = false;
     if(!still) t += dt;
-    const k = still ? 1 : Math.min(1, dt * 7);
-    cam += (camT - cam) * k; dep += (depT - dep) * k;
-    if(Math.abs(camT - cam) > 1e-4) dirty = true;
     gl.uniform2f(U.R, W, H); gl.uniform1f(U.T, t); gl.uniform1f(U.Y, cam);
     gl.uniform1f(U.D, dep); gl.uniform1f(U.M, maxCam); gl.uniform1f(U.F, floorRun);
     gl.uniform1f(U.C, Math.min(1180, VW) / 2 / VH);
@@ -554,8 +561,6 @@ function renderList(){
 /* ===== quiz: questions and the answer live in one card ===== */
 function renderQuiz(){
   const body = $("q-body"), done = quiz.step === "done" && quiz.pick;
-  $("q-bar").style.width = done ? "100%" : quiz.step === "q1" ? "33%" : "66%";
-  $("q-step").textContent = done ? T("Готово","Done") : T(`Вопрос ${quiz.step==="q1"?1:2} из 2`, `Question ${quiz.step==="q1"?1:2} of 2`);
   if(done){ body.innerHTML = resultHTML(); return; }
   const q = QUIZ[quiz.step];
   body.innerHTML = `<h3 class="q-title">${esc(q[lang])}</h3><div class="q-opts">${q.opts.map((o,k) => {
@@ -569,13 +574,12 @@ function resultHTML(){
   const p = QUIZ.q1.opts.find(o => o.path === quiz.path), opt = (QUIZ[quiz.path]?.opts || []).find(o => o.pick === it.id);
   return `<div class="q-result">
     <p class="q-ans">${T("Твои ответы","Your answers")}: ${p?esc(p[lang]):""}${opt?` · ${esc(opt[lang])}`:""}</p>
-    <div class="q-head"><div><span class="q-tag">${T("Мой совет","My pick for you")}</span><h3>${title(it)}</h3></div>
+    <div class="q-head"><div><h3>${title(it)}</h3></div>
       <div class="q-price">${money(it)}${it.unit?`<small>${esc(it.unit[lang])}</small>`:""}</div></div>
     ${opt?`<p class="q-why">${esc(opt["why_"+lang])}</p>`:""}
     <ul class="q-meta">${(it["meta_"+lang]||[]).map(m=>`<li>${esc(m)}</li>`).join("")}<li>${T("снаряжение и обед включены","gear and lunch included")}</li></ul>
     <div class="q-act">
       <button type="button" class="btn primary" data-pick="${esc(it.id)}">${T("Записаться","Book this dive")}</button>
-      <button type="button" class="btn" data-see="${esc(it.group.id)}">${T("Сравнить с другими","Compare options")}</button>
       <button type="button" class="q-link" data-qredo>↺ ${T("Пройти заново","Start over")}</button>
     </div></div>`;
 }
@@ -712,8 +716,6 @@ $("q-body").addEventListener("click", e => {
   if(q){ quiz.pick = q.dataset.q; quiz.step = "done"; saveQuiz(); renderQuiz(); $("f-prog").value = quiz.pick; updateMsg(); return; }
   if(e.target.closest("[data-qback]")){ quiz.step = "q1"; renderQuiz(); return; }
   if(e.target.closest("[data-qredo]")){ quiz = {step:"q1", path:null, pick:null}; try{ localStorage.removeItem("quiz"); }catch(err){} renderQuiz(); updateMsg(); $("quiz").scrollIntoView({behavior: smooth(), block:"nearest"}); return; }
-  const s = e.target.closest("[data-see]");
-  if(s){ setTab(s.dataset.see); $("prices").scrollIntoView({behavior: smooth()}); }
 });
 $("tabs").addEventListener("click", e => { const b=e.target.closest("[data-tab]"); if(b) setTab(b.dataset.tab); });
 $("tabs").addEventListener("keydown", e => {

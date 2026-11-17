@@ -129,8 +129,6 @@ function renderList(){
 /* ===== quiz: questions and the answer live in one card ===== */
 function renderQuiz(){
   const body = $("q-body"), done = quiz.step === "done" && quiz.pick;
-  $("q-bar").style.width = done ? "100%" : quiz.step === "q1" ? "33%" : "66%";
-  $("q-step").textContent = done ? T("Готово","Done") : T(`Вопрос ${quiz.step==="q1"?1:2} из 2`, `Question ${quiz.step==="q1"?1:2} of 2`);
   if(done){ body.innerHTML = resultHTML(); return; }
   const q = QUIZ[quiz.step];
   body.innerHTML = `<h3 class="q-title">${esc(q[lang])}</h3><div class="q-opts">${q.opts.map((o,k) => {
@@ -144,13 +142,12 @@ function resultHTML(){
   const p = QUIZ.q1.opts.find(o => o.path === quiz.path), opt = (QUIZ[quiz.path]?.opts || []).find(o => o.pick === it.id);
   return `<div class="q-result">
     <p class="q-ans">${T("Твои ответы","Your answers")}: ${p?esc(p[lang]):""}${opt?` · ${esc(opt[lang])}`:""}</p>
-    <div class="q-head"><div><span class="q-tag">${T("Мой совет","My pick for you")}</span><h3>${title(it)}</h3></div>
+    <div class="q-head"><div><h3>${title(it)}</h3></div>
       <div class="q-price">${money(it)}${it.unit?`<small>${esc(it.unit[lang])}</small>`:""}</div></div>
     ${opt?`<p class="q-why">${esc(opt["why_"+lang])}</p>`:""}
     <ul class="q-meta">${(it["meta_"+lang]||[]).map(m=>`<li>${esc(m)}</li>`).join("")}<li>${T("снаряжение и обед включены","gear and lunch included")}</li></ul>
     <div class="q-act">
       <button type="button" class="btn primary" data-pick="${esc(it.id)}">${T("Записаться","Book this dive")}</button>
-      <button type="button" class="btn" data-see="${esc(it.group.id)}">${T("Сравнить с другими","Compare options")}</button>
       <button type="button" class="q-link" data-qredo>↺ ${T("Пройти заново","Start over")}</button>
     </div></div>`;
 }
@@ -287,8 +284,6 @@ $("q-body").addEventListener("click", e => {
   if(q){ quiz.pick = q.dataset.q; quiz.step = "done"; saveQuiz(); renderQuiz(); $("f-prog").value = quiz.pick; updateMsg(); return; }
   if(e.target.closest("[data-qback]")){ quiz.step = "q1"; renderQuiz(); return; }
   if(e.target.closest("[data-qredo]")){ quiz = {step:"q1", path:null, pick:null}; try{ localStorage.removeItem("quiz"); }catch(err){} renderQuiz(); updateMsg(); $("quiz").scrollIntoView({behavior: smooth(), block:"nearest"}); return; }
-  const s = e.target.closest("[data-see]");
-  if(s){ setTab(s.dataset.see); $("prices").scrollIntoView({behavior: smooth()}); }
 });
 $("tabs").addEventListener("click", e => { const b=e.target.closest("[data-tab]"); if(b) setTab(b.dataset.tab); });
 $("tabs").addEventListener("keydown", e => {
