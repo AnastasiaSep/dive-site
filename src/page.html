@@ -51,7 +51,7 @@ img,video{max-width:100%;display:block}
 .btn:disabled{opacity:.6;cursor:wait}
 
 /* ===== intro ===== */
-#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(120% 90% at 50% 0%,#2a7f95 0%,#0b3a4c 45%,#04121a 100%);display:grid;place-items:center;transition:opacity .85s ease,visibility .85s;animation:introSafe .6s 7s forwards}
+#intro{position:fixed;top:0;left:0;width:100%;height:100vh;height:100dvh;z-index:100;background:radial-gradient(120% 90% at 50% 0%,#2a7f95 0%,#0b3a4c 45%,#04121a 100%);display:grid;place-items:center;transition:opacity .85s ease,visibility .85s;animation:introSafe .6s 7s forwards}
 #intro.out{opacity:0;visibility:hidden;pointer-events:none}
 #intro canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .intro-ui{position:relative;text-align:center;color:#fff;text-shadow:0 2px 20px rgba(0,20,30,.5);pointer-events:none}
@@ -60,14 +60,15 @@ img,video{max-width:100%;display:block}
 .intro-depth{margin-top:14px;font:500 clamp(2.6rem,9vw,5.5rem)/1 var(--f-data);letter-spacing:-.04em}
 .intro-depth small{font-size:.38em;margin-left:6px;opacity:.7}
 .intro-cap{margin-top:12px;font:500 .78rem var(--f-data);letter-spacing:.3em;text-transform:uppercase;opacity:.8;min-height:1em}
-#intro-skip{position:absolute;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));background:rgba(4,18,26,.45);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:10px 18px;font:500 .8rem var(--f-data);letter-spacing:.1em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#intro-skip{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 32px);white-space:nowrap;background:rgba(4,18,26,.45);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:10px 18px;font:500 .8rem var(--f-data);letter-spacing:.1em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @keyframes introSafe{to{opacity:0;visibility:hidden;pointer-events:none}}
 @media (prefers-reduced-motion:reduce){#intro{display:none}}
 
 /* ===== top bar ===== */
 .bar{position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:30}
 .bar .wrap{display:flex;align-items:center;gap:26px;height:68px}
-.logo{font:600 1.05rem var(--f-head);text-decoration:none;letter-spacing:-.02em;margin-right:auto;white-space:nowrap}
+.logo{font:600 1.05rem var(--f-head);text-decoration:none;letter-spacing:-.02em;margin-right:auto;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.langs,.menu-btn{flex-shrink:0}
 .logo i{font-style:normal;color:var(--aqua)}
 .nav{display:flex;gap:22px;font-size:.93rem;font-weight:600}
 .nav a{text-decoration:none;color:#d6e6e5;text-shadow:0 1px 10px rgba(4,18,26,.5);transition:color .15s}
@@ -515,6 +516,13 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
 }
 @media (max-width:560px){
   body{font-size:16px}
+  .bar .wrap{gap:10px}
+  .menu-btn{padding:9px 11px}
+  .menu-btn .mt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .langs{background:none;padding:0}
+  .langs button{padding:7px 10px;border:1px solid var(--line2)}
+  .langs button[aria-pressed="true"]{display:none}
+  .hero h1{overflow-wrap:break-word;hyphens:auto}
   .bar .btn{display:none}
   .hero .wrap{padding-top:96px;padding-bottom:64px}
   .hero .cta .btn{width:100%}
@@ -571,7 +579,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
       <button type="button" id="lang-en" data-set="en">EN</button>
     </div>
     <a class="btn primary sm" href="#book"><span class="ru">Записаться</span><span class="en">Book a dive</span></a>
-    <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav"><span class="ru">Меню</span><span class="en">Menu</span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav"><span class="mt"><span class="ru">Меню</span><span class="en">Menu</span></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
   </div>
 </header>
 
