@@ -58,16 +58,16 @@
   document.head.appendChild(s);
   const say = (ru, en) => $("lead-status").textContent = lang==="ru" ? ru : en;
   $("send-lead").addEventListener("click", async () => {
-    const name = $("f-name").value.trim(), contact = $("f-contact").value.trim();
-    if(!name || contact.length < 3) return say("Укажи имя и куда ответить.", "Add your name and where to reply.");
+    if(!formOk(true)) return say("Проверь поля, отмеченные красным.", "Please check the fields marked in red.");
+    const name = clean($("f-name").value), contact = clean($("f-contact").value);
     if(!captcha) return say("Подтверди, что ты не робот.", "Please complete the check above.");
     $("send-lead").disabled = true; say("Отправляю…", "Sending…");
     try{
       const r = await fetch(FN+"submit-lead", {method:"POST", headers:H, body:JSON.stringify({
         captcha, name, contact, program_id:$("f-prog").value, people:Number($("f-people").value)||1,
-        date_from:$("f-from").value||null, date_to:$("f-to").value||null, hotel:$("f-hotel").value,
-        wants_media:$("f-photo").checked, note:$("f-note").value, lang })});
-      if(r.ok) say("Заявка у меня, скоро отвечу по твоему контакту.", "Got it, I'll reply to the contact you left soon.");
+        date_from:$("f-from").value||null, date_to:$("f-to").value||null, hotel:clean($("f-hotel").value),
+        wants_media:$("f-photo").checked, note:$("f-note").value.trim(), lang })});
+      if(r.ok){ resetForm(); say("Заявка у меня, скоро отвечу по твоему контакту. Форма очищена.", "Got it, I'll reply to the contact you left soon. The form has been cleared."); }
       else if(r.status===429) say("Слишком много заявок с этого адреса. Напиши в WhatsApp.", "Too many requests. Please use WhatsApp.");
       else say("Не получилось отправить. Напиши в WhatsApp.", "Couldn't send. Please use WhatsApp.");
     }catch(e){ say("Нет связи. Напиши в WhatsApp.", "No connection. Please use WhatsApp."); }
