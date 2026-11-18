@@ -18,9 +18,9 @@ const TERMS = {
 /* items: bookable programmes. adds: surcharges shown under the group, not bookable on their own */
 const GROUPS = [
  {id:"first", ru:"Пробные погружения", en:"Try dives", sub_ru:"Без сертификата, с инструктором", sub_en:"No certificate needed, with an instructor", items:[
-  {id:"dsd95", rec:true, term:"dsd", price:95, ru:"Пробное погружение: 2 погружения", en:"Discover Scuba: 2 dives", meta_ru:["онлайн-теория","инструктаж","2 погружения с лодки"], meta_en:["eLearning","briefing","2 boat dives"],
+  {id:"dsd95", rec:true, term:"dsd", price:95, ru:"Discover Scuba — 2 погружения", en:"Discover Scuba — 2 dives", meta_ru:["онлайн-теория","инструктаж","2 погружения с лодки"], meta_en:["eLearning","briefing","2 boat dives"],
    d_ru:"Два погружения до 12 м с инструктором. Сертификат не нужен.", d_en:"Two dives to 12 m with an instructor. No certificate needed."},
-  {id:"dsd135", term:"dsd", price:135, ru:"Пробное с бассейном: 2 погружения", en:"Discover Scuba with pool: 2 dives", meta_ru:["онлайн-теория","бассейн","2 погружения с лодки"], meta_en:["eLearning","pool session","2 boat dives"],
+  {id:"dsd135", term:"dsd", price:135, ru:"Discover Scuba с бассейном — 2 погружения", en:"Discover Scuba with pool — 2 dives", meta_ru:["онлайн-теория","бассейн","2 погружения с лодки"], meta_en:["eLearning","pool session","2 boat dives"],
    d_ru:"Сначала занятие в бассейне, потом два погружения в море.", d_en:"A pool session first, then two dives at sea."},
   {id:"dsd65", price:65, ru:"1 пробное погружение + снорклинг", en:"1 try dive + snorkelling", meta_ru:["1 погружение с лодки","снорклинг"], meta_en:["1 boat dive","snorkelling"],
    d_ru:"Одно погружение с инструктором, остальное время плаваешь с маской.", d_en:"One dive with an instructor, then snorkelling for the rest of the trip."},
@@ -242,18 +242,18 @@ function fmtDate(v){
   const [y,m,d] = v.split("-").map(Number);
   return `${d} ${MONTHS[lang][m-1]}`;
 }
-function dates(){
-  const a=$("f-from").value, b=$("f-to").value;
-  if(a && b && b!==a) return `${fmtDate(a)} – ${fmtDate(b)}`;
-  return fmtDate(a||b);
+function dates(withYear){
+  const a=$("f-from").value, b=$("f-to").value, y = v => v ? " " + v.slice(0,4) : "";
+  if(a && b && b!==a) return withYear ? `${fmtDate(a)}${a.slice(0,4)!==b.slice(0,4)?y(a):""} – ${fmtDate(b)}${y(b)}` : `${fmtDate(a)} – ${fmtDate(b)}`;
+  return fmtDate(a||b) + (withYear ? y(a||b) : "");
 }
 function message(){
   const p = ALL.find(x=>x.id===$("f-prog").value) || ALL[0];
   const L = lang==="ru"
     ? ["Привет, Настя! Хочу записаться.","Имя","Программа","Человек","Даты","Отель","Фото/видео","Вопросы"]
     : ["Hi Nastya! I'd like to book a dive.","Name","Program","People","Dates","Hotel","Photos/video","Notes"];
-  const v = [$("f-name").value, `${p[lang]} (${money(p)})`, $("f-people").value, dates(), $("f-hotel").value,
-             $("f-photo").checked ? T("да, хочу","yes please") : "", $("f-note").value];
+  const v = [clean($("f-name").value), `${p[lang]} (${money(p)}${p.unit ? " " + p.unit[lang] : ""})`, $("f-people").value, dates(true), clean($("f-hotel").value),
+             $("f-photo").checked ? T("да, хочу","yes please") : "", cleanNote($("f-note").value)];
   return [L[0], ...v.map((x,i)=> x && String(x).trim() ? `${L[i+1]}: ${String(x).trim()}` : null)].filter(Boolean).join("\n");
 }
 function waLink(text){ return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`; }
@@ -274,6 +274,8 @@ function applyLang(){
   $("lang-en").setAttribute("aria-pressed", lang==="en");
   $("intro-skip") && ($("intro-skip").textContent = T("Пропустить ›","Skip ›"));
   renderList(); renderQuiz(); renderSelect(); updateMsg(); hideTip();
+  if(typeof checked !== "undefined" && checked) showErrs(validate(!$("lead-box").hidden && !!$("f-contact").value));
+  if($("toast")) $("toast").textContent = "";
   if(typeof renderMaps === "function") renderMaps();
 }
 const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
@@ -316,35 +318,39 @@ $("f").addEventListener("change", updateMsg);
 $("f").addEventListener("submit", e => e.preventDefault());
 /* ===== form checks: the same rules run again on the server (supabase/functions/submit-lead) ===== */
 const RX = {
-  name: /^\p{L}[\p{L}\p{M}' .\-]{1,49}$/u,
-  hotel: /^[\p{L}\p{N}\p{M}' .,&#№\-\/()]{2,80}$/u,
-  link: /(https?:\/\/|www\.|t\.me\/|\b[\p{L}\p{N}-]+\.(com|ru|net|org|io|me|info|xyz|top|site|link|ly|vn|su|biz|online|shop|club)\b)/iu,
-  junk: /[<>{}\[\]\\|^~`$*=_]/,
-  repeat: /(.)\1{4,}/u,
+  // name: letters in any alphabet, spaces, hyphens, apostrophes (incl. the curly one iPhones insert), dots
+  name: /^\p{L}[\p{L}\p{M}'’ʼ` .\-]{0,49}$/u,
+  // links: real URLs or bare domains, but not the domain part of an e-mail address
+  link: /(https?:\/\/|www\.|t\.me\/|(?<![@\p{L}\p{N}._-])[\p{L}\p{N}-]{2,}\.(com|ru|net|org|io|me|info|xyz|top|site|link|ly|su|biz|online|shop|club|app|pro|cc)(?![\p{L}\p{N}]))/iu,
+  markup: /[<>{}\\]|\[\/?\w/,
   rude: /(?<!\p{L})(ху[йея]|[её]б[аеуы]|бля|сук[аи](?!\p{L})|мудак|залуп|fuck|shit|cunt|bitch|dick(?!\p{L})|nigg)|пизд|хуй/iu,
   phone: /^\+?\d[\d ()\-]{6,18}\d$/,
-  tg: /^@?[A-Za-z][A-Za-z0-9_]{4,31}$/,
+  tg: /^(?:@|(?:https?:\/\/)?t\.me\/)?([A-Za-z][A-Za-z0-9_]{4,31})$/,
   email: /^[^\s@<>()]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,}$/
 };
+// "aaaaa", "!!!!!!!!!!" etc.: the same character over and over
+const spam = (v, n) => new RegExp(`(.)\\1{${n},}`, "u").test(v);
+const letters = v => (v.match(/[\p{L}\p{N}]/gu) || []).length;
 const FIELDS = ["f-name","f-dates","f-hotel","f-note","f-contact"];
 let checked = false;
 const clean = v => String(v).replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, " ").replace(/\s+/g, " ").trim();
+const cleanNote = v => String(v).replace(/[\u0000-\u0009\u000b-\u001f\u007f​-‏‪-‮]/g, " ").replace(/\n{3,}/g, "\n\n").trim();
 function validate(needContact){
-  const e = {}, name = clean($("f-name").value), hotel = clean($("f-hotel").value), note = $("f-note").value.trim();
+  const e = {}, name = clean($("f-name").value), hotel = clean($("f-hotel").value), note = cleanNote($("f-note").value);
   if(!name) e["f-name"] = T("Напиши, как тебя зовут.", "Please enter your name.");
-  else if(!RX.name.test(name) || RX.repeat.test(name) || (name.match(/\p{L}/gu)||[]).length < 2) e["f-name"] = T("Имя: только буквы, от 2 до 50 символов.", "Name: letters only, 2–50 characters.");
-  else if(RX.rude.test(name)) e["f-name"] = T("Напиши настоящее имя.", "Please enter your real name.");
-  if(hotel && (!RX.hotel.test(hotel) || RX.link.test(hotel) || RX.repeat.test(hotel) || RX.rude.test(hotel))) e["f-hotel"] = T("Название отеля: буквы и цифры, без ссылок.", "Hotel: letters and numbers, no links.");
-  if(note && (note.length > 500 || RX.link.test(note) || RX.junk.test(note) || /(.)\1{7,}/u.test(note) || RX.rude.test(note))) e["f-note"] = T("Без ссылок и спецсимволов, до 500 знаков.", "No links or special characters, up to 500 characters.");
+  else if(!RX.name.test(name) || letters(name) < 2) e["f-name"] = T("Имя: буквы, пробел, дефис или апостроф, до 50 символов.", "Name: letters, spaces, hyphens or apostrophes, up to 50 characters.");
+  else if(spam(name, 3) || RX.rude.test(name)) e["f-name"] = T("Напиши настоящее имя.", "Please enter your real name.");
+  if(hotel && (letters(hotel) < 2 || RX.markup.test(hotel) || RX.link.test(hotel) || spam(hotel, 5) || RX.rude.test(hotel))) e["f-hotel"] = T("Напиши название отеля без ссылок.", "Enter the hotel name without links.");
+  if(note && (RX.markup.test(note) || RX.link.test(note) || spam(note, 11) || RX.rude.test(note))) e["f-note"] = T("Без ссылок и HTML-тегов, пожалуйста.", "No links or HTML tags, please.");
   const a = $("f-from").value, b = $("f-to").value, max = new Date(); max.setFullYear(max.getFullYear() + 2);
   if((a && a < iso) || (b && a && b < a) || (a && new Date(a) > max)) e["f-dates"] = T("Выбери даты не раньше сегодняшнего дня.", "Pick dates from today onwards.");
   if(!ALL.some(i => i.id === $("f-prog").value)) e["f-prog"] = T("Выбери программу.", "Choose a program.");
   const p = Number($("f-people").value); if(!Number.isInteger(p) || p < 1 || p > 20) $("f-people").value = 1;
   if(needContact){
-    const c = clean($("f-contact").value);
+    const c = clean($("f-contact").value), digits = c.replace(/\D/g, "").length;
     if(!c) e["f-contact"] = T("Укажи Telegram, WhatsApp или e-mail.", "Add your Telegram, WhatsApp or e-mail.");
-    else if(!(RX.phone.test(c) && c.replace(/\D/g,"").length >= 8 && c.replace(/\D/g,"").length <= 15) && !RX.tg.test(c) && !RX.email.test(c))
-      e["f-contact"] = T("Это не похоже на телефон, @ник в Telegram или e-mail.", "That doesn't look like a phone number, a Telegram @username or an e-mail.");
+    else if(!(RX.phone.test(c) && digits >= 8 && digits <= 15) && !RX.tg.test(c) && !RX.email.test(c))
+      e["f-contact"] = T("Напиши телефон, @ник или ссылку t.me/… в Telegram, или e-mail.", "Enter a phone number, a Telegram @username or t.me/… link, or an e-mail.");
   }
   return e;
 }
@@ -374,24 +380,52 @@ function formOk(needContact){
   }
   return true;
 }
+const FORM_KEEP = ["f-name","f-hotel","f-note","f-contact","f-from","f-to","f-people"];
+let lastForm = null, undoTimer = 0;
+function snapshot(){ const o = {photo: $("f-photo").checked}; FORM_KEEP.forEach(id => { if($(id)) o[id] = $(id).value; }); return o; }
+function setDatesUI(){
+  if(!dp) return;
+  const a = $("f-from").value, b = $("f-to").value;
+  try{ dp.clear({silent:true}); if(a) dp.selectDate(b && b !== a ? [new Date(a + "T00:00"), new Date(b + "T00:00")] : [new Date(a + "T00:00")], {silent:true}); }catch(err){}
+  // the picker may fire onSelect while re-selecting: put the saved dates back
+  $("f-from").value = a; $("f-to").value = b;
+  if(!a) $("f-dates").value = "";
+  setTimeout(syncDates, 30);
+}
 function resetForm(){
+  lastForm = snapshot();
   ["f-name","f-hotel","f-note","f-contact","f-from","f-to"].forEach(id => { if($(id)) $(id).value = ""; });
   $("f-people").value = 1; $("f-photo").checked = false;
-  if(dp){ try{ dp.clear({silent:true}); }catch(err){} $("f-dates").value = ""; }
+  setDatesUI();
   checked = false; showErrs({}); updateMsg();
+  $("undo").hidden = false; clearTimeout(undoTimer); undoTimer = setTimeout(() => { $("undo").hidden = true; }, 60000);
 }
+$("undo").addEventListener("click", () => {
+  if(!lastForm) return;
+  FORM_KEEP.forEach(id => { if($(id) && id in lastForm) $(id).value = lastForm[id]; });
+  $("f-photo").checked = lastForm.photo; setDatesUI(); updateMsg();
+  $("undo").hidden = true; lastForm = null; $("toast").textContent = T("Данные вернулись в форму.", "Your details are back in the form.");
+});
 // re-check while typing once the visitor has tried to send
 $("f").addEventListener("input", () => { if(checked) showErrs(validate(!$("lead-box").hidden && !!$("f-contact").value)); });
 $("go-wa").addEventListener("click", e => {
   if(!formOk(false)){ e.preventDefault(); return; }
   updateMsg(); $("go-wa").href = waLink(message());
-  setTimeout(() => { resetForm(); $("toast").textContent = T("Открываю WhatsApp. Форма очищена.", "Opening WhatsApp. The form has been cleared."); }, 400);
+  setTimeout(() => { resetForm(); $("toast").textContent = T("Открываю WhatsApp. Форма очищена: если сообщение не ушло, верни данные кнопкой ниже.", "Opening WhatsApp. The form is cleared; if the message didn't go through, restore it below."); }, 400);
 });
+function copyMsg(after){
+  const m = message();
+  const ok = () => { resetForm(); $("toast").textContent = after; };
+  try{ navigator.clipboard.writeText(m).then(ok).catch(selectMsg); }catch(e){ selectMsg(); }
+}
 $("copy").addEventListener("click", () => {
   if(!formOk(false)) return;
-  const m = message();
-  const done = () => { resetForm(); $("toast").textContent = T("Скопировано, вставь в чат Telegram. Форма очищена.","Copied, paste it into Telegram. The form has been cleared."); };
-  try{ navigator.clipboard.writeText(m).then(done).catch(selectMsg); }catch(e){ selectMsg(); }
+  copyMsg(T("Скопировано, вставь в чат Telegram. Форма очищена: если нужно, верни данные кнопкой ниже.", "Copied, paste it into Telegram. The form is cleared; restore it below if needed."));
+});
+// Telegram can't prefill a message: copy the text, then the link opens the chat
+$("go-tg").addEventListener("click", e => {
+  if(!formOk(false)){ e.preventDefault(); return; }
+  copyMsg(T("Текст скопирован. В открывшемся чате Telegram вставь его и отправь.", "Text copied. Paste it into the Telegram chat that opens and send it."));
 });
 function selectMsg(){
   const r=document.createRange(); r.selectNodeContents($("msg"));
@@ -484,3 +518,19 @@ document.querySelectorAll(".mo video").forEach(v => {
   v.addEventListener("pause", () => { if(v.ended) fig.classList.remove("on"); });
   if("IntersectionObserver" in window) new IntersectionObserver(es => es.forEach(en => { if(!en.isIntersecting && !v.paused) v.pause(); }), {threshold:0}).observe(v);
 });
+
+/* ===== mobile menu: header button + floating button once the header has scrolled away ===== */
+(function(){
+  const btns = [$("menu-btn"), $("menu-fab")];
+  function setMenu(open){
+    document.body.classList.toggle("menu-open", open);
+    btns.forEach(b => b && b.setAttribute("aria-expanded", open));
+    if(open) $("nav").querySelector("a")?.focus({preventScroll:true});
+  }
+  btns.forEach(b => b && b.addEventListener("click", e => { e.stopPropagation(); setMenu(!document.body.classList.contains("menu-open")); }));
+  $("nav").addEventListener("click", e => { if(e.target.closest("a")) setMenu(false); });
+  document.addEventListener("click", e => { if(document.body.classList.contains("menu-open") && !e.target.closest("#nav")) setMenu(false); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape" && document.body.classList.contains("menu-open")){ setMenu(false); $("menu-btn").focus(); } });
+  let t = false;
+  addEventListener("scroll", () => { if(t) return; t = true; requestAnimationFrame(() => { t = false; $("menu-fab").classList.toggle("show", scrollY > innerHeight * .8); }); }, {passive:true});
+})();

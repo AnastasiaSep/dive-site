@@ -5,35 +5,36 @@ import { admin, allowRate, cors, json, originAllowed, str, turnstileOk } from ".
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // same rules as the form in src/app.js (validate)
 const RX = {
-  name: /^\p{L}[\p{L}\p{M}' .\-]{1,49}$/u,
-  hotel: /^[\p{L}\p{N}\p{M}' .,&#№\-\/()]{2,80}$/u,
-  link: /(https?:\/\/|www\.|t\.me\/|\b[\p{L}\p{N}-]+\.(com|ru|net|org|io|me|info|xyz|top|site|link|ly|vn|su|biz|online|shop|club)\b)/iu,
-  junk: /[<>{}\[\]\\|^~`$*=_]/,
-  repeat: /(.)\1{4,}/u,
+  name: /^\p{L}[\p{L}\p{M}'’ʼ` .\-]{0,49}$/u,
+  link: /(https?:\/\/|www\.|t\.me\/|(?<![@\p{L}\p{N}._-])[\p{L}\p{N}-]{2,}\.(com|ru|net|org|io|me|info|xyz|top|site|link|ly|su|biz|online|shop|club|app|pro|cc)(?![\p{L}\p{N}]))/iu,
+  markup: /[<>{}\\]|\[\/?\w/,
   rude: /(?<!\p{L})(ху[йея]|[её]б[аеуы]|бля|сук[аи](?!\p{L})|мудак|залуп|fuck|shit|cunt|bitch|dick(?!\p{L})|nigg)|пизд|хуй/iu,
   phone: /^\+?\d[\d ()\-]{6,18}\d$/,
-  tg: /^@?[A-Za-z][A-Za-z0-9_]{4,31}$/,
+  tg: /^(?:@|(?:https?:\/\/)?t\.me\/)?([A-Za-z][A-Za-z0-9_]{4,31})$/,
   email: /^[^\s@<>()]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,}$/,
 };
-const clean = (v: unknown) => String(v ?? "").replace(/[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e]/g, " ").replace(/\s+/g, " ").trim();
+const spam = (v: string, n: number) => new RegExp(`(.)\\1{${n},}`, "u").test(v);
+const letters = (v: string) => (v.match(/[\p{L}\p{N}]/gu) || []).length;
+const clean = (v: unknown) => String(v ?? "").replace(/[\u0000-\u001f\u007f​-‏‪-‮]/g, " ").replace(/\s+/g, " ").trim();
+const cleanNote = (v: unknown) => String(v ?? "").replace(/[\u0000-\u0009\u000b-\u001f\u007f​-‏‪-‮]/g, " ").replace(/\n{3,}/g, "\n\n").trim();
 function checkName(v: unknown) {
   const n = clean(v);
-  if (!RX.name.test(n) || RX.repeat.test(n) || RX.rude.test(n) || (n.match(/\p{L}/gu) || []).length < 2) throw new Error("name");
+  if (!RX.name.test(n) || letters(n) < 2 || spam(n, 3) || RX.rude.test(n)) throw new Error("name");
   return n;
 }
 function checkContact(v: unknown) {
   const c = clean(v), digits = c.replace(/\D/g, "").length;
   if (!((RX.phone.test(c) && digits >= 8 && digits <= 15) || RX.tg.test(c) || RX.email.test(c))) throw new Error("contact");
-  return c;
+  return c.slice(0, 80);
 }
 function checkHotel(v: unknown) {
   const h = clean(v); if (!h) return null;
-  if (!RX.hotel.test(h) || RX.link.test(h) || RX.repeat.test(h) || RX.rude.test(h)) throw new Error("hotel");
+  if (h.length > 80 || letters(h) < 2 || RX.markup.test(h) || RX.link.test(h) || spam(h, 5) || RX.rude.test(h)) throw new Error("hotel");
   return h;
 }
 function checkNote(v: unknown) {
-  const n = String(v ?? "").trim(); if (!n) return null;
-  if (n.length > 500 || RX.link.test(n) || RX.junk.test(n) || /(.)\1{7,}/u.test(n) || RX.rude.test(n)) throw new Error("note");
+  const n = cleanNote(v); if (!n) return null;
+  if (n.length > 500 || RX.markup.test(n) || RX.link.test(n) || spam(n, 11) || RX.rude.test(n)) throw new Error("note");
   return n;
 }
 
