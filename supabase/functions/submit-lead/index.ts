@@ -3,6 +3,39 @@
 import { admin, allowRate, cors, json, originAllowed, str, turnstileOk } from "../_shared/util.ts";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+// same rules as the form in src/app.js (validate)
+const RX = {
+  name: /^\p{L}[\p{L}\p{M}' .\-]{1,49}$/u,
+  hotel: /^[\p{L}\p{N}\p{M}' .,&#№\-\/()]{2,80}$/u,
+  link: /(https?:\/\/|www\.|t\.me\/|\b[\p{L}\p{N}-]+\.(com|ru|net|org|io|me|info|xyz|top|site|link|ly|vn|su|biz|online|shop|club)\b)/iu,
+  junk: /[<>{}\[\]\\|^~`$*=_]/,
+  repeat: /(.)\1{4,}/u,
+  rude: /(?<!\p{L})(ху[йея]|[её]б[аеуы]|бля|сук[аи](?!\p{L})|мудак|залуп|fuck|shit|cunt|bitch|dick(?!\p{L})|nigg)|пизд|хуй/iu,
+  phone: /^\+?\d[\d ()\-]{6,18}\d$/,
+  tg: /^@?[A-Za-z][A-Za-z0-9_]{4,31}$/,
+  email: /^[^\s@<>()]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,}$/,
+};
+const clean = (v: unknown) => String(v ?? "").replace(/[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e]/g, " ").replace(/\s+/g, " ").trim();
+function checkName(v: unknown) {
+  const n = clean(v);
+  if (!RX.name.test(n) || RX.repeat.test(n) || RX.rude.test(n) || (n.match(/\p{L}/gu) || []).length < 2) throw new Error("name");
+  return n;
+}
+function checkContact(v: unknown) {
+  const c = clean(v), digits = c.replace(/\D/g, "").length;
+  if (!((RX.phone.test(c) && digits >= 8 && digits <= 15) || RX.tg.test(c) || RX.email.test(c))) throw new Error("contact");
+  return c;
+}
+function checkHotel(v: unknown) {
+  const h = clean(v); if (!h) return null;
+  if (!RX.hotel.test(h) || RX.link.test(h) || RX.repeat.test(h) || RX.rude.test(h)) throw new Error("hotel");
+  return h;
+}
+function checkNote(v: unknown) {
+  const n = String(v ?? "").trim(); if (!n) return null;
+  if (n.length > 500 || RX.link.test(n) || RX.junk.test(n) || /(.)\1{7,}/u.test(n) || RX.rude.test(n)) throw new Error("note");
+  return n;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors(req) });
@@ -18,15 +51,17 @@ Deno.serve(async (req) => {
     if (!Number.isInteger(people) || people < 1 || people > 20) throw new Error("people");
     const from = str(b.date_from, 10), to = str(b.date_to, 10);
     if ((from && !DATE.test(from)) || (to && !DATE.test(to))) throw new Error("date");
+    const today = new Date().toISOString().slice(0, 10);
+    if ((from && from < today) || (from && to && to < from)) throw new Error("date");
     const row = {
-      name: str(b.name, 80, 1),
-      contact: str(b.contact, 80, 3),
+      name: checkName(b.name),
+      contact: checkContact(b.contact),
       program_id: str(b.program_id, 40),
       people,
       date_from: from, date_to: to,
-      hotel: str(b.hotel, 120),
+      hotel: checkHotel(b.hotel),
       wants_media: b.wants_media === true,
-      note: str(b.note, 1000),
+      note: checkNote(b.note),
       lang: b.lang === "ru" ? "ru" : "en",
     };
     const { error } = await admin.from("leads").insert(row);
