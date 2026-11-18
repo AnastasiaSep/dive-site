@@ -166,6 +166,17 @@ section.block{scroll-margin-top:12px;padding-block:clamp(72px,9vw,120px);positio
 .q-act .q-link{margin:0 0 0 auto}
 
 /* ===== prices ===== */
+#pgroups{display:grid;gap:56px}
+.pgroup{min-width:0}
+.pg-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.pg-head h3{font-size:1.5rem;margin:0}
+.pg-head p{color:var(--muted);font-size:.95rem;margin:0}
+.pgroup .plist{margin-top:20px}
+.adds{list-style:none;margin:16px 0 0;padding:0;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.adds li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 20px;color:var(--muted);font-size:.95rem}
+.adds li+li{border-top:1px solid var(--line)}
+.adds b{font:500 1.05rem var(--f-data);color:var(--fg);white-space:nowrap}
+.pgroup .spec{margin-top:16px}
 .cats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .cats button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:4px;padding:16px 18px;border-radius:18px;border:1px solid var(--line);background:var(--card);min-width:0;transition:border-color .2s,background .2s}
 .cats button:hover{border-color:var(--line2);background:var(--card2)}
@@ -179,7 +190,7 @@ section.block{scroll-margin-top:12px;padding-block:clamp(72px,9vw,120px);positio
 .item:hover{border-color:var(--line2);transform:translateY(-2px)}
 .item.rec{border-color:rgba(255,122,89,.55);background:linear-gradient(160deg,rgba(255,122,89,.1),var(--card) 55%)}
 .item .name{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px}
-.item h3{font-size:1.22rem}
+.item h4{font:600 1.22rem/1.25 var(--f-body);margin:0}
 .item .badge{font:700 .74rem var(--f-body);color:var(--coral-ink);background:var(--coral);padding:4px 9px;border-radius:999px}
 .item .meta{font:400 .82rem var(--f-data);color:var(--dim)}
 .item p{color:var(--muted);font-size:.97rem}
@@ -572,13 +583,13 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
         <ul class="chips">
           <li><b>80+</b> <span class="ru">погружений в логбуке</span><span class="en">logged dives</span></li>
           <li><b>PADI</b> Divemaster</li>
-          <li><span class="ru">от</span><span class="en">from</span> <b>$65</b> <span class="ru">за день в море</span><span class="en">a day at sea</span></li>
+          <li><span class="ru">пробное погружение от</span><span class="en">try dive from</span> <b>$65</b></li>
         </ul>
       </div>
       <aside class="hi reveal-h" aria-label="Nastya">
         <div>
           <div class="hi-top"><img src="img/me.webp" alt="" width="64" height="64"><div><b><span class="ru">Настя</span><span class="en">Nastya</span></b><small><span class="dot"></span><span class="ru">отвечаю сама</span><span class="en">I reply myself</span></small></div></div>
-          <p><span class="ru">Сомневаешься, получится ли? Спроси меня о чём угодно: про уши, страх глубины, плавание. Отвечу честно.</span><span class="en">Not sure you can do it? Ask me anything: ears, fear of depth, swimming. I'll give you an honest answer.</span></p>
+          <p><span class="ru">Есть вопросы перед погружением? Спроси о чём угодно: про уши, глубину, плавание. Отвечу сама.</span><span class="en">Got questions before you dive? Ask me anything: ears, depth, swimming. I'll answer myself.</span></p>
           <a class="btn aqua sm" id="hi-tg" href="#book" target="_blank" rel="noopener"><span class="ru">Задать вопрос в Telegram</span><span class="en">Ask me on Telegram</span></a>
         </div>
       </aside>
@@ -601,16 +612,10 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
     <div class="wrap">
       <div class="head reveal">
         <h2><span class="ru">Цены</span><span class="en">Prices</span></h2>
-        <p class="sub"><span class="ru">Снаряжение, трансфер из отеля, лодка и обед уже включены. Доплачивать на месте ничего не нужно.</span><span class="en">Gear, hotel pick-up, the boat and lunch are all included. Nothing extra to pay on the day.</span></p>
+        <p class="sub"><span class="ru">Снаряжение, трансфер из отеля, лодка и обед включены в цену. Доплаты указаны отдельно под каждым разделом.</span><span class="en">Gear, hotel pick-up, the boat and lunch are included. Add-ons are listed separately under each section.</span></p>
       </div>
-      <div class="cats" role="tablist" id="tabs" aria-label="Program groups"></div>
-      <div class="plist" id="plist" role="tabpanel"></div>
+      <div id="pgroups"></div>
       <p class="hint"><span class="ru">Подчёркнутые пунктиром названия можно нажать: объясню, что это.</span><span class="en">Tap a dashed name for a short explanation.</span></p>
-      <details class="spec" id="spec-box" hidden>
-        <summary><span class="ru">Все специализации PADI (с онлайн-теорией)</span><span class="en">All PADI specialties (with eLearning)</span></summary>
-        <div class="tw"><table id="spec-table"></table></div>
-        <p class="small" style="margin-top:12px"><span class="ru">PADI Master Scuba Diver: заявка бесплатно, если есть 5 специализаций, Rescue и 50+ погружений.</span><span class="en">PADI Master Scuba Diver: free application once you have 5 specialties, Rescue and 50+ dives.</span></p>
-      </details>
       <p class="small" style="margin-top:12px"><span class="ru">Цены в долларах США. Итоговую сумму подтверждаю при записи.</span><span class="en">Prices in USD. I confirm the final amount when you book.</span></p>
     </div>
   </section>
@@ -704,7 +709,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
     <div class="wrap">
       <div class="head reveal">
         <h2><span class="ru">Частые вопросы</span><span class="en">Questions people ask</span></h2>
-        <p class="sub"><span class="ru">Немного страшно перед первым разом? Это нормально. Вот что спрашивают чаще всего.</span><span class="en">A bit nervous before your first time? That's normal. Here's what people ask most.</span></p>
+        <p class="sub"><span class="ru">Что спрашивают чаще всего перед первым погружением.</span><span class="en">What people ask most before their first dive.</span></p>
       </div>
       <div class="fgrid reveal">
         <div class="fgroup">
@@ -722,7 +727,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
           <details class="q"><summary><span class="ru">Заберёте из отеля?</span><span class="en">Do you pick up from the hotel?</span></summary><p><span class="ru">Да, утром тебя заберёт трансфер. Напиши название отеля, когда будешь записываться.</span><span class="en">Yes, a transfer picks you up in the morning. Just tell me your hotel when you book.</span></p></details>
           <details class="q"><summary><span class="ru">А если планы поменяются?</span><span class="en">What if my plans change?</span></summary><p><span class="ru">Предупреди меня, и деньги вернём без сложностей.</span><span class="en">Just let me know and we'll refund you, no hassle.</span></p></details>
           <details class="q"><summary><span class="ru">Когда можно лететь после дайва?</span><span class="en">When can I fly after diving?</span></summary><p><span class="ru">Не раньше чем через 18 часов после последнего погружения. Последний дайв лучше планировать за сутки до вылета.</span><span class="en">Wait at least 18 hours after your last dive; plan it a day before your flight.</span></p></details>
-          <details class="q"><summary><span class="ru">Друзья не ныряют. Им можно на лодку?</span><span class="en">My friends don't dive. Can they come?</span></summary><p><span class="ru">Да: снорклинг или просто день на лодке $40, снорклинг с гидом PADI $50. Дети до 5 лет бесплатно.</span><span class="en">Yes: snorkelling or a day on the boat is $40, guided PADI snorkelling $50. Under-5s ride free.</span></p></details>
+          <details class="q"><summary><span class="ru">Друзья не ныряют. Им можно на лодку?</span><span class="en">My friends don't dive. Can they come?</span></summary><p><span class="ru">Да: снорклинг или просто день на лодке $40, снорклинг PADI с гидом $50. Пробное погружение к снорклингу +$30. Дети до 5 лет бесплатно.</span><span class="en">Yes: snorkelling or a day on the boat is $40, PADI snorkelling with a guide $50. Add a try dive for +$30. Under-5s ride free.</span></p></details>
         </div>
       </div>
     </div>

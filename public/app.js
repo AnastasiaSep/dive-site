@@ -443,7 +443,7 @@ const CONTACT = { telegram:"poopsickk", whatsapp:"84559110497", instagram:"nasty
 
 /* ===== EDIT HERE: glossary ===== */
 const TERMS = {
- dsd:{t:"Discover Scuba",ru:"Пробное погружение для тех, кто ни разу не нырял. Инструктор всё время рядом, сертификат не нужен.",en:"A try dive for people who have never dived. The instructor stays with you; no certificate needed."},
+ dsd:{t:"Discover Scuba",ru:"Пробное погружение для тех, у кого ещё не было погружений. Инструктор всё время рядом, сертификат не нужен.",en:"A try dive for people who have never dived. The instructor stays with you; no certificate needed."},
  fun:{t:"Fun dives",ru:"Погружения для тех, у кого уже есть сертификат. Без обучения, просто ныряем с гидом и смотрим риф.",en:"Dives for certified divers. No training, just exploring the reef with a guide."},
  ow:{t:"Open Water",ru:"Первый курс PADI. После него можно нырять до 18 м с напарником в любой стране.",en:"The first PADI course. Afterwards you can dive to 18 m with a buddy anywhere in the world."},
  aow:{t:"Advanced",ru:"Следующий курс после Open Water: глубина до 30 м, навигация, плавучесть.",en:"The course after Open Water: depth to 30 m, navigation and buoyancy."},
@@ -454,47 +454,66 @@ const TERMS = {
  bubble:{t:"Bubblemaker",ru:"Первое знакомство с аквалангом для детей 8–9 лет, на глубине до 2 м.",en:"A first taste of scuba for kids aged 8–9, to 2 m."}
 };
 
-/* ===== EDIT HERE: prices (USD) ===== */
+/* ===== EDIT HERE: prices (USD) — from the Rainbow Divers price booklet ===== */
+/* items: bookable programmes. adds: surcharges shown under the group, not bookable on their own */
 const GROUPS = [
- {id:"first", ru:"Первый раз", en:"First time", items:[
-  {id:"dsd95", rec:true, term:"dsd", price:95, ru:"Пробное погружение", en:"Discover Scuba", meta_ru:["2 погружения с лодки","до 12 м"], meta_en:["2 boat dives","to 12 m"],
-   d_ru:"Онлайн-теория, инструктаж и два погружения с инструктором. Сертификат не нужен.", d_en:"Online theory, a briefing and two boat dives with an instructor. No certificate needed."},
-  {id:"dsd135", term:"dsd", price:135, ru:"Пробное + бассейн", en:"Discover Scuba + pool", meta_ru:["бассейн","2 погружения"], meta_en:["pool session","2 boat dives"],
-   d_ru:"То же, но сначала занятие в бассейне. Лучший вариант, если волнуешься.", d_en:"Same, with a pool session first. Best if you're nervous."},
-  {id:"dsd65", price:65, ru:"1 погружение + снорклинг", en:"1 try dive + snorkelling", meta_ru:["1 погружение"], meta_en:["1 dive"],
-   d_ru:"Попробовать один раз и поплавать с маской.", d_en:"One try dive plus snorkelling."},
-  {id:"bubble", term:"bubble", price:60, ru:"Bubblemaker, дети 8–9", en:"Bubblemaker, kids 8–9", meta_ru:["до 2 м"], meta_en:["to 2 m"],
-   d_ru:"Первое знакомство с аквалангом для детей.", d_en:"A first taste of scuba for kids."}
+ {id:"first", ru:"Пробные погружения", en:"Try dives", sub_ru:"Без сертификата, с инструктором", sub_en:"No certificate needed, with an instructor", items:[
+  {id:"dsd95", rec:true, term:"dsd", price:95, ru:"Пробное погружение: 2 погружения", en:"Discover Scuba: 2 dives", meta_ru:["онлайн-теория","инструктаж","2 погружения с лодки"], meta_en:["eLearning","briefing","2 boat dives"],
+   d_ru:"Два погружения до 12 м с инструктором. Сертификат не нужен.", d_en:"Two dives to 12 m with an instructor. No certificate needed."},
+  {id:"dsd135", term:"dsd", price:135, ru:"Пробное с бассейном: 2 погружения", en:"Discover Scuba with pool: 2 dives", meta_ru:["онлайн-теория","бассейн","2 погружения с лодки"], meta_en:["eLearning","pool session","2 boat dives"],
+   d_ru:"Сначала занятие в бассейне, потом два погружения в море.", d_en:"A pool session first, then two dives at sea."},
+  {id:"dsd65", price:65, ru:"1 пробное погружение + снорклинг", en:"1 try dive + snorkelling", meta_ru:["1 погружение с лодки","снорклинг"], meta_en:["1 boat dive","snorkelling"],
+   d_ru:"Одно погружение с инструктором, остальное время плаваешь с маской.", d_en:"One dive with an instructor, then snorkelling for the rest of the trip."},
+  {id:"bubble", term:"bubble", price:60, ru:"Bubblemaker, дети 8–9 лет", en:"Bubblemaker, kids aged 8–9", meta_ru:["до 2 м"], meta_en:["to 2 m"],
+   d_ru:"Первое знакомство с аквалангом для детей, глубина не больше 2 м.", d_en:"A first taste of scuba for kids, no deeper than 2 m."}
  ]},
- {id:"courses", ru:"Курсы PADI", en:"PADI courses", items:[
-  {id:"ow", rec:true, term:"ow", price:450, ru:"Open Water", en:"Open Water", meta_ru:["полдня бассейн","2 дня в море","4 погружения"], meta_en:["half-day pool","2 days at sea","4 dives"],
+ {id:"snork", ru:"Снорклинг и пассажиры", en:"Snorkelling & passengers", sub_ru:"Для тех, кто едет на лодку, но не ныряет", sub_en:"For people who come on the boat but don't dive", items:[
+  {id:"snork40", price:40, ru:"Снорклинг / пассажир", en:"Snorkelling / passenger", meta_ru:["маска и трубка","обед"], meta_en:["mask & snorkel","lunch"],
+   d_ru:"День на лодке с друзьями или семьёй, плаваешь с маской сам.", d_en:"A day on the boat with friends or family, snorkelling on your own."},
+  {id:"snork50", price:50, ru:"Снорклинг PADI с гидом", en:"PADI snorkelling with a guide", meta_ru:["с гидом","маска и трубка","обед"], meta_en:["guided","mask & snorkel","lunch"],
+   d_ru:"Плаваешь с маской вместе с гидом, он показывает риф.", d_en:"Snorkel with a guide who shows you around the reef."}
+  ], adds:[
+  {price:30, ru:"Пробное погружение к снорклингу", en:"Try dive added to snorkelling"},
+  {price:0, ru:"Дети до 5 лет — бесплатно, под присмотром родителей", en:"Under-5s free, under your supervision"}
+ ]},
+ {id:"cert", ru:"Fun dives", en:"Fun dives", sub_ru:"Для тех, у кого есть сертификат", sub_en:"For certified divers", items:[
+  {id:"fun1", term:"fun", price:55, ru:"Fun dive: 1 погружение", en:"Fun dive: 1 dive", meta_ru:["с гидом","7:30–14:00"], meta_en:["guided","7:30am–2pm"],
+   d_ru:"Одно погружение с гидом у островов.", d_en:"One guided dive around the islands."},
+  {id:"fun2", rec:true, term:"fun", price:80, ru:"Fun dives: 2 погружения", en:"Fun dives: 2 dives", meta_ru:["с гидом","7:30–14:00"], meta_en:["guided","7:30am–2pm"],
+   d_ru:"Два погружения на разных сайтах за один выход в море.", d_en:"Two dives at two sites on one trip."},
+  {id:"fun3", term:"fun", price:100, ru:"Fun dives: 3 погружения", en:"Fun dives: 3 dives", meta_ru:["с гидом","по расписанию"], meta_en:["guided","subject to schedule"],
+   d_ru:"Три погружения за день, если позволяет расписание лодки.", d_en:"Three dives in a day when the boat schedule allows."},
+  {id:"night", price:75, ru:"Ночное погружение с лодки", en:"Night dive from the boat", meta_ru:["от 2 дайверов"], meta_en:["2+ divers"],
+   d_ru:"Выход с лодки вечером, нужно минимум 2 дайвера.", d_en:"An evening boat dive, minimum 2 divers."},
+  {id:"nightb", price:50, ru:"Ночное погружение с пляжа", en:"Night dive from the beach", meta_ru:["с пляжа"], meta_en:["shore dive"],
+   d_ru:"Ночное погружение с берега.", d_en:"A night dive from the shore."},
+  {id:"refresh", term:"refresh", price:50, ru:"Рефрешер", en:"Refresher", meta_ru:["бассейн / пляж / лодка"], meta_en:["pool / beach / boat"],
+   d_ru:"Повторяем навыки в рамках первого погружения, если давно не было погружений.", d_en:"A skills review as part of your first dive if you haven't dived in a while."},
+  {id:"speed", price:75, unit:{ru:"/ чел. в день",en:"/ person / day"}, ru:"Частный катер", en:"Private speedboat", meta_ru:["2–4 человека","Electric Nose"], meta_en:["2–4 people","Electric Nose"],
+   d_ru:"Свой график и дальние сайты: The Wall 42 м, The Ravine 25 м, Ray Plateau 30 м, The Freefall 40 м. Для курсов и fun dives.", d_en:"Your own schedule and remote sites: The Wall 42 m, The Ravine 25 m, Ray Plateau 30 m, The Freefall 40 m. For courses and fun dives."}
+  ], adds:[
+  {price:50, ru:"Онлайн-теория к рефрешеру (по желанию)", en:"Online theory for the refresher (optional)"}
+ ]},
+ {id:"courses", ru:"Курсы PADI", en:"PADI courses", sub_ru:"С сертификатом PADI в конце", sub_en:"Each ends with a PADI certification", items:[
+  {id:"ow", rec:true, term:"ow", price:450, ru:"Open Water", en:"Open Water", meta_ru:["полдня бассейн","2 утра в море","4 погружения","с 10 лет"], meta_en:["half-day pool","2 mornings at sea","4 dives","age 10+"],
    d_ru:"Первый сертификат дайвера, до 18 м. $150 онлайн-теория PADI + $300 бассейн и море. Страховка DAN в подарок.", d_en:"Your first dive licence, to 18 m. $150 PADI eLearning + $300 pool and ocean training. Free DAN insurance."},
   {id:"aow", term:"aow", price:495, ru:"Advanced + Nitrox", en:"Advanced + Nitrox", meta_ru:["2 дня","5 погружений","до 30 м"], meta_en:["2 days","5 dives","to 30 m"],
-   d_ru:"Следующий уровень плюс специализация на найтроксе.", d_en:"The next level plus the Nitrox specialty."},
+   d_ru:"Следующий курс после Open Water плюс специализация Nitrox.", d_en:"The course after Open Water plus the Nitrox specialty."},
   {id:"owaow", price:795, ru:"Open Water + Advanced + Nitrox", en:"Open Water + Advanced + Nitrox", meta_ru:["5 дней","9 погружений"], meta_en:["5 days","9 dives"],
-   d_ru:"С нуля до Advanced за одну поездку. На $150 дешевле, чем по отдельности.", d_en:"From zero to Advanced in one trip, $150 less than booking separately."},
-  {id:"rescue", term:"rescue", price:350, ru:"Rescue Diver", en:"Rescue Diver", meta_ru:["полдня бассейн","2 дня в море"], meta_en:["half-day pool","2 days at sea"],
-   d_ru:"EFR (первая помощь) $150. Добавить Nitrox $175, Deco Chamber $150.", d_en:"EFR first aid $150. Add Nitrox $175, Deco Chamber $150."},
+   d_ru:"С нуля до Advanced за одну поездку.", d_en:"From zero to Advanced in one trip."},
+  {id:"rescue", term:"rescue", price:350, ru:"Rescue Diver", en:"Rescue Diver", meta_ru:["онлайн-теория","полдня бассейн","2 утра в море"], meta_en:["eLearning","half-day pool","2 mornings at sea"],
+   d_ru:"Курс, где учишься помогать себе и напарнику в сложных ситуациях.", d_en:"Learn to handle problems and help your buddy."},
+  {id:"efr", price:150, ru:"EFR — первая помощь", en:"EFR — first aid", meta_ru:["нужен для Rescue"], meta_en:["needed for Rescue"],
+   d_ru:"Курс первой помощи Emergency First Response.", d_en:"The Emergency First Response first-aid course."},
   {id:"pack", price:1000, ru:"Пакет: Advanced + Nitrox + Rescue + EFR + Deco Chamber", en:"Bundle: Advanced + Nitrox + Rescue + EFR + Deco Chamber", meta_ru:["всё вместе"], meta_en:["all in one"],
-   d_ru:"Самый выгодный путь к Rescue.", d_en:"The best-value route to Rescue."},
+   d_ru:"Пять курсов одним пакетом.", d_en:"Five courses in one bundle."},
   {id:"spec", price:125, from:true, ru:"Специализации", en:"Specialties", meta_ru:["с онлайн-теорией"], meta_en:["with eLearning"],
    d_ru:"Deep, Nitrox, Night, навигация, плавучесть и другие. Полный список ниже.", d_en:"Deep, Nitrox, Night, Navigation, Buoyancy and more. Full list below."}
- ]},
- {id:"cert", ru:"С сертификатом", en:"Certified", items:[
-  {id:"fun2", rec:true, term:"fun", price:80, ru:"Fun dives: 2 погружения", en:"Fun dives: 2 dives", meta_ru:["с гидом","7:30–14:00"], meta_en:["guided","7:30am–2pm"],
-   d_ru:"1 погружение $55, 3 погружения $100 (по расписанию).", d_en:"1 dive $55, 3 dives $100 (subject to schedule)."},
-  {id:"night", price:75, ru:"Ночное погружение", en:"Night dive", meta_ru:["лодка, от 2 дайверов"], meta_en:["boat, 2+ divers"],
-   d_ru:"С пляжа $50.", d_en:"From the beach $50."},
-  {id:"refresh", term:"refresh", price:50, ru:"Рефрешер", en:"Refresher", meta_ru:["бассейн / пляж / лодка"], meta_en:["pool / beach / boat"],
-   d_ru:"Если последнее погружение было давно. Проходит в рамках первого погружения, онлайн-теория +$50.", d_en:"If you haven't dived in a while. Done as part of your first dive; online theory +$50."},
-  {id:"speed", price:75, unit:{ru:"/ чел. в день",en:"/ person / day"}, ru:"Частный катер", en:"Private speedboat", meta_ru:["2–4 человека","Electric Nose"], meta_en:["2–4 people","Electric Nose"],
-   d_ru:"Гибкий график и дальние сайты: The Wall 42 м, Ray Plateau 30 м, The Freefall 40 м. Для курсов и fun dives.", d_en:"Flexible schedule and remote sites: The Wall 42 m, Ray Plateau 30 m, The Freefall 40 m. For courses and fun dives."}
- ]},
- {id:"snork", ru:"Не ныряют", en:"Non-divers", items:[
-  {id:"snork40", price:40, ru:"Снорклинг / пассажир", en:"Snorkelling / passenger", meta_ru:["маска и трубка","обед"], meta_en:["mask & snorkel","lunch"],
-   d_ru:"День на лодке для друзей и семьи. Дети до 5 лет бесплатно.", d_en:"A day on the boat for friends and family. Under-5s free."},
-  {id:"snork50", price:50, ru:"Снорклинг PADI с гидом", en:"PADI snorkelling with guide", meta_ru:["с гидом"], meta_en:["guided"],
-   d_ru:"Можно добавить пробное погружение всего за $30.", d_en:"Add a try dive for just $30."}
+  ], adds:[
+  {price:50, ru:"Nitrox к курсу Open Water", en:"Nitrox added to Open Water"},
+  {price:200, ru:"Advanced к курсу Open Water (+ стоимость онлайн-теории)", en:"Advanced added to Open Water (+ eLearning fee)"},
+  {price:175, ru:"Nitrox к курсу Rescue", en:"Nitrox added to Rescue"},
+  {price:150, ru:"Deco Chamber к курсу Rescue", en:"Deco Chamber added to Rescue"}
  ]}
 ];
 const SPECIALTIES = [
@@ -510,28 +529,32 @@ const MONTHS = {ru:["янв","фев","мар","апр","май","июн","ию�
 /* ===== EDIT HERE: the 2-question match ===== */
 const QUIZ = {
  q1:{ru:"Был опыт с аквалангом?", en:"Have you dived with scuba before?", opts:[
-  {path:"first", ru:"Пока нет", en:"Not yet", s_ru:"Попробуем вместе, сертификат не нужен", s_en:"We'll try it together, no certificate needed"},
-  {path:"courses", ru:"Хочу научиться", en:"I want to learn", s_ru:"Курс PADI и сертификат на всю жизнь", s_en:"A PADI course and a licence for life"},
-  {path:"cert", ru:"Да, есть сертификат", en:"Yes, I'm certified", s_ru:"Покажу лучшие сайты у островов", s_en:"I'll show you the best island sites"}]},
- first:{ru:"Как тебе в воде?", en:"How do you feel in the water?", opts:[
-  {pick:"dsd95", ru:"Спокойно, плаваю уверенно", en:"Relaxed, I swim well", why_ru:"Раз в воде тебе спокойно, сразу едем в море. Два погружения до 12 м, инструктор всё время рядом и держит тебя в поле зрения.", why_en:"Since you're at ease in the water, we head straight out to sea. Two dives to 12 m with an instructor right beside you the whole time."},
-  {pick:"dsd135", ru:"Немного волнуюсь", en:"A bit nervous", why_ru:"Сначала спокойно разберёмся со всем в бассейне, где можно встать на дно. К выходу в море ты уже будешь знать, что делать, и волнение уйдёт.", why_en:"First we sort everything out in a pool where you can stand up. By the time we're at sea you'll know what to do and the nerves fade."},
-  {pick:"dsd65", ru:"Хочу попробовать чуть-чуть", en:"Just a taste", why_ru:"Одно погружение с инструктором, а потом плаваешь с маской над рифом. Хороший способ понять, твоё это или нет.", why_en:"One dive with an instructor, then snorkelling over the reef. A good way to find out if diving is for you."},
-  {pick:"bubble", ru:"Это для ребёнка 8–9 лет", en:"It's for a child aged 8–9", why_ru:"Bubblemaker: ребёнок дышит из акваланга на глубине до 2 м под присмотром инструктора. Обычно после этого просят ещё.", why_en:"Bubblemaker: your child breathes from a real scuba set no deeper than 2 m, with an instructor watching. Most kids ask to go again."}]},
- courses:{ru:"Сколько дней есть на обучение?", en:"How many days do you have for training?", opts:[
-  {pick:"ow", ru:"2–3 дня", en:"2–3 days", why_ru:"Open Water: теорию проходишь онлайн ещё дома, здесь бассейн и два дня в море. Дальше можно нырять с напарником в любой стране.", why_en:"Open Water: theory online before you fly, then a pool session and two days at sea. After that you can dive with a buddy anywhere."},
-  {pick:"owaow", ru:"5 дней, хочу сразу больше", en:"5 days, I want more", why_ru:"С нуля до Advanced за одну поездку: 9 погружений и глубина до 30 м. Выходит на $150 дешевле, чем брать курсы по отдельности.", why_en:"From zero to Advanced in one trip: 9 dives and depth to 30 m, $150 less than booking the courses separately."},
-  {pick:"aow", ru:"У меня уже есть Open Water", en:"I already have Open Water", why_ru:"Advanced + Nitrox за 2 дня: глубина до 30 м, навигация и дыхание найтроксом, чтобы дольше оставаться на глубине.", why_en:"Advanced + Nitrox in 2 days: depth to 30 m, navigation and nitrox so you can stay down longer."},
-  {pick:"rescue", ru:"Хочу Rescue", en:"I want Rescue", why_ru:"Rescue Diver учит замечать проблемы раньше, чем они случились, и помогать напарнику. После него ныряешь заметно спокойнее.", why_en:"Rescue Diver teaches you to spot problems before they happen and help your buddy. You dive a lot calmer afterwards."}]},
- cert:{ru:"Когда был последний дайв?", en:"When was your last dive?", opts:[
-  {pick:"fun2", ru:"Меньше полугода назад", en:"Less than 6 months ago", why_ru:"Два погружения с гидом у Хон Мун. Маршруты можно посмотреть на картах ниже и выбрать, куда хочется.", why_en:"Two guided dives around Hon Mun. Check the routes on the maps below and pick where you'd like to go."},
-  {pick:"refresh", ru:"Больше года назад", en:"Over a year ago", why_ru:"Начнём с короткого рефрешера прямо в первый день: вспомним навыки без спешки, и дальше ныряем как обычно.", why_en:"We start with a short refresher on day one: we go over the skills without rushing, then dive as usual."},
-  {pick:"speed", ru:"Хочу дальние сайты", en:"I want remote sites", why_ru:"Частный катер на 2–4 человека: The Wall 42 м, Ray Plateau 30 м, The Freefall 40 м, и график под вас.", why_en:"A private speedboat for 2–4 people: The Wall 42 m, Ray Plateau 30 m, The Freefall 40 m, on your schedule."},
-  {pick:"night", ru:"Хочу ночной дайв", en:"I want a night dive", why_ru:"Ночью риф совсем другой: выходят охотники, а планктон светится от каждого движения руки.", why_en:"The reef is a different place at night: hunters come out and the plankton lights up when you move your hand."}]}
+  {path:"first", ru:"Пока нет", en:"Not yet", s_ru:"Пробное погружение, сертификат не нужен", s_en:"A try dive, no certificate needed"},
+  {path:"courses", ru:"Хочу научиться", en:"I want to learn", s_ru:"Курс PADI и сертификат", s_en:"A PADI course and certification"},
+  {path:"cert", ru:"Да, есть сертификат", en:"Yes, I'm certified", s_ru:"Fun dives у островов", s_en:"Fun dives around the islands"},
+  {path:"snork", ru:"Нырять не буду", en:"I won't dive", s_ru:"Снорклинг или просто на лодку", s_en:"Snorkelling or just the boat trip"}]},
+ first:{ru:"Какое пробное погружение?", en:"Which try dive?", opts:[
+  {pick:"dsd95", ru:"2 погружения с лодки", en:"2 boat dives", why_ru:"Онлайн-теория, инструктаж на лодке и два погружения до 12 м. Инструктор всё время рядом.", why_en:"eLearning, a briefing on the boat and two dives to 12 m. The instructor stays with you the whole time."},
+  {pick:"dsd135", ru:"Бассейн + 2 погружения с лодки", en:"Pool + 2 boat dives", why_ru:"Сначала занятие в бассейне, где отрабатываем навыки на мелкой воде. Потом два погружения в море до 12 м.", why_en:"First a pool session to practise the skills in shallow water, then two dives at sea to 12 m."},
+  {pick:"dsd65", ru:"1 погружение + снорклинг", en:"1 dive + snorkelling", why_ru:"Одно погружение с инструктором, остальное время плаваешь с маской над рифом.", why_en:"One dive with an instructor, then snorkelling over the reef for the rest of the trip."},
+  {pick:"bubble", ru:"Ребёнок 8–9 лет", en:"A child aged 8–9", why_ru:"Bubblemaker: ребёнок дышит из акваланга на глубине до 2 м под присмотром инструктора.", why_en:"Bubblemaker: your child breathes from a real scuba set no deeper than 2 m, with an instructor watching."}]},
+ courses:{ru:"Какой курс?", en:"Which course?", opts:[
+  {pick:"ow", ru:"Open Water", en:"Open Water", why_ru:"Первый курс: онлайн-теория дома, здесь полдня бассейн и два утра в море. После него можно нырять с напарником до 18 м в любой стране.", why_en:"Your first course: eLearning at home, then half a day in the pool and two mornings at sea. Afterwards you can dive with a buddy to 18 m anywhere."},
+  {pick:"owaow", ru:"Open Water + Advanced + Nitrox", en:"Open Water + Advanced + Nitrox", why_ru:"С нуля до Advanced за одну поездку: 5 дней, 9 погружений, глубина до 30 м.", why_en:"From zero to Advanced in one trip: 5 days, 9 dives, depth to 30 m."},
+  {pick:"aow", ru:"Advanced + Nitrox (уже есть Open Water)", en:"Advanced + Nitrox (I have Open Water)", why_ru:"2 дня и 5 погружений: глубина до 30 м, навигация и найтрокс.", why_en:"2 days and 5 dives: depth to 30 m, navigation and nitrox."},
+  {pick:"rescue", ru:"Rescue Diver", en:"Rescue Diver", why_ru:"Учишься замечать проблемы заранее и помогать напарнику. EFR (первая помощь) — отдельно, $150.", why_en:"Learn to spot problems early and help your buddy. EFR first aid is separate, $150."}]},
+ cert:{ru:"Что хочешь?", en:"What would you like?", opts:[
+  {pick:"fun2", ru:"Fun dives: 2 погружения", en:"Fun dives: 2 dives", why_ru:"Два погружения с гидом у Хон Мун за один выход. Маршруты можно посмотреть на картах ниже.", why_en:"Two guided dives around Hon Mun on one trip. Check the routes on the maps below."},
+  {pick:"refresh", ru:"Рефрешер: давно не было погружений", en:"Refresher, it's been a while", why_ru:"Повторяем навыки в рамках первого погружения, дальше ныряем как обычно.", why_en:"We go over the skills as part of your first dive, then dive as usual."},
+  {pick:"speed", ru:"Частный катер, дальние сайты", en:"Private speedboat, remote sites", why_ru:"Катер на 2–4 человека к Electric Nose: The Wall 42 м, Ray Plateau 30 м, The Freefall 40 м, и график под вас.", why_en:"A speedboat for 2–4 people to Electric Nose: The Wall 42 m, Ray Plateau 30 m, The Freefall 40 m, on your schedule."},
+  {pick:"night", ru:"Ночное погружение", en:"Night dive", why_ru:"Ночью риф совсем другой: выходят охотники, а планктон светится от каждого движения руки. С лодки $75 (от 2 дайверов), с пляжа $50.", why_en:"The reef is a different place at night: hunters come out and the plankton lights up when you move your hand. Boat $75 (2+ divers), beach $50."}]},
+ snork:{ru:"Что выбрать?", en:"Which one?", opts:[
+  {pick:"snork40", ru:"Снорклинг / пассажир", en:"Snorkelling / passenger", why_ru:"День на лодке: плаваешь с маской сам, обед включён. Пробное погружение можно добавить за $30.", why_en:"A day on the boat snorkelling on your own, lunch included. You can add a try dive for $30."},
+  {pick:"snork50", ru:"Снорклинг PADI с гидом", en:"PADI snorkelling with a guide", why_ru:"Плаваешь с маской вместе с гидом. Пробное погружение можно добавить за $30.", why_en:"Snorkel with a guide. You can add a try dive for $30."}]}
 };
 
 const ALL = GROUPS.flatMap(g => g.items.map(i => ({...i, group:g})));
-let lang = "en", tab = "first", quiz = {step:"q1", path:null, pick:null};
+let lang = "en", quiz = {step:"q1", path:null, pick:null};
 try{ const s = localStorage.getItem("lang"); if(s==="ru"||s==="en") lang = s; else if((navigator.language||"").toLowerCase().startsWith("ru")) lang = "ru"; }catch(e){ if((navigator.language||"").toLowerCase().startsWith("ru")) lang = "ru"; }
 try{ const q = JSON.parse(localStorage.getItem("quiz") || "null"); if(q && QUIZ[q.path] && q.pick) quiz = {step:"done", path:q.path, pick:q.pick}; }catch(e){}
 
@@ -540,30 +563,31 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">"
 const money = i => `${i.from ? (lang==="ru"?"от ":"from ") : ""}$${i.price.toLocaleString("en-US")}`;
 const T = (ru, en) => lang === "ru" ? ru : en;
 
-function renderTabs(){
-  $("tabs").innerHTML = GROUPS.map(g => {
-    const min = Math.min(...g.items.map(i => i.price));
-    return `<button type="button" role="tab" id="tab-${g.id}" aria-controls="plist" aria-selected="${g.id===tab}" tabindex="${g.id===tab?0:-1}" data-tab="${g.id}">
-      <b>${esc(g[lang])}</b><small>${T("от","from")} $${min} · ${g.items.length} ${T(g.items.length>4?"вариантов":"варианта", "options")}</small></button>`;
-  }).join("");
-  $("plist").setAttribute("aria-labelledby","tab-"+tab);
-}
 function title(i){
   const t = esc(i[lang]);
   return i.term ? `<button type="button" class="term" data-term="${i.term}">${t}</button>` : t;
 }
-function renderList(){
-  const g = GROUPS.find(x=>x.id===tab) || GROUPS[0];
-  $("plist").innerHTML = g.items.map(i => `
-    <article class="item${i.rec?" rec":""}">
-      <div class="name"><h3>${title(i)}</h3>${i.rec?`<span class="badge">${T("советую","my pick")}</span>`:""}</div>
+function itemHTML(i){
+  return `<article class="item${i.rec?" rec":""}">
+      <div class="name"><h4>${title(i)}</h4>${i.rec?`<span class="badge">${T("советую","my pick")}</span>`:""}</div>
       ${(i["meta_"+lang]||[]).length?`<div class="meta">${i["meta_"+lang].map(esc).join("  ·  ")}</div>`:"<div></div>"}
       <p>${esc(i["d_"+lang]||"")}</p>
       <div class="row"><span class="price">${money(i)}${i.unit?`<small>${esc(i.unit[lang])}</small>`:""}</span>
         <button type="button" class="btn sm${i.rec?" primary":""}" data-pick="${esc(i.id)}">${T("Записаться","Book this")}</button></div>
-    </article>`).join("");
-  $("spec-box").hidden = tab !== "courses";
-  $("spec-table").innerHTML = SPECIALTIES.map(([n,d,p]) => `<tr><td>${esc(n)} <span class="muted">${d==="—"?"":"· "+d+T(" погр."," dives")}</span></td><td>$${p}</td></tr>`).join("");
+    </article>`;
+}
+function renderList(){
+  $("pgroups").innerHTML = GROUPS.map(g => `
+    <section class="pgroup" id="pg-${g.id}" aria-labelledby="pgh-${g.id}">
+      <div class="pg-head"><h3 id="pgh-${g.id}">${esc(g[lang])}</h3><p>${esc(g["sub_"+lang]||"")}</p></div>
+      <div class="plist">${g.items.map(itemHTML).join("")}</div>
+      ${g.adds?`<ul class="adds">${g.adds.map(a => `<li><span>${esc(a[lang])}</span><b>${a.price?"+$"+a.price:""}</b></li>`).join("")}</ul>`:""}
+      ${g.id==="courses"?`<details class="spec">
+        <summary>${T("Все специализации PADI (с онлайн-теорией)","All PADI specialties (with eLearning)")}</summary>
+        <div class="tw"><table>${SPECIALTIES.map(([n,d,p]) => `<tr><td>${esc(n)} <span class="muted">${d==="—"?"":"· "+d+T(" погр."," dives")}</span></td><td>$${p}</td></tr>`).join("")}</table></div>
+        <p class="small" style="margin-top:12px">${T("PADI Master Scuba Diver: заявка бесплатно, если есть 5 специализаций, Rescue и 50+ погружений.","PADI Master Scuba Diver: free application once you have 5 specialties, Rescue and 50+ dives.")}</p>
+      </details>`:""}
+    </section>`).join("");
 }
 
 /* ===== quiz: questions and the answer live in one card ===== */
@@ -689,12 +713,8 @@ function applyLang(){
   $("lang-ru").setAttribute("aria-pressed", lang==="ru");
   $("lang-en").setAttribute("aria-pressed", lang==="en");
   $("intro-skip") && ($("intro-skip").textContent = T("Пропустить ›","Skip ›"));
-  renderTabs(); renderList(); renderQuiz(); renderSelect(); updateMsg(); hideTip();
+  renderList(); renderQuiz(); renderSelect(); updateMsg(); hideTip();
   if(typeof renderMaps === "function") renderMaps();
-}
-function setTab(id, focus){
-  tab=id; renderTabs(); renderList();
-  if(focus) $("tab-"+id).focus();
 }
 const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
 
@@ -719,18 +739,11 @@ document.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click",
 }));
 $("q-body").addEventListener("click", e => {
   const p = e.target.closest("[data-path]");
-  if(p){ quiz.path = p.dataset.path; quiz.step = quiz.path; quiz.pick = null; setTab(quiz.path); renderQuiz(); $("q-body").querySelector(".q-opt")?.focus({preventScroll:true}); return; }
+  if(p){ quiz.path = p.dataset.path; quiz.step = quiz.path; quiz.pick = null; renderQuiz(); $("q-body").querySelector(".q-opt")?.focus({preventScroll:true}); return; }
   const q = e.target.closest("[data-q]");
   if(q){ quiz.pick = q.dataset.q; quiz.step = "done"; saveQuiz(); renderQuiz(); $("f-prog").value = quiz.pick; updateMsg(); return; }
   if(e.target.closest("[data-qback]")){ quiz.step = "q1"; renderQuiz(); return; }
   if(e.target.closest("[data-qredo]")){ quiz = {step:"q1", path:null, pick:null}; try{ localStorage.removeItem("quiz"); }catch(err){} renderQuiz(); updateMsg(); $("quiz").scrollIntoView({behavior: smooth(), block:"nearest"}); return; }
-});
-$("tabs").addEventListener("click", e => { const b=e.target.closest("[data-tab]"); if(b) setTab(b.dataset.tab); });
-$("tabs").addEventListener("keydown", e => {
-  if(e.key!=="ArrowRight" && e.key!=="ArrowLeft") return;
-  const i = GROUPS.findIndex(g=>g.id===tab);
-  const n = (i + (e.key==="ArrowRight"?1:-1) + GROUPS.length) % GROUPS.length;
-  e.preventDefault(); setTab(GROUPS[n].id, true);
 });
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-pick]"); if(!b) return;
@@ -804,7 +817,6 @@ $("c-ig-a").href = `https://instagram.com/${CONTACT.instagram}`;
 $("c-tg").textContent = "@" + CONTACT.telegram;
 $("c-wa").textContent = "+" + CONTACT.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d+)$/,"$1 $2 $3 $4");
 $("c-ig").textContent = "@" + CONTACT.instagram;
-if(quiz.pick) tab = quiz.path;
 
 /* ===== scroll effects: depth gauge, reveals ===== */
 (function(){
